@@ -1,6 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "types": ["@ui-kitten/components", "@eva-design/eva"],
     "strict": true,
     "paths": {
       "@/*": [
