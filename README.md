@@ -1,5 +1,7 @@
 # Welcome to your Expo app 👋
 
+Figma link for project
+(https://www.figma.com/design/rbCQw4g1Fb705oOnbCXZgT/Th%E1%BA%BF-gi%E1%BB%9Bi-tu%E1%BA%A7n-ho%C3%A0n?node-id=0-1&t=jXzA5l4ASGdh2KNG-1)
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
