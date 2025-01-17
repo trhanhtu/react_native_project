@@ -5,7 +5,16 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        activeIndexBlue: {
+          500: '#007BFF', // Custom blue
+        },
+        inactiveIndexGray: {
+          400: '#B0B0B0', // Custom gray
+        },
+      },
+    },
   },
   plugins: [],
   corePlugins: require('tailwind-rn/unsupported-core-plugins'),
