@@ -11,7 +11,8 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "build:tailwind": "tailwindcss --input input.css --output tailwind.css --no-autoprefixer && tailwind-rn",
-    "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\""
+    "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\"",
+    "dev": "concurrently \"npm run start\" \"npm run dev:tailwind\""
   },
   "jest": {
     "preset": "jest-expo"
@@ -22,7 +23,9 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@ui-kitten/components": "^5.3.1",
+    "@ui-kitten/eva-icons": "^5.3.1",
     "expo": "~52.0.25",
+    "expo-asset": "~11.0.2",
     "expo-blur": "~14.0.2",
     "expo-constants": "~17.0.4",
     "expo-font": "~13.0.3",
@@ -45,8 +48,7 @@
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "tailwind-rn": "^4.2.0",
-    "expo-asset": "~11.0.2"
+    "tailwind-rn": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
