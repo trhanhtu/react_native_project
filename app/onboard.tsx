@@ -27,25 +27,16 @@ export default function OnboardScreen() {
                     <SquareImage
                         percent={0.7}
                         src={require("../assets/images/onboard_1.png")}
-                        customStyle={tailwind("bg-green-600/100 mt-40")}
+                        customStyle={tailwind("bg-green-600/100 mt-15p rounded-xl")}
                     />
 
-                    <Text category='h5' style={tailwind("pointer-events-none mt-10")}>
-                        Chào mừng đến với
+                    <Text category='h5' style={tailwind("pointer-events-none my-10 text-center")}>
+                        Chào mừng đến với Thế Giới Nguyên Tố
                     </Text>
-                    <Text category='h5' style={tailwind("pointer-events-none mb-10")}>
-                        Thế Giới Nguyên Tố
+                    <Text style={tailwind("text-center px-7")}>
+                        Khám phá các nguyên tố và đặc tính của chúng trong bảng tuần hoàn tương tác này.  Vuốt để tìm hiểu cách điều hướng và sử dụng ứng dụng!
                     </Text>
-                    <Text>
-                        Khám phá các nguyên tố và đặc tính của
-                    </Text>
-                    <Text>
-                        chúng trong bảng tuần hoàn tương tác này.
-                    </Text>
-                    <Text>
-                        Vuốt để tìm hiểu cách điều hướng và sử dụng ứng dụng!
-                    </Text>
-
+                
                 </Layout>
                 {/*--[tab 1]--------------------------------------------------------------------*/}
 
@@ -55,53 +46,40 @@ export default function OnboardScreen() {
                     <SquareImage
                         percent={0.7}
                         src={require("../assets/images/onboard_2.png")}
-                        customStyle={tailwind("bg-yellow-300/100 mt-40")}
+                        customStyle={tailwind("bg-yellow-300/100 mt-15p rounded-xl")}
                     />
 
                     <Text category='h5' style={tailwind("pointer-events-none my-10")}>
                         Khám phá các nguyên tố
                     </Text>
-                    <Text>
-                        Vuốt qua các nguyên tố để tìm hiểu về
-                    </Text>
-                    <Text>
-                        số nguyên tử, ký hiệu và nhiều thông tin thú vị khác
-                    </Text>
-                    <Text>
-                        Bảng tuần hoàn giờ đây chỉ cách bạn một cú vuốt!
+                    <Text style={tailwind("px-7 text-center")}>
+                        Vuốt qua các nguyên tố để tìm hiểu về số nguyên tử, ký hiệu và nhiều thông tin thú vị khác. Bảng tuần hoàn giờ đây chỉ cách bạn một cú vuốt!
                     </Text>
 
                 </Layout>
                 {/*--[tab 2]--------------------------------------------------------------------*/}
-                <Layout
-                    style={tailwind("flex-1 items-center ")}
+                <View
+                    style={tailwind("flex-1 items-center bg-white/100")}
                 >
                     <SquareImage
                         percent={0.7}
                         src={require("../assets/images/onboard_3.png")}
-                        customStyle={[{ backgroundColor: "#07A9F0" }, tailwind("mt-40")]}
+                        customStyle={[tailwind("mt-15p rounded-xl"), { backgroundColor: "#07A9F0" },]}
                     />
 
                     <Text category='h5' style={tailwind("pointer-events-none my-10")}>
                         Học tương tác
                     </Text>
                     <Fragment key="content-text">
-                        <Text>
-                            Chạm vào bất kỳ nguyên tố nào để xem thông tin chi tiết
+                        <Text style={tailwind("text-center px-7")}>
+                            Chạm vào bất kỳ nguyên tố nào để xem thông tin chi tiết như khối lượng nguyên tử, cấu hình electron và nhiều hơn nữa.Hãy bắt đầu hành trình học tập của bạn!
                         </Text>
-                        <Text>
-                            như khối lượng nguyên tử, cấu hình electron và nhiều hơn nữa.
-                        </Text>
-                        <Text>
-                            Hãy bắt đầu hành trình học tập của bạn!
-                        </Text>
-
                     </Fragment>
-                    <View key="button-group" style={tailwind("w-3/4 mt-20 ")}>
-                        <Button status="info" onPress={() => router.replace("/login")}>Học ngay</Button>
+                    <View key="button-group" style={tailwind("w-3/4 my-15p")}>
+                        <Button status="info" onPress={() => router.replace("/signup")}>Học ngay</Button>
                         <Button appearance="outline" status="info" style={tailwind("mt-10")}>Thôi để lần sau</Button>
                     </View>
-                </Layout>
+                </View>
             </ViewPager>
             {RenderCurrentPageIndex(selectedIndex, setSelectedIndex, tailwind)}
         </Fragment>
