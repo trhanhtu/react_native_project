@@ -42,17 +42,34 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const lockPortrait = () => {
+    if (Platform.OS === "web") {
+      if (windowDimensions.width > windowDimensions.height) {
+        rotateOnWeb();
+      }
+      return;
+    }
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   };
 
   const lockLandscape = () => {
+    if (Platform.OS === "web") {
+      if (windowDimensions.width < windowDimensions.height) {
+        rotateOnWeb();
+      }
+      return;
+    }
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
   };
 
   const unlockOrientation = () => {
     ScreenOrientation.unlockAsync();
   };
-
+  function rotateOnWeb() {
+    setWindowDimensions({
+      width: windowDimensions.height,
+      height: windowDimensions.width,
+    })
+  }
   const renderWebChildren = () => (
     <React.Fragment>
       <View
@@ -69,12 +86,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
       <View>
         <Button
           title="Xoay màn hình"
-          onPress={() =>
-            setWindowDimensions({
-              width: windowDimensions.height,
-              height: windowDimensions.width,
-            })
-          }
+          onPress={rotateOnWeb}
         />
       </View>
     </React.Fragment>

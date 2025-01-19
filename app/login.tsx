@@ -1,7 +1,6 @@
 import useLogin from "@/src/components/hooks/useLogin";
 import SquareImage from "@/src/components/SquareImage";
 import { Button, Icon, IconProps, Input, Layout, Text } from "@ui-kitten/components";
-import { router } from "expo-router";
 import { Pressable, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 export default function LoginScreen() {
@@ -10,9 +9,11 @@ export default function LoginScreen() {
     const {
         formData,
         handleChange,
-        handleSubmit,
+        handleSignUp,
+        handleLogin,
         secureTextEntry,
         setSecureTextEntry,
+        handleForgotPassword
     } = useLogin();
 
     const renderIcon = (props: IconProps) => (
@@ -49,17 +50,17 @@ export default function LoginScreen() {
                     style={tailwind('mb-4')}
                 />
                 <View style={tailwind("flex flex-row  justify-end")}>
-                    <Button appearance="ghost" status="basic" onPress={() => router.replace("/forgotpassword")} style={tailwind("mr-3")}>Quên mật khẩu ?</Button>
+                    <Button appearance="ghost" status="basic" onPress={handleForgotPassword} style={tailwind("mr-3")}>Quên mật khẩu ?</Button>
 
                 </View>
 
-                <Button style={tailwind('mt-15p')} status="info" onPress={handleSubmit}>
+                <Button style={tailwind('mt-15p')} status="info" onPress={handleLogin}>
                     Đăng nhập
                 </Button>
             </View>
             <View style={tailwind("flex flex-row flex-1 items-center")}>
                 <Text>Chưa có tài khoản? </Text>
-                <Text onPress={() => router.replace("/signup")} status='primary' style={tailwind("underline")}>Đăng ký ngay</Text>
+                <Text onPress={handleSignUp} status='primary' style={tailwind("underline")}>Đăng ký ngay</Text>
             </View>
         </Layout>
     )

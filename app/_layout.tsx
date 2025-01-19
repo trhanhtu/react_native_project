@@ -14,9 +14,9 @@ export default function RootLayout() {
         <LayoutProvider>
           <ToastProvider>
             <Stack >
+              <Stack.Screen name="(usertabs)" options={{ headerShown: false }} />
               <Stack.Screen name='index' options={{ headerShown: false }} />
               <Stack.Screen name='onboard' options={{ headerShown: false }} />
-              <Stack.Screen name='about' options={{ headerShown: false }} />
               <Stack.Screen name='login' options={{ headerShown: false }} />
               <Stack.Screen name='signup' options={{ headerShown: false }} />
               <Stack.Screen name='sendemail' options={{ headerShown: false }} />
