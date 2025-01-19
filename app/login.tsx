@@ -1,5 +1,5 @@
-import useLogin from "@/src/components/hooks/useLogin";
 import SquareImage from "@/src/components/SquareImage";
+import useLogin from "@/src/hooks/useLogin";
 import { Button, Icon, IconProps, Input, Layout, Text } from "@ui-kitten/components";
 import { Pressable, View } from "react-native";
 import { useTailwind } from "tailwind-rn";

@@ -1,4 +1,4 @@
-import useProfile from "@/src/components/hooks/useProfile";
+import useProfile from "@/src/hooks/useProfile";
 import { Button, Layout } from "@ui-kitten/components";
 import { useTailwind } from "tailwind-rn";
 

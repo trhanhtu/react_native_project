@@ -1,6 +1,6 @@
-import useForgotPassword from "@/src/components/hooks/useFogetPassword";
 import OTPInput from "@/src/components/OTPInput";
 import SquareImage from "@/src/components/SquareImage";
+import useForgotPassword from "@/src/hooks/useFogetPassword";
 import { Button, Icon, IconProps, Input, Layout, Text } from "@ui-kitten/components";
 import { router } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";

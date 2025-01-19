@@ -1,4 +1,4 @@
-import useHome from "@/src/components/hooks/useHome";
+import useHome from "@/src/hooks/useHome";
 import { Layout, Text } from "@ui-kitten/components";
 import React from "react";
 import { View } from "react-native";
@@ -13,7 +13,7 @@ export default function HomeScreen() {
     } = useHome()
 
     return (
-        <Layout style={tailwind("flex-1 bg-green-200/100 justify-center items-center")}>
+        <Layout style={tailwind("flex-1 bg-green-200/100 items-center")}>
             <PeriodicTableFrame spaceHeight={elementHeight} tailwind={tailwind} elementsTemplate={GenerateDummyElementUIs(elementHeight, elementWidth)} />
         </Layout>
     )
@@ -68,7 +68,7 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> = React.memo(
                 <Layout id="row_7" style={tailwind("flex flex-row justify-between")}>
                     {[elementsTemplate[86], elementsTemplate[87], ...elementsTemplate.slice(102, 118)]}
                 </Layout>
-                <View style={{ paddingTop: spaceHeight/2 }}>
+                <View style={{ paddingTop: spaceHeight/4 }}>
 
                     <Layout id="row_8" style={tailwind("flex flex-row justify-center")}>
                         {elementsTemplate.slice(56, 70)}
