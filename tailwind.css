@@ -24,6 +24,10 @@
   margin-bottom: 10%
 }
 
+.mb-2 {
+  margin-bottom: 0.5rem
+}
+
 .mb-4 {
   margin-bottom: 1rem
 }
@@ -60,32 +64,24 @@
   margin-top: 5%
 }
 
-.flex {
-  display: flex
+.block {
+  display: block
 }
 
-.table {
-  display: table
+.flex {
+  display: flex
 }
 
 .h-20 {
   height: 5rem
 }
 
-.h-90p {
-  height: 90%
+.h-60p {
+  height: 60%
 }
 
 .h-full {
   height: 100%
-}
-
-.h-80p {
-  height: 80%
-}
-
-.h-95p {
-  height: 95%
 }
 
 .w-1\/3 {
@@ -104,10 +100,6 @@
   width: 70%
 }
 
-.w-80p {
-  width: 80%
-}
-
 .w-full {
   width: 100%
 }
@@ -118,6 +110,10 @@
 
 .flex-row {
   flex-direction: row
+}
+
+.flex-wrap {
+  flex-wrap: wrap
 }
 
 .items-end {
@@ -156,8 +152,56 @@
   border-width: 1px
 }
 
-.bg-blue-200\/100 {
-  background-color: rgb(191 219 254 / 1)
+.bg-amber-400\/100 {
+  background-color: rgb(251 191 36 / 1)
+}
+
+.bg-black\/100 {
+  background-color: rgb(0 0 0 / 1)
+}
+
+.bg-custom_goldenYellow\/100 {
+  background-color: rgb(234 218 36 / 1)
+}
+
+.bg-custom_lavender\/100 {
+  background-color: rgb(209 162 203 / 1)
+}
+
+.bg-custom_limeGreen\/100 {
+  background-color: rgb(162 211 77 / 1)
+}
+
+.bg-custom_neonYellow\/100 {
+  background-color: rgb(206 220 0 / 1)
+}
+
+.bg-custom_peach\/100 {
+  background-color: rgb(234 179 127 / 1)
+}
+
+.bg-custom_pinkBlush\/100 {
+  background-color: rgb(235 191 216 / 1)
+}
+
+.bg-custom_silverGray\/100 {
+  background-color: rgb(181 185 186 / 1)
+}
+
+.bg-custom_skyAqua\/100 {
+  background-color: rgb(191 234 236 / 1)
+}
+
+.bg-custom_skyBlue\/100 {
+  background-color: rgb(91 194 231 / 1)
+}
+
+.bg-custom_softPink\/100 {
+  background-color: rgb(251 201 229 / 1)
+}
+
+.bg-custom_sunsetOrange\/100 {
+  background-color: rgb(240 179 35 / 1)
 }
 
 .bg-green-200\/100 {
@@ -166,6 +210,10 @@
 
 .bg-green-600\/100 {
   background-color: rgb(22 163 74 / 1)
+}
+
+.bg-lime-600\/100 {
+  background-color: rgb(101 163 13 / 1)
 }
 
 .bg-red-500\/100 {
@@ -189,9 +237,8 @@
   padding: 0px
 }
 
-.px-10p {
-  padding-left: 10%;
-  padding-right: 10%
+.p-1 {
+  padding: 0.25rem
 }
 
 .px-5 {
@@ -209,17 +256,16 @@
   padding-right: 1.75rem
 }
 
-.py-5p {
-  padding-top: 5%;
-  padding-bottom: 5%
-}
-
-.pt-5p {
-  padding-top: 5%
+.pr-1 {
+  padding-right: 0.25rem
 }
 
 .text-center {
   text-align: center
+}
+
+.text-right {
+  text-align: right
 }
 
 .underline {

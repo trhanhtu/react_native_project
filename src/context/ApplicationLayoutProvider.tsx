@@ -20,7 +20,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   // Default dimensions: fixed for web, dynamic for mobile
   const defaultDimensions: WindowDimensions =
     Platform.OS === 'web'
-      ? { width: 380, height: 800 } // Fixed dimensions for web
+      ? { width: 640, height: 1136 } // Fixed dimensions for web
       : Dimensions.get('window'); // Dynamic dimensions for mobile
 
   const [windowDimensions, setWindowDimensions] = useState<WindowDimensions>(defaultDimensions);

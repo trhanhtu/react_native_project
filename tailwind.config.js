@@ -13,6 +13,19 @@ module.exports = {
         inactiveIndexGray: {
           400: '#B0B0B0', // Custom gray
         },
+        custom_oceanBlue: 'rgb(163, 199, 210)',      // hidro
+        custom_pinkBlush: 'rgb(235, 191, 216)',      // c1
+        custom_softPink: 'rgb(251, 201, 229)',       // c2
+        custom_skyAqua: 'rgb(191, 234, 236)',        // r8
+        custom_limeGreen: 'rgb(162, 211, 77)',       // r9
+        custom_skyBlue: 'rgb(91, 194, 231)',         // c3 - c12
+        custom_neonYellow: 'rgb(206, 220, 0)',       // c13
+        custom_lavender: 'rgb(209, 162, 203)',       // c14
+        custom_silverGray: 'rgb(181, 185, 186)',     // c15
+        custom_sunsetOrange: 'rgb(240, 179, 35)',    // c16
+        custom_peach: 'rgb(234, 179, 127)',          // c17
+        custom_goldenYellow: 'rgb(234, 218, 36)',    // c18
+
       },
       spacing: {
         '5p': '5%',
