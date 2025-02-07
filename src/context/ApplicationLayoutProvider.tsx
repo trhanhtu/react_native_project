@@ -73,6 +73,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   const renderWebChildren = () => (
     <React.Fragment>
       <View
+        id="application-layout"
         style={{
           borderColor: 'black',
           borderWidth: 2, // Adding border width

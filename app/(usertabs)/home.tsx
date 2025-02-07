@@ -1,5 +1,5 @@
 import useHome, { HomeAction, HomeState } from "@/src/hooks/useHome";
-import { Block_t, Classification_t, Group_t, HomeElement_t, Period_t } from "@/src/utils/types";
+import { Block_t, Classification_t, Group_t, Period_t, ViewElement_t } from "@/src/utils/types";
 import Slider from '@react-native-community/slider';
 import { Button, IndexPath, Layout, Select, SelectItem, Text } from "@ui-kitten/components";
 import React, { Dispatch, ReactNode, useState } from "react";
@@ -16,7 +16,7 @@ export default function HomeScreen() {
     } = useHome()
 
     return (
-        <Layout style={tailwind("flex-1 bg-green-200/100 items-center")}>
+        <Layout id="main-content" style={tailwind("flex-1 bg-green-200/100")}>
             <PeriodicTableFrame spaceHeight={elementHeight} tailwind={tailwind} elementUIs={GenerateElementUIs(homeState, tailwind, elementHeight, elementWidth)} />
             <Controller tailwind={tailwind} homeState={homeState} homeDispath={homeDispatch} />
         </Layout>
@@ -31,14 +31,17 @@ interface PeriodicTableFrameProps {
 
 const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> =
     ({ spaceHeight, elementUIs, tailwind }) => {
+
         return (
             <ScrollView
                 horizontal
+                showsHorizontalScrollIndicator={false}
                 nestedScrollEnabled={true}
                 style={tailwind("bg-white/100 h-60p flex mb-2")}
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+                    showsVerticalScrollIndicator={false}
                     nestedScrollEnabled={true}
                     style={{ height: '100%' }}>
                     <View id="row_0_to_2" style={tailwind("flex flex-row")}>
@@ -301,7 +304,7 @@ function RenderSupplyRiskBoxAndElementNo2(elementUIs: ReactNode[], tailwind: (_c
     )
 }
 
-function GetBackgroundColor(element: HomeElement_t): string {
+function GetBackgroundColor(element: ViewElement_t): string {
     if (!element.isLightOn) {
         return "bg-black/100"
     }

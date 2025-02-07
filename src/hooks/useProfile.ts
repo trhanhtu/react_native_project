@@ -7,9 +7,9 @@ const LOGIN_KEY = 'isLoggedIn';
 
 export default function useLogin() {
     const router = useRouter();
-    const { lockPortrait } = useLayout();
+    const { lockLandscape } = useLayout();
     useLayoutEffect(() => {
-        lockPortrait();
+        lockLandscape();
     }, [])
     function handleExitAccount() {
         authCheck.logout().then(() => router.replace("/login"));
