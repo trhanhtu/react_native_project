@@ -44,7 +44,7 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> =
                         </Layout>
                     </View>
 
-                    <View id="row_7_to_8">
+                    <View id="row_7_to_8" style={tailwind("pt-4")}>
                         <Layout id="row_7" style={tailwind("flex flex-row justify-center")}>
                             {elementUIs.slice(56, 70)}
                         </Layout>
@@ -65,7 +65,7 @@ function RenderElementNo2To13AndSupplyRiskBox(elementUIs: ReactNode[], tailwind:
     return (
         <View>
             <Layout id="row_1" style={tailwind("flex flex-row")} >
-                <View id="supply box" style={tailwind("flex-1 bg-amber-400/100")}>
+                <View id="supply box" style={tailwind("flex-1 bg-gray-200/100")}>
                     <Text>Supply box</Text>
                 </View>
                 {elementUIs[1]}
@@ -82,7 +82,7 @@ function RenderElementNo2To13AndSupplyRiskBox(elementUIs: ReactNode[], tailwind:
 
 function RenderInfoBox(elementUIs: ReactNode[], tailwind: (_classNames: string) => Style): ReactNode {
     return (
-        <View style={tailwind("flex-1 bg-lime-600/100")}>
+        <View style={tailwind("flex-1 bg-gray-300/100")}>
             <Text>xcvbn</Text>
         </View>
     )

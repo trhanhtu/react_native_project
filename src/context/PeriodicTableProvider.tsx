@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import GetRandomBetween from "../utils/random";
-import { Block_t, Classification_t, Group_t, Period_t, ViewElement_t } from "../utils/types";
+import { Block_t, Classification_t, DetailElement_t, Group_t, Period_t, ViewElement_t } from "../utils/types";
 
 type PeriodicTableContextType = {
     elements: ViewElement_t[];
@@ -15,12 +15,12 @@ export const PeriodicTableProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         setLoading(true);
-        fetch("https://raw.githubusercontent.com/andrejewski/periodic-table/refs/heads/master/data.json")
+        fetch("https://raw.githubusercontent.com/trhanhtu/react_native_project/refs/heads/fake-json/assets/detailElementsArray.json")
             .then((response) => {
-                response.json().then((data) => {
-                    console.log(data);
-                    
-                    setElements(data);
+                response.json().then((data: DetailElement_t[]) => {
+                    const elements: ViewElement_t[] = ConvertDetailElementArrayToViewElementArray(data);
+
+                    setElements(elements);
                 });
 
             })
@@ -104,3 +104,19 @@ function GeneratePeriod(): Period_t {
     if (value === 8) return "act";
     return value.toString() as Period_t;
 }
+function ConvertDetailElementArrayToViewElementArray(data: DetailElement_t[]): ViewElement_t[] {
+    return data.map((element) => ({
+        symbol: element.symbol,
+        image: element.image,
+        atomicNumber: element.atomicNumber,
+        block: element.block as Block_t,
+        group: element.group as Group_t,
+        period: element.period as Period_t,
+        meltingPoint: element.meltingPoint,
+        boilingPoint: element.boilingPoint,
+        classification: element.classification as Classification_t,
+        isLightOn: false,
+    }));
+}
+
+

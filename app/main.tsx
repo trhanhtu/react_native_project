@@ -14,6 +14,7 @@ import ProfileScreen from "./(usertabs)/profile";
 export const TABS: TabScreen_t[] = [
     { icon: <Icon name="person-outline" fill="#fff" width={24} height={24} />, name: "Cá nhân", component: <ProfileScreen /> },
     { icon: <Icon name="grid-outline" fill="#fff" width={24} height={24} />, name: "Bảng", component: <ImageTable /> },
+    { icon: <Icon name="bulb-outline" fill="#fff" width={24} height={24} />, name: "Niên đại", component: <ImageTable /> },
     { icon: <Icon name="shake-outline" fill="#fff" width={24} height={24} />, name: "Chu kỳ", component: <Text>Home</Text> },
     { icon: <Icon name="pantone-outline" fill="#fff" width={24} height={24} />, name: "Nhóm", component: <Text>Home</Text> },
     { icon: <Icon name="thermometer-outline" fill="#fff" width={24} height={24} />, name: "Nhiệt độ", component: <Text>Home</Text> },

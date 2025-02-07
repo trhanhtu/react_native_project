@@ -18,7 +18,7 @@ const ImageTable: React.FC = React.memo(
             )
         }
         return (
-            <View style={tailwind("flex-1 flex-col")}>
+            <View style={tailwind("flex-1 flex-col p-2")}>
                 <PeriodicTableFrame spaceHeight={100} elementUIs={GenerateElementUIs(elements, tailwind)} />
                 <Layout style={tailwind("flex-1 bg-red-500/100")}>
                     <Text>controller</Text>
@@ -32,8 +32,8 @@ function GenerateElementUIs(elements: ViewElement_t[], tailwind: (_classNames: s
     return elements.map((element, index) => {
         return (
             <Layout key={index} style={[tailwind(GetBackgroundColor(element)), { marginVertical: 1, marginHorizontal: 1, width: 100, height: 100 }]}>
-                <Text style={tailwind("text-right pr-1")}>{element.atomicNumber}</Text>
                 <Text category="h3" style={{ flex: 1, alignContent: "center", textAlign: "center" }}>{element.symbol}</Text>
+                <Text style={tailwind("text-lg text-center bg-gray-700/80 text-white/100")}>{element.atomicNumber}</Text>
             </Layout>
         )
     })
@@ -44,7 +44,7 @@ function GetBackgroundColor(element: ViewElement_t): string {
     }
     switch (element.group) {
         case "1":
-            if (element.atomicNumber === 1) return "bg-black/100";
+            if (element.atomicNumber === 1) return "bg-custom_oceanBlue/100";
             return "bg-custom_pinkBlush/100";
         case "2":
             return "bg-custom_softPink/100";
@@ -73,6 +73,10 @@ function GetBackgroundColor(element: ViewElement_t): string {
             return "bg-custom_peach/100";
         case "18":
             return "bg-custom_goldenYellow/100";
+        case "act":
+            return "bg-custom_limeGreen/100";
+        case "lan":
+            return "bg-custom_skyAqua/100";
         default:
             return "bg-white/100";
     }
