@@ -1,8 +1,11 @@
 import { useToast } from "@/src/context/ToastProvider";
+import authCheck from "@/src/utils/authCheck";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export default function useLogin() {
     const { show } = useToast();
+    const router = useRouter();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -22,19 +25,28 @@ export default function useLogin() {
         }
         return null;
     };
-    function handleSubmit() {
+    function handleLogin() {
         const errorMessage = validateFormData();
         if (errorMessage) {
             show(errorMessage, 'error');
             return;
         }
         show('Đăng nhập thành công!', 'success');
+        authCheck.login().then(() => router.replace("/(usertabs)/profile"));
+    }
+    function handleForgotPassword() {
+        router.replace("/forgotpassword")
+    }
+    function handleSignUp() {
+        router.replace("/signup")
     }
     return {
         formData,
+        handleSignUp,
         handleChange,
-        handleSubmit,
+        handleLogin,
         secureTextEntry,
         setSecureTextEntry,
+        handleForgotPassword,
     }
 }

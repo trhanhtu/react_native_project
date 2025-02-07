@@ -1,5 +1,5 @@
-import useSignUp from '@/src/components/hooks/useSignUp';
 import SquareImage from '@/src/components/SquareImage';
+import useSignUp from '@/src/hooks/useSignUp';
 import { Button, Icon, IconProps, Input, Layout, Text } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import React from 'react';

@@ -1,6 +1,6 @@
 import { useToast } from "@/src/context/ToastProvider";
 import { useRef, useState } from "react";
-import { OTPInputRef } from "../OTPInput";
+import { OTPInputRef } from "../components/OTPInput";
 
 export default function useForgotPassword() {
 

@@ -1,3 +1,4 @@
+import authCheck from "@/src/utils/authCheck";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
@@ -14,7 +15,14 @@ export default function Index() {
   useEffect(() => {
     if (isMounted) {
       // Perform navigation after the component has mounted and layout context is ready
-      router.replace("/onboard");
+      authCheck.isLoggedIn().then((isLoginBefore) => {
+        if (isLoginBefore) {
+          router.replace("/(usertabs)/profile");
+        } else {
+          router.replace("/onboard");
+
+        }
+      })
     }
   }, [isMounted, router]);
 

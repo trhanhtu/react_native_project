@@ -20,7 +20,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   // Default dimensions: fixed for web, dynamic for mobile
   const defaultDimensions: WindowDimensions =
     Platform.OS === 'web'
-      ? { width: 380, height: 800 } // Fixed dimensions for web
+      ? { width: 640, height: 1136 } // Fixed dimensions for web
       : Dimensions.get('window'); // Dynamic dimensions for mobile
 
   const [windowDimensions, setWindowDimensions] = useState<WindowDimensions>(defaultDimensions);
@@ -42,20 +42,38 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const lockPortrait = () => {
+    if (Platform.OS === "web") {
+      if (windowDimensions.width > windowDimensions.height) {
+        rotateOnWeb();
+      }
+      return;
+    }
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
   };
 
   const lockLandscape = () => {
+    if (Platform.OS === "web") {
+      if (windowDimensions.width < windowDimensions.height) {
+        rotateOnWeb();
+      }
+      return;
+    }
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_LEFT);
   };
 
   const unlockOrientation = () => {
     ScreenOrientation.unlockAsync();
   };
-
+  function rotateOnWeb() {
+    setWindowDimensions({
+      width: windowDimensions.height,
+      height: windowDimensions.width,
+    })
+  }
   const renderWebChildren = () => (
     <React.Fragment>
       <View
+        id="application-layout"
         style={{
           borderColor: 'black',
           borderWidth: 2, // Adding border width
@@ -69,12 +87,7 @@ export const LayoutProvider = ({ children }: { children: React.ReactNode }) => {
       <View>
         <Button
           title="Xoay màn hình"
-          onPress={() =>
-            setWindowDimensions({
-              width: windowDimensions.height,
-              height: windowDimensions.width,
-            })
-          }
+          onPress={rotateOnWeb}
         />
       </View>
     </React.Fragment>
