@@ -2,10 +2,13 @@ import { useLayoutEffect, useState } from "react";
 import { useLayout } from "../context/ApplicationLayoutProvider";
 
 export default function useMain() {
-    const { windowDimensions, lockLandscape } = useLayout();
+    const { windowDimensions, lockLandscape, lockPortrait } = useLayout();
     const [tabIndex, setTabIndex] = useState<number>(0);
     useLayoutEffect(() => {
         lockLandscape();
+        return () => {
+            lockPortrait();
+        }
     }, [])
     return {
         tabIndex,

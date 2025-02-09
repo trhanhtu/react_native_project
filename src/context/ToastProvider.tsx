@@ -3,7 +3,7 @@ import { Animated, StyleSheet, Text } from 'react-native';
 
 // Toast Context
 const ToastContext = createContext({
-  show: (message: string, severity: 'info' | 'error' | 'success', time?: number) => {},
+  toastShow: (message: string, severity: 'info' | 'error' | 'success', time?: number) => {},
 });
 
 // ToastProvider Component
@@ -13,7 +13,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const show = (message: string, severity: 'info' | 'error' | 'success', time = 5000) => {
+  const toastShow = (message: string, severity: 'info' | 'error' | 'success', time = 5000) => {
     // Clear any previous timer
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -44,7 +44,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <ToastContext.Provider value={{ show }}>
+    <ToastContext.Provider value={{ toastShow }}>
       {children}
       {visible && toast && (
         <Animated.View

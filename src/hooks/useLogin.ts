@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 
 export default function useLogin() {
-    const { show } = useToast();
+    const { toastShow } = useToast();
     const router = useRouter();
     const [formData, setFormData] = useState({
         email: '',
@@ -28,11 +28,11 @@ export default function useLogin() {
     function handleLogin() {
         const errorMessage = validateFormData();
         if (errorMessage) {
-            show(errorMessage, 'error');
+            toastShow(errorMessage, 'error');
             return;
         }
-        show('Đăng nhập thành công!', 'success');
-        authCheck.login().then(() => router.replace("/(usertabs)/profile"));
+        toastShow('Đăng nhập thành công!', 'success');
+        authCheck.login().then(() => router.replace("/main"));
     }
     function handleForgotPassword() {
         router.replace("/forgotpassword")
