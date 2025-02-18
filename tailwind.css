@@ -20,6 +20,11 @@
   margin-bottom: 15%
 }
 
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem
+}
+
 .mb-10p {
   margin-bottom: 10%
 }
@@ -56,6 +61,10 @@
   margin-top: 15%
 }
 
+.mt-2 {
+  margin-top: 0.5rem
+}
+
 .mt-20p {
   margin-top: 20%
 }
@@ -80,6 +89,10 @@
   height: 5rem
 }
 
+.h-24 {
+  height: 6rem
+}
+
 .h-85p {
   height: 85%
 }
@@ -96,6 +109,10 @@
   width: 2.5rem
 }
 
+.w-24 {
+  width: 6rem
+}
+
 .w-3\/4 {
   width: 75%
 }
@@ -106,6 +123,10 @@
 
 .w-full {
   width: 100%
+}
+
+.w-auto {
+  width: auto
 }
 
 .max-w-10p {
@@ -146,6 +167,10 @@
 
 .rounded {
   border-radius: 0.25rem
+}
+
+.rounded-full {
+  border-radius: 9999px
 }
 
 .rounded-lg {
@@ -253,6 +278,18 @@
   background-color: rgb(253 224 71 / 1)
 }
 
+.bg-blue-400\/100 {
+  background-color: rgb(96 165 250 / 1)
+}
+
+.bg-red-300\/100 {
+  background-color: rgb(252 165 165 / 1)
+}
+
+.bg-green-400\/100 {
+  background-color: rgb(74 222 128 / 1)
+}
+
 .p-0 {
   padding: 0px
 }
@@ -263,6 +300,14 @@
 
 .p-3 {
   padding: 0.75rem
+}
+
+.p-4 {
+  padding: 1rem
+}
+
+.p-5 {
+  padding: 1.25rem
 }
 
 .px-5 {
@@ -282,6 +327,14 @@
 
 .pt-4 {
   padding-top: 1rem
+}
+
+.pl-2 {
+  padding-left: 0.5rem
+}
+
+.pl-4 {
+  padding-left: 1rem
 }
 
 .text-center {

@@ -10,8 +10,6 @@ export default function useLogin() {
     const { lockLandscape, lockPortrait } = useLayout();
     useLayoutEffect(() => {
         lockLandscape();
-        return () =>
-            lockPortrait();
     }, [])
     function handleExitAccount() {
         lockPortrait();
