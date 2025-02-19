@@ -6,7 +6,7 @@ import { TabScreen_t, ViewElement_t } from "@/src/utils/types";
 import { Icon, Layout, Text } from "@ui-kitten/components";
 import React from "react";
 import { useTailwind } from "tailwind-rn";
-import ProfileScreen from "./profile";
+import ProfileScreen from "./(usertabs)/profile";
 
 
 

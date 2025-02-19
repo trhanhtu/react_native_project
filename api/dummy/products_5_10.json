@@ -1,0 +1,82 @@
+[
+  {
+    "id": "4ed5f076-6e66-49a6-97fc-825c83150c2d",
+    "name": "Product 5-1",
+    "description": "This is the description for product 5-1.",
+    "imageUrl": "https://ibb.co/21q96ZM2",
+    "category": "Sports",
+    "viewCount": 450
+  },
+  {
+    "id": "171dab92-584c-4743-9aab-0128e87203b0",
+    "name": "Product 5-2",
+    "description": "This is the description for product 5-2.",
+    "imageUrl": "https://ibb.co/p6hD8hr9",
+    "category": "Outdoors",
+    "viewCount": 831
+  },
+  {
+    "id": "2024905e-50e3-4158-a9d6-f0fd21460426",
+    "name": "Product 5-3",
+    "description": "This is the description for product 5-3.",
+    "imageUrl": "https://ibb.co/M5pr8P3h",
+    "category": "Electronics",
+    "viewCount": 748
+  },
+  {
+    "id": "f4184961-6802-45e3-add1-803a0eb44fc8",
+    "name": "Product 5-4",
+    "description": "This is the description for product 5-4.",
+    "imageUrl": "https://ibb.co/G32dpbhn",
+    "category": "Toys",
+    "viewCount": 955
+  },
+  {
+    "id": "6afafce6-5939-4336-9da2-09af6fea2836",
+    "name": "Product 5-5",
+    "description": "This is the description for product 5-5.",
+    "imageUrl": "https://ibb.co/21q96ZM2",
+    "category": "Home",
+    "viewCount": 536
+  },
+  {
+    "id": "3606294e-c05d-44b8-9302-43df38bfb3c6",
+    "name": "Product 5-6",
+    "description": "This is the description for product 5-6.",
+    "imageUrl": "https://ibb.co/nsKTbyjT",
+    "category": "Home",
+    "viewCount": 98
+  },
+  {
+    "id": "8449b814-55f1-4e39-b506-947bd934860a",
+    "name": "Product 5-7",
+    "description": "This is the description for product 5-7.",
+    "imageUrl": "https://ibb.co/5hjqWRb6",
+    "category": "Electronics",
+    "viewCount": 842
+  },
+  {
+    "id": "fcc21d48-3a67-45d6-a3fa-f0541086454d",
+    "name": "Product 5-8",
+    "description": "This is the description for product 5-8.",
+    "imageUrl": "https://ibb.co/G32dpbhn",
+    "category": "Toys",
+    "viewCount": 747
+  },
+  {
+    "id": "55550108-4461-4fb1-9fc5-f1d7ca8a89b1",
+    "name": "Product 5-9",
+    "description": "This is the description for product 5-9.",
+    "imageUrl": "https://ibb.co/G32dpbhn",
+    "category": "Home",
+    "viewCount": 225
+  },
+  {
+    "id": "9411ac2d-526c-4bc7-b99a-16c090c45303",
+    "name": "Product 5-10",
+    "description": "This is the description for product 5-10.",
+    "imageUrl": "https://ibb.co/21q96ZM2",
+    "category": "Clothing",
+    "viewCount": 137
+  }
+]

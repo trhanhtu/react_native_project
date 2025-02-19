@@ -9,9 +9,7 @@ export default function useLogin() {
     const router = useRouter();
     const { lockLandscape, lockPortrait } = useLayout();
     useLayoutEffect(() => {
-        lockLandscape();
-        return () =>
-            lockPortrait();
+        lockPortrait();
     }, [])
     function handleExitAccount() {
         lockPortrait();

@@ -4,17 +4,16 @@ import { View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import { ViewElement_t } from "../utils/types";
+import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
 const ImageTable: React.FC = React.memo(
     () => {
         const { elements, loading } = usePeriodicTable();
         const tailwind = useTailwind();
-        if (loading) {
+        if (!loading) {
             return (
-                <View style={tailwind("flex-1 flex-column")}>
-                    <Text>Loading...</Text>
-                </View>
+                <LoadingBars />
             )
         }
         return (
