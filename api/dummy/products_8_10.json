@@ -1,82 +1,82 @@
 [
   {
-    "id": "cb2b1caa-c306-4f3d-9523-412ff528781b",
+    "id": "14610d2f-2696-44df-8b2a-90083c6818dd",
     "name": "Product 8-1",
     "description": "This is the description for product 8-1.",
-    "imageUrl": "https://ibb.co/TBdRLM83",
-    "category": "Home",
-    "viewCount": 228
+    "imageUrl": "https://i.ibb.co/nqP2vP85/image4.png",
+    "category": "Books",
+    "viewCount": 890
   },
   {
-    "id": "b5d89a27-9d61-4a1a-b6ec-ab921347f2a0",
+    "id": "04335e64-70cf-41d6-9661-54eb92049ca0",
     "name": "Product 8-2",
     "description": "This is the description for product 8-2.",
-    "imageUrl": "https://ibb.co/G32dpbhn",
-    "category": "Home",
-    "viewCount": 38
+    "imageUrl": "https://i.ibb.co/nqP2vP85/image4.png",
+    "category": "Books",
+    "viewCount": 359
   },
   {
-    "id": "bbf4f6e4-1699-47dc-b627-5c5aca75159b",
+    "id": "3be421ba-87a9-49c7-a357-b80602b33dd4",
     "name": "Product 8-3",
     "description": "This is the description for product 8-3.",
-    "imageUrl": "https://ibb.co/nsKTbyjT",
-    "category": "Electronics",
-    "viewCount": 141
+    "imageUrl": "https://i.ibb.co/h1HbX2tM/image0.png",
+    "category": "Sports",
+    "viewCount": 433
   },
   {
-    "id": "b2023c8e-cdcc-4d86-bfa8-27740d3c9928",
+    "id": "97e5d8c2-dc2d-4b5f-a1a3-ea115838f466",
     "name": "Product 8-4",
     "description": "This is the description for product 8-4.",
-    "imageUrl": "https://ibb.co/G32dpbhn",
-    "category": "Books",
-    "viewCount": 839
+    "imageUrl": "https://i.ibb.co/DfM3DR0t/image1.png",
+    "category": "Sports",
+    "viewCount": 842
   },
   {
-    "id": "2589c79d-279e-4d25-8bfd-ef595465bfab",
+    "id": "cc7a7825-b16f-43c2-9216-5633f868faa6",
     "name": "Product 8-5",
     "description": "This is the description for product 8-5.",
-    "imageUrl": "https://ibb.co/M5pr8P3h",
-    "category": "Outdoors",
-    "viewCount": 392
+    "imageUrl": "https://i.ibb.co/h1HbX2tM/image0.png",
+    "category": "Toys",
+    "viewCount": 769
   },
   {
-    "id": "3877e1a0-21e2-4236-8e81-b1d095a982bb",
+    "id": "6baf4a9a-a4d0-4359-8072-2cd5423c6469",
     "name": "Product 8-6",
     "description": "This is the description for product 8-6.",
-    "imageUrl": "https://ibb.co/G32dpbhn",
-    "category": "Toys",
-    "viewCount": 740
+    "imageUrl": "https://i.ibb.co/h1HbX2tM/image0.png",
+    "category": "Clothing",
+    "viewCount": 73
   },
   {
-    "id": "8b049f53-6741-42a4-9017-d23b0874975a",
+    "id": "4c4c3f93-52c9-4680-af83-f24b90be9d31",
     "name": "Product 8-7",
     "description": "This is the description for product 8-7.",
-    "imageUrl": "https://ibb.co/TBdRLM83",
+    "imageUrl": "https://i.ibb.co/3YNTdLJ4/image3.png",
     "category": "Toys",
-    "viewCount": 338
+    "viewCount": 24
   },
   {
-    "id": "91ea2c5c-0d6c-4587-ba4a-ff4cd0702dbe",
+    "id": "70d1dc13-f0b4-4bbb-b795-511f081c7056",
     "name": "Product 8-8",
     "description": "This is the description for product 8-8.",
-    "imageUrl": "https://ibb.co/21q96ZM2",
-    "category": "Outdoors",
-    "viewCount": 856
+    "imageUrl": "https://i.ibb.co/nqP2vP85/image4.png",
+    "category": "Electronics",
+    "viewCount": 322
   },
   {
-    "id": "60afc6da-cdc0-41c9-822a-285a3353588e",
+    "id": "398aaebf-3d76-49e5-b45c-1bec2647c869",
     "name": "Product 8-9",
     "description": "This is the description for product 8-9.",
-    "imageUrl": "https://ibb.co/TBdRLM83",
-    "category": "Outdoors",
-    "viewCount": 757
+    "imageUrl": "https://i.ibb.co/DfM3DR0t/image1.png",
+    "category": "Toys",
+    "viewCount": 728
   },
   {
-    "id": "1ea03821-f96c-4632-aaac-2d083e18303d",
+    "id": "d24db824-1d04-4323-80d6-bf8aaf905c70",
     "name": "Product 8-10",
     "description": "This is the description for product 8-10.",
-    "imageUrl": "https://ibb.co/G32dpbhn",
-    "category": "Toys",
-    "viewCount": 966
+    "imageUrl": "https://i.ibb.co/PZ04QGhH/image2.png",
+    "category": "Home",
+    "viewCount": 112
   }
 ]

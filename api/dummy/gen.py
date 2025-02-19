@@ -4,13 +4,13 @@ import uuid
 
 # List of image URLs to choose from
 IMAGE_URLS = [
-    "https://ibb.co/M5pr8P3h",
-    "https://ibb.co/5hjqWRb6",
-    "https://ibb.co/TBdRLM83",
-    "https://ibb.co/G32dpbhn",
-    "https://ibb.co/p6hD8hr9",
-    "https://ibb.co/21q96ZM2",
-    "https://ibb.co/nsKTbyjT"
+    "https://i.ibb.co/h1HbX2tM/image0.png",
+    "https://i.ibb.co/DfM3DR0t/image1.png",
+    "https://i.ibb.co/PZ04QGhH/image2.png",
+    "https://i.ibb.co/3YNTdLJ4/image3.png",
+    "https://i.ibb.co/nqP2vP85/image4.png",
+    "https://i.ibb.co/Kp6PGKsZ/image5.png",
+    "https://i.ibb.co/JRSNKTHN/image6.png"
 ]
 
 # Optional list of categories
