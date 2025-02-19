@@ -3,13 +3,11 @@ import * as eva from '@eva-design/eva';
 import {
     ApplicationProvider,
     Avatar,
-    BottomNavigation,
-    BottomNavigationTab,
     Button,
     Icon,
     Input,
     Layout,
-    Text,
+    Text
 } from '@ui-kitten/components';
 import React, { useEffect, useRef, useState } from 'react';
 import {
@@ -230,22 +228,6 @@ const AllProduct: React.FC<AllProductProps> = ({
   );
 };
 
-// AppBottomNavigation Component: thanh điều hướng cố định dưới cùng
-const AppBottomNavigation: React.FC<AppBottomNavigationProps> = ({
-  selectedIndex,
-  setSelectedIndex,
-}) => {
-  return (
-    <BottomNavigation
-      selectedIndex={selectedIndex}
-      onSelect={(index: number) => setSelectedIndex(index)}
-    >
-      <BottomNavigationTab title="Home" />
-      <BottomNavigationTab title="Search" />
-      <BottomNavigationTab title="Profile" />
-    </BottomNavigation>
-  );
-};
 
 // ---------------------- MAIN SCREEN ----------------------
 
@@ -259,19 +241,17 @@ const HomeScreen: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  // Hàm fetch sản phẩm từ API (ví dụ: https://example.com/product?page=1)
   const fetchProducts = async (page: number) => {
     try {
       setLoading(true);
-      const response = await fetch(`https://example.com/product?page=${page}`);
+      const response = await fetch(`https://raw.githubusercontent.com/trhanhtu/react_native_project/refs/heads/tab-bottom-navigation/api/dummy/products_${page}_10.json`);
       const json = await response.json();
       // Giả sử API trả về cấu trúc: { data: Product[], page: number, totalPages: number }
-      const newProducts: Product[] = json.data;
+      const newProducts: Product[] = json;
       setProducts((prev) => [...prev, ...newProducts]);
-      setCurrentPage(json.page + 1);
-      setTotalPages(json.totalPages);
+      setCurrentPage(page + 1);
+      setTotalPages(10);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -319,8 +299,6 @@ const HomeScreen: React.FC = () => {
               hasMore={hasMore}
             />
           </ScrollView>
-          {/* Thanh điều hướng dưới cùng */}
-          <AppBottomNavigation selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} />
         </Layout>
       </SafeAreaView>
     </ApplicationProvider>
