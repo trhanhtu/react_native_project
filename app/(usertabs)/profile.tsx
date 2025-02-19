@@ -37,7 +37,7 @@ const ProfileInfo: React.FC = React.memo(
                     <SquareImage
                         customStyle={tailwind(" rounded-lg bg-gray-700/100")}
                         percent={0.2}
-                        src={require("../assets/images/react-logo.png")}
+                        src={require("@/assets/images/react-logo.png")}
                     />
                 </View>
                 <View style={tailwind("justify-center bg-white/100 pl-2")}>
