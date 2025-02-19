@@ -4,11 +4,6 @@
 			"pointerEvents": "none"
 		}
 	},
-	"static": {
-		"style": {
-			"position": "static"
-		}
-	},
 	"fixed": {
 		"style": {
 			"position": "fixed"
