@@ -154,7 +154,7 @@ const Top10Popular: React.FC<Top10PopularProps> = ({ products }) => {
             data={top10}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => "top_"+item.id.toString()}
             contentContainerStyle={tailwind('p-2')}
             renderItem={({ item }) => (
                 <View style={tailwind('mr-4')}>
