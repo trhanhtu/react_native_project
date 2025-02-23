@@ -1,14 +1,14 @@
 import { useLayout } from '@/src/context/ApplicationLayoutProvider';
 import authCheck from '@/src/utils/authCheck';
 import { useRouter } from 'expo-router';
-import { useLayoutEffect } from 'react';
+import { /*useLayoutEffect*/ useEffect } from 'react';
 
 const LOGIN_KEY = 'isLoggedIn';
 
 export default function useLogin() {
     const router = useRouter();
     const { lockLandscape, lockPortrait } = useLayout();
-    useLayoutEffect(() => {
+    /*useLayoutEffect*/useEffect(() => {
         lockPortrait();
     }, [])
     function handleExitAccount() {

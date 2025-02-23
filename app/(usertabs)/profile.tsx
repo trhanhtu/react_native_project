@@ -32,7 +32,7 @@ const ProfileInfo: React.FC = React.memo(
     () => {
         const tailwind = useTailwind();
         return (
-            <Layout style={tailwind("flex-row bg-white-500/100 ")}>
+            <Layout style={tailwind("flex-row bg-white/100 ")}>
                 <View style={tailwind("bg-white/100 justify-center")}>
                     <SquareImage
                         customStyle={tailwind(" rounded-lg bg-gray-700/100")}

@@ -1,4 +1,4 @@
-import { TABS } from "@/app/main";
+import TABS from "@/src/TabList";
 import { Text } from "@ui-kitten/components";
 import React from "react";
 import { ScrollView, TouchableOpacity } from "react-native";

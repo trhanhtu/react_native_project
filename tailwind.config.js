@@ -25,7 +25,18 @@ module.exports = {
         custom_sunsetOrange: 'rgb(240, 179, 35)',    // c16
         custom_peach: 'rgb(234, 179, 127)',          // c17
         custom_goldenYellow: 'rgb(234, 218, 36)',    // c18
-
+        g1_label: "rgb(145, 0, 72)",
+        g2_label: "rgb(227, 28, 121)",
+        gmetal_label: "rgb(22, 111, 185)",
+        g13_label: "rgb(83, 115, 0)",
+        g14_label: "rgb(131, 49, 119)",
+        g15_label: "rgb(80, 87, 89)",
+        g16_label: "rgb(183, 42, 0)",
+        g17_label: "rgb(190, 77, 0)",
+        g18_label: "rgb(157, 109, 0)",
+        glan_label: "rgb(0, 140, 149)",
+        gact_label: "rgb(69, 138, 5)",
+        h_label: "rgb(61, 105, 124)",
       },
       spacing: {
         '5p': '5%',

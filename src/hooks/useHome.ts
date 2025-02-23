@@ -1,7 +1,7 @@
 import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { IndexPath } from "@ui-kitten/components";
 import { useRouter } from "expo-router";
-import { useEffect, useLayoutEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { ViewElement_t } from "../utils/types";
 
 
@@ -65,11 +65,10 @@ export default function useHome() {
     function handleViewDetail() {
         // router.push("/detail");
     }
-    useLayoutEffect(() => {
+    /*useLayoutEffect*/useEffect(() => {
         lockLandscape();
     }, [])
-    useEffect(() => {
-    }, [])
+
     return {
         homeState,
         homeDispatch,

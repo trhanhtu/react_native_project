@@ -167,7 +167,7 @@
         "standardState": "solid",
         "bondingType": "covalent network",
         "density": 2.26,
-        "yearDiscovered": 0
+        "yearDiscovered": -9999
     },
     {
         "atomicNumber": 7,
@@ -367,7 +367,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 2.7,
-        "yearDiscovered": 0
+        "yearDiscovered": 1825
     },
     {
         "atomicNumber": 14,
@@ -469,7 +469,7 @@
         "standardState": "solid",
         "bondingType": "covalent network",
         "density": 1.96,
-        "yearDiscovered": 0
+        "yearDiscovered": -9999
     },
     {
         "atomicNumber": 17,
@@ -582,7 +582,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 1.55,
-        "yearDiscovered": 0
+        "yearDiscovered": 1808
     },
     {
         "atomicNumber": 21,
@@ -705,7 +705,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 7.14,
-        "yearDiscovered": 0
+        "yearDiscovered": 1798
     },
     {
         "atomicNumber": 25,
@@ -775,7 +775,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 7.874,
-        "yearDiscovered": 0
+        "yearDiscovered": -3500
     },
     {
         "atomicNumber": 27,
@@ -807,7 +807,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 8.9,
-        "yearDiscovered": 0
+        "yearDiscovered": 1739
     },
     {
         "atomicNumber": 28,
@@ -868,7 +868,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 8.92,
-        "yearDiscovered": 0
+        "yearDiscovered": -9999
     },
     {
         "atomicNumber": 30,
@@ -985,7 +985,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 5.727,
-        "yearDiscovered": 0
+        "yearDiscovered": 1250
     },
     {
         "atomicNumber": 34,
@@ -1412,7 +1412,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 10.49,
-        "yearDiscovered": 0
+        "yearDiscovered": -3000
     },
     {
         "atomicNumber": 48,
@@ -1497,7 +1497,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 7.31,
-        "yearDiscovered": 0
+        "yearDiscovered": -2100
     },
     {
         "atomicNumber": 51,
@@ -1526,7 +1526,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 6.697,
-        "yearDiscovered": 0
+        "yearDiscovered": -2100
     },
     {
         "atomicNumber": 52,
@@ -2321,7 +2321,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 21.09,
-        "yearDiscovered": 0
+        "yearDiscovered": 1750
     },
     {
         "atomicNumber": 79,
@@ -2352,7 +2352,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 19.3,
-        "yearDiscovered": 0
+        "yearDiscovered": -3000
     },
     {
         "atomicNumber": 80,
@@ -2381,7 +2381,7 @@
         "standardState": "liquid",
         "bondingType": "metallic",
         "density": 13.534,
-        "yearDiscovered": 0
+        "yearDiscovered": -1500
     },
     {
         "atomicNumber": 81,
@@ -2438,7 +2438,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 11.34,
-        "yearDiscovered": 0
+        "yearDiscovered": -9999
     },
     {
         "atomicNumber": 83,
@@ -2467,7 +2467,7 @@
         "standardState": "solid",
         "bondingType": "metallic",
         "density": 9.78,
-        "yearDiscovered": 0
+        "yearDiscovered": 1500
     },
     {
         "atomicNumber": 84,
@@ -2564,8 +2564,8 @@
         "period": "7",
         "block": "s",
         "classification": "kim loại",
-        "meltingPoint": 0.0,
-        "boilingPoint": 0.0,
+        "meltingPoint": 294,
+        "boilingPoint": 923,
         "name": "Francium",
         "atomicMass": "[223]",
         "electronicConfiguration": "[Rn] 7s1",
