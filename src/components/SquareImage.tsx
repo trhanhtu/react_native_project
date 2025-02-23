@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { /*useLayoutEffect*/ useEffect, useState } from "react";
 import { Image, ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 import { useLayout } from "../context/ApplicationLayoutProvider";
 
@@ -8,7 +8,7 @@ const SquareImage: React.FC<{ percent: number, src?: ImageSourcePropType, custom
         const { windowDimensions } = useLayout()
         const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
-        useLayoutEffect(() => {
+        /*useLayoutEffect*/useEffect(() => {
             if (windowDimensions?.width) {
                 const calculatedSize = windowDimensions.width * percent; // 70% of the width
                 setImageSize({ width: calculatedSize, height: calculatedSize }); // Set both width and height to the same value
