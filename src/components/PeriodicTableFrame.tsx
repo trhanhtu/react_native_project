@@ -1,15 +1,15 @@
 import { Layout, Text } from "@ui-kitten/components";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { ScrollView, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
 
 interface PeriodicTableFrameProps {
-    spaceHeight: number,
     elementUIs: React.ReactNode[],
+    contentForInfoBox?: React.ReactNode,
 }
 
 const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> =
-    ({ spaceHeight, elementUIs }) => {
+    ({ contentForInfoBox = <React.Fragment />, elementUIs }) => {
         const tailwind = useTailwind();
         return (
             <ScrollView
@@ -25,7 +25,7 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> =
                     style={{ height: '100%' }}>
                     <View id="row_0_to_2" style={tailwind("flex flex-row")}>
                         {RenderElementNo1To12(elementUIs, tailwind)}
-                        {RenderInfoBox(elementUIs, tailwind)}
+                        {RenderInfoBox(contentForInfoBox, tailwind)}
                         {RenderElementNo2To13AndSupplyRiskBox(elementUIs, tailwind)}
                     </View>
 
@@ -80,10 +80,10 @@ function RenderElementNo2To13AndSupplyRiskBox(elementUIs: ReactNode[], tailwind:
     )
 }
 
-function RenderInfoBox(elementUIs: ReactNode[], tailwind: (_classNames: string) => Style): ReactNode {
+function RenderInfoBox(contentForInfoBox: ReactNode, tailwind: (_classNames: string) => Style): ReactNode {
     return (
-        <View style={tailwind("flex-1 bg-gray-300/100")}>
-            <Text>xcvbn</Text>
+        <View style={tailwind("flex-1 bg-white/100")}>
+            {contentForInfoBox}
         </View>
     )
 }
