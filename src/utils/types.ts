@@ -10,9 +10,10 @@ export type ViewElement_t = {
     classification: Classification_t,
     meltingPoint: number,
     boilingPoint: number,
+    yearDiscovered: number,
 }
 
-export type DetailElement_t = { 
+export type DetailElement_t = {
     atomicNumber: number,
     symbol: string,
     image: string,

@@ -1,6 +1,7 @@
 import BlockTable from "@/src/components/BlockTable";
 import ClassificationTable from "@/src/components/ClassificationTable";
 import GroupTable from "@/src/components/GroupTable";
+import HistoryTable from "@/src/components/HistoryTable";
 import ImageTable from "@/src/components/ImageTable";
 import LeftSideBar from "@/src/components/LeftSideBar";
 import PeriodTable from "@/src/components/PeriodTable";
@@ -19,7 +20,8 @@ import ProfileScreen from "./(usertabs)/profile";
 export const TABS: TabScreen_t[] = [
     { icon: <Icon name="person-outline" fill="#fff" width={24} height={24} />, name: "Cá nhân", component: <ProfileScreen /> },
     { icon: <Icon name="grid-outline" fill="#fff" width={24} height={24} />, name: "Bảng", component: <ImageTable /> },
-    { icon: <Icon name="bulb-outline" fill="#fff" width={24} height={24} />, name: "Niên đại", component: <ImageTable /> },
+    { icon: <Icon name="bulb-outline" fill="#fff" width={24} height={24} />, name: "Niên đại", component: <HistoryTable /> },
+    { icon: <Icon name="globe-2-outline" fill="#fff" width={24} height={24} />, name: "Bác học", component: <HistoryTable /> },
     { icon: <Icon name="shake-outline" fill="#fff" width={24} height={24} />, name: "Chu kỳ", component: <PeriodTable /> },
     { icon: <Icon name="pantone-outline" fill="#fff" width={24} height={24} />, name: "Nhóm", component: <GroupTable /> },
     { icon: <Icon name="thermometer-outline" fill="#fff" width={24} height={24} />, name: "Nhiệt độ", component: <TemperatureTable /> },

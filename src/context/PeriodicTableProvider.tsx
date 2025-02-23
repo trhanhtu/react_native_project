@@ -15,7 +15,7 @@ export const PeriodicTableProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         setLoading(true);
-        fetch("https://raw.githubusercontent.com/trhanhtu/react_native_project/refs/heads/fake-json/assets/detailElementsArray.json")
+        fetch("https://raw.githubusercontent.com/trhanhtu/dummyjson/refs/heads/main/detailElementsArray.json")
             .then((response) => {
                 response.json().then((data: DetailElement_t[]) => {
                     const elements: ViewElement_t[] = ConvertDetailElementArrayToViewElementArray(data);
@@ -116,6 +116,7 @@ function ConvertDetailElementArrayToViewElementArray(data: DetailElement_t[]): V
         boilingPoint: element.boilingPoint,
         classification: element.classification as Classification_t,
         isLightOn: false,
+        yearDiscovered: element.yearDiscovered,
     }));
 }
 

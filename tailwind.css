@@ -402,6 +402,26 @@
   background-color: rgb(217 119 6 / 1)
 }
 
+.bg-black\/50 {
+  background-color: rgb(0 0 0 / 0.5)
+}
+
+.bg-amber-100\/100 {
+  background-color: rgb(254 243 199 / 1)
+}
+
+.bg-amber-500\/100 {
+  background-color: rgb(245 158 11 / 1)
+}
+
+.bg-transparent {
+  background-color: transparent
+}
+
+.bg-amber-200\/100 {
+  background-color: rgb(253 230 138 / 1)
+}
+
 .p-0 {
   padding: 0px
 }

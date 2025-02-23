@@ -4,6 +4,7 @@ import React from "react";
 import { View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
+import CustomStyles from '../utils/styles';
 import { ViewElement_t } from '../utils/types';
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
@@ -22,7 +23,7 @@ const TemperatureTable: React.FC = React.memo(
         return (
             <View style={tailwind("flex-1 flex-col p-2")}>
                 <PeriodicTableFrame contentForInfoBox={RenderInfoBox(tailwind)} elementUIs={GenerateElementUIs(elements, currentTemperature, tailwind)} />
-                <Layout style={tailwind("flex-1 bg-gray-300/100 rounded-3xl shadow-2xl flex-row flex-wrap justify-center")}>
+                <Layout style={[CustomStyles.shadow, tailwind("flex-1 bg-gray-300/100 rounded-3xl flex-row flex-wrap justify-center")]}>
                     <Slider
                         style={{ paddingLeft: 5, width: 600, height: 40 }}
                         value={currentTemperature}
@@ -34,7 +35,7 @@ const TemperatureTable: React.FC = React.memo(
                         maximumTrackTintColor="#0000FFFF"
                         thumbTintColor='#FF0000FF'
                     />
-                    <Input value='3000'/>
+                    <Input value={currentTemperature.toString()} />
                 </Layout>
             </View>
         )
@@ -79,7 +80,7 @@ function RenderInfoBox(tailwind: (_classNames: string) => Style): React.ReactNod
             <Layout style={tailwind("border-4 flex-1 bg-gray-300/100 justify-center items-center text-wrap m-5p")}>
                 <Text category='h1' style={tailwind("text-wrap text-center")}>Không biết</Text>
             </Layout>
-            
+
         </View>
     )
 }
