@@ -8,7 +8,7 @@ const LoadingBars: React.FC = React.memo(
         const tailwind = useTailwind();
         //  useProgress()
         return (
-            <View style={tailwind("flex-1 flex-column")}>
+            <View style={tailwind("flex-1 flex-col")}>
                 <ProgressBar style={tailwind("flex-1")} progress={0.6}/>
                 <ProgressBar style={tailwind("flex-1")} progress={0.7} />
                 <ProgressBar style={tailwind("flex-1")} progress={0.8} />
