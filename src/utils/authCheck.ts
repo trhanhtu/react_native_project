@@ -1,4 +1,4 @@
-import GobalStorage from "./GobalStorage";
+import GobalStorage from "./GlobalStorage";
 
 
 async function login() {

@@ -1,21 +1,21 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 const isWeb = Platform.OS === 'web';
 
-const saveItem = async (key: string, value: string) => {
+const setItem = (key: string, value: any) => {
     if (isWeb) {
         localStorage.setItem(key, value);
     } else {
-        await AsyncStorage.setItem(key, value);
+        SecureStore.setItem(key, value);
     }
 };
 
-const getItem = async (key: string) => {
+const getItem = (key: string) => {
     if (isWeb) {
         return localStorage.getItem(key);
     } else {
-        return await AsyncStorage.getItem(key);
+        return SecureStore.getItem(key);
     }
 };
 
@@ -23,9 +23,9 @@ const removeItem = async (key: string) => {
     if (isWeb) {
         localStorage.removeItem(key);
     } else {
-        await AsyncStorage.removeItem(key);
+        await SecureStore.deleteItemAsync(key)
     }
 };
 
-export default{ getItem, removeItem, saveItem };
+export default { getItem, removeItem, setItem };
 

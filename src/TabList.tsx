@@ -1,4 +1,5 @@
-import ProfileScreen from "@/app/(usertabs)/profile";
+import PodcastScreen from "@/app/podcast";
+import ProfileScreen from "@/app/profile";
 import { Icon, Text } from "@ui-kitten/components";
 import BlockTable from "./components/BlockTable";
 import ClassificationTable from "./components/ClassificationTable";
@@ -19,7 +20,7 @@ const TABS: TabScreen_t[] = [
     { icon: <Icon name="thermometer-outline" fill="#fff" width={24} height={24} />, name: "Nhiệt độ", component: <TemperatureTable /> },
     { icon: <Icon name="cube-outline" fill="#fff" width={24} height={24} />, name: "phân loại", component: <ClassificationTable /> },
     { icon: <Icon name="layers-outline" fill="#fff" width={24} height={24} />, name: "phân lớp", component: <BlockTable /> },
-    { icon: <Icon name="headphones-outline" fill="#fff" width={24} height={24} />, name: "podcast", component: <Text>podcast</Text> },
+    { icon: <Icon name="headphones-outline" fill="#fff" width={24} height={24} />, name: "podcast", component: <PodcastScreen /> },
     { icon: <Icon name="file-text-outline" fill="#fff" width={24} height={24} />, name: "chi tiết", component: <Text>podcast</Text> },
 ];
 

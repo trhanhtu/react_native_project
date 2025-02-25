@@ -17,7 +17,7 @@ export default function Index() {
       // Perform navigation after the component has mounted and layout context is ready
       authCheck.isLoggedIn().then((isLoginBefore) => {
         if (isLoginBefore) {
-          router.replace("/(usertabs)/profile");
+          router.replace("/main");
         } else {
           router.replace("/onboard");
 

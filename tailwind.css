@@ -28,6 +28,11 @@
   margin-right: 0.5rem
 }
 
+.mx-5p {
+  margin-left: 5%;
+  margin-right: 5%
+}
+
 .my-10 {
   margin-top: 2.5rem;
   margin-bottom: 2.5rem
@@ -36,11 +41,6 @@
 .my-15p {
   margin-top: 15%;
   margin-bottom: 15%
-}
-
-.mx-5p {
-  margin-left: 5%;
-  margin-right: 5%
 }
 
 .mb-10p {
@@ -99,6 +99,10 @@
   margin-top: 1rem
 }
 
+.mt-5 {
+  margin-top: 1.25rem
+}
+
 .mt-5p {
   margin-top: 5%
 }
@@ -155,12 +159,64 @@
   width: 100%
 }
 
+.w-10p {
+  width: 10%
+}
+
+.w-5p {
+  width: 5%
+}
+
+.w-fit {
+  width: fit-content
+}
+
+.w-15p {
+  width: 15%
+}
+
+.min-w-max {
+  min-width: max-content
+}
+
+.min-w-full {
+  min-width: 100%
+}
+
+.min-w-fit {
+  min-width: fit-content
+}
+
 .max-w-10p {
   max-width: 10%
 }
 
+.max-w-20p {
+  max-width: 20%
+}
+
+.max-w-max {
+  max-width: max-content
+}
+
+.max-w-fit {
+  max-width: fit-content
+}
+
+.max-w-15p {
+  max-width: 15%
+}
+
+.max-w-min {
+  max-width: min-content
+}
+
 .flex-1 {
   flex: 1 1 0%
+}
+
+.flex-grow {
+  flex-grow: 1
 }
 
 .flex-row {
@@ -236,8 +292,20 @@
   border-color: rgb(209 213 219 / var(--tw-border-opacity, 1))
 }
 
-.bg-black\/100 {
-  background-color: rgb(0 0 0 / 1)
+.bg-amber-100\/100 {
+  background-color: rgb(254 243 199 / 1)
+}
+
+.bg-amber-600\/100 {
+  background-color: rgb(217 119 6 / 1)
+}
+
+.bg-black\/50 {
+  background-color: rgb(0 0 0 / 0.5)
+}
+
+.bg-blue-300\/100 {
+  background-color: rgb(147 197 253 / 1)
 }
 
 .bg-blue-500\/100 {
@@ -292,48 +360,6 @@
   background-color: rgb(240 179 35 / 1)
 }
 
-.bg-gray-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1))
-}
-
-.bg-gray-200\/100 {
-  background-color: rgb(229 231 235 / 1)
-}
-
-.bg-gray-300\/100 {
-  background-color: rgb(209 213 219 / 1)
-}
-
-.bg-gray-400\/100 {
-  background-color: rgb(156 163 175 / 1)
-}
-
-.bg-gray-700\/100 {
-  background-color: rgb(55 65 81 / 1)
-}
-
-.bg-gray-700\/80 {
-  background-color: rgb(55 65 81 / 0.8)
-}
-
-.bg-green-600\/100 {
-  background-color: rgb(22 163 74 / 1)
-}
-
-.bg-white {
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
-}
-
-.bg-white\/100 {
-  background-color: rgb(255 255 255 / 1)
-}
-
-.bg-yellow-300\/100 {
-  background-color: rgb(253 224 71 / 1)
-}
-
 .bg-g13_label\/100 {
   background-color: rgb(83 115 0 / 1)
 }
@@ -378,48 +404,54 @@
   background-color: rgb(22 111 185 / 1)
 }
 
-.bg-h_label\/100 {
-  background-color: rgb(61 105 124 / 1)
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1))
 }
 
-.bg-blue-300\/100 {
-  background-color: rgb(147 197 253 / 1)
+.bg-gray-200\/100 {
+  background-color: rgb(229 231 235 / 1)
+}
+
+.bg-gray-300\/100 {
+  background-color: rgb(209 213 219 / 1)
+}
+
+.bg-gray-400\/100 {
+  background-color: rgb(156 163 175 / 1)
+}
+
+.bg-gray-700\/100 {
+  background-color: rgb(55 65 81 / 1)
+}
+
+.bg-green-600\/100 {
+  background-color: rgb(22 163 74 / 1)
+}
+
+.bg-h_label\/100 {
+  background-color: rgb(61 105 124 / 1)
 }
 
 .bg-lime-300\/100 {
   background-color: rgb(190 242 100 / 1)
 }
 
-.bg-red-500\/100 {
-  background-color: rgb(239 68 68 / 1)
-}
-
-.bg-gray-600\/100 {
-  background-color: rgb(75 85 99 / 1)
-}
-
-.bg-amber-600\/100 {
-  background-color: rgb(217 119 6 / 1)
-}
-
-.bg-black\/50 {
-  background-color: rgb(0 0 0 / 0.5)
-}
-
-.bg-amber-100\/100 {
-  background-color: rgb(254 243 199 / 1)
-}
-
-.bg-amber-500\/100 {
-  background-color: rgb(245 158 11 / 1)
-}
-
 .bg-transparent {
   background-color: transparent
 }
 
-.bg-amber-200\/100 {
-  background-color: rgb(253 230 138 / 1)
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+}
+
+.bg-white\/100 {
+  background-color: rgb(255 255 255 / 1)
+}
+
+.bg-yellow-300\/100 {
+  background-color: rgb(253 224 71 / 1)
 }
 
 .p-0 {
@@ -447,6 +479,11 @@
   padding-right: 1.25rem
 }
 
+.px-5p {
+  padding-left: 5%;
+  padding-right: 5%
+}
+
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem
@@ -455,11 +492,6 @@
 .px-7 {
   padding-left: 1.75rem;
   padding-right: 1.75rem
-}
-
-.px-5p {
-  padding-left: 5%;
-  padding-right: 5%
 }
 
 .pl-2 {
@@ -484,18 +516,14 @@
   line-height: 1rem
 }
 
-.text-white\/100 {
-  color: rgb(255 255 255 / 1)
-}
-
 .text-black\/100 {
   color: rgb(0 0 0 / 1)
 }
 
-.underline {
-  text-decoration-line: underline
+.text-white\/100 {
+  color: rgb(255 255 255 / 1)
 }
 
-.hover\:font-bold:hover {
-  font-weight: 700
+.underline {
+  text-decoration-line: underline
 }

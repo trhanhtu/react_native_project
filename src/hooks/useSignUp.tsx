@@ -1,10 +1,11 @@
+import { register } from "@/api/api";
 import { useToast } from "@/src/context/ToastProvider";
-import { Href, Router } from "expo-router";
+import { Router } from "expo-router";
 import { useState } from "react";
 
 export default function useSignUp() {
 
-    const { show } = useToast();
+    const { toastShow } = useToast();
 
     const [formData, setFormData] = useState({
         userName: '',
@@ -40,18 +41,20 @@ export default function useSignUp() {
         return null;
     };
 
-    function handleSubmitAndNavigate(router: Router, path: Href) {
+    async function handleSignUp(router: Router) {
         const errorMessage = validateFormData();
         if (errorMessage) {
-            show(errorMessage, 'error');
+            toastShow(errorMessage, 'error');
             return;
         }
-        router.replace(path);
+        toastShow("Đang xác thực email", "info");
+        await register(formData.userName, formData.email, formData.password);
+        router.replace({ pathname: "/verify", params: { email: formData.email } });
     }
 
     return {
         formData,
-        handleSubmitAndNavigate,
+        handleSignUp,
         handleChange,
         secureTextEntry,
         toggleSecureEntry,

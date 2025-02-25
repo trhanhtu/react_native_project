@@ -4,7 +4,6 @@ import { StyleProp, StyleSheet, TextInput, View, ViewStyle } from 'react-native'
 interface OTPInputProps {
   style?: StyleProp<ViewStyle>;
   length: number; // Number of OTP digits
-  onComplete: (otp: string) => void; // Callback when OTP is fully entered
 }
 
 export interface OTPInputRef {
@@ -12,7 +11,7 @@ export interface OTPInputRef {
   getValue: () => string;
 }
 
-const OTPInput = forwardRef<OTPInputRef, OTPInputProps>(({ length, onComplete, style }, ref) => {
+const OTPInput = forwardRef<OTPInputRef, OTPInputProps>(({ length, style }, ref) => {
   const [otp, setOtp] = useState<string[]>(Array(length).fill(''));
   const inputs = useRef<TextInput[]>([]);
 
@@ -28,10 +27,6 @@ const OTPInput = forwardRef<OTPInputRef, OTPInputProps>(({ length, onComplete, s
 
     if (text.length === 1 && index < length - 1) {
       inputs.current[index + 1]?.focus();
-    }
-
-    if (newOtp.every((digit) => digit.length === 1)) {
-      onComplete(newOtp.join(''));
     }
   };
 
