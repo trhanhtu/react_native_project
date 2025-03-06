@@ -27,7 +27,7 @@ const TemperatureTable: React.FC = React.memo(
                     <Slider
                         style={{ paddingLeft: 5, width: 600, height: 40 }}
                         value={currentTemperature}
-                        onSlidingComplete={(v: number) => setCurrentTemperature(v)}
+                        onValueChange={(v: number) => setCurrentTemperature(v)}
                         minimumValue={0}
                         maximumValue={6000}
                         step={1}

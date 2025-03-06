@@ -6,6 +6,8 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack } from "expo-router";
 import { TailwindProvider } from 'tailwind-rn';
 import utilities from '../tailwind.json';
+
+
 export default function RootLayout() {
   return (
     <TailwindProvider utilities={utilities}>

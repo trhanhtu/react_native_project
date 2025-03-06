@@ -1,5 +1,6 @@
 import SquareImage from "@/src/components/SquareImage";
 import useProfile from "@/src/hooks/useProfile";
+import { str } from "@/src/utils/types";
 import { Button, Icon, Layout, Text } from "@ui-kitten/components";
 import React from "react";
 import { View } from "react-native";
@@ -10,15 +11,13 @@ import { useTailwind } from "tailwind-rn";
  * Sự kiện onPress của nút “Chỉnh sửa thông tin” sẽ gọi hàm pickImage để thay đổi ảnh
  */
 type ProfileInfoProps = {
-    avatar: string;
-    name: string;
-    pickImage: () => Promise<void>;
-    handleConfirmEdit: () => Promise<void>;
-    isEditing: boolean;
+    avatar: str<"avatar">;
+    name: str<"name">;
+    email: str<"email">;
 };
 
 const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(
-    ({ avatar, name, pickImage, handleConfirmEdit, isEditing }) => {
+    ({ avatar, name, email }) => {
         const tailwind = useTailwind();
 
         return (
@@ -33,30 +32,18 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(
                 </View>
                 {/* Phần hiển thị thông tin người dùng */}
                 <View style={tailwind("justify-center pl-2")}>
-                    <Text category="h1">{name}</Text>
+                    <Text category="h2">{name}</Text>
+                    <Text category="s2">{email}</Text>
                     <Layout style={tailwind("flex pt-4 items-center")}>
-                        {/* Nút chọn ảnh mới */}
                         <Button
+                            onPress={() => { }}
                             style={tailwind("w-auto")}
-                            accessoryRight={(props) => <Icon {...props} name="edit-outline" />}
-                            status="info"
-                            size="small"
-                            onPress={pickImage}
-                        >
-                            Chọn ảnh mới
-                        </Button>
-                        {/* Nếu đang chỉnh sửa, hiển thị nút xác nhận */}
-                        {isEditing && (
-                            <Button
-                                style={tailwind("w-auto mt-2")}
-                                accessoryRight={(props) => <Icon {...props} name="checkmark-outline" />}
-                                status="success"
-                                size="small"
-                                onPress={handleConfirmEdit}
-                            >
-                                Xác nhận chỉnh sửa
-                            </Button>
-                        )}
+                            accessoryRight={
+                                (props) => (
+                                    <Icon {...props} name="edit-outline" />
+                                )
+
+                            } status="info" size="small">Chỉnh sửa thông tin</Button>
                     </Layout>
                 </View>
             </Layout>
@@ -69,7 +56,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = React.memo(
  */
 export default function ProfileScreen() {
     const tailwind = useTailwind();
-    const { handleExitAccount, pickImage, handleConfirmEdit, avatar, name, isEditing } = useProfile();
+    const { handleExitAccount, avatar, name, email } = useProfile();
 
     return (
         <Layout style={tailwind("flex-1")}>
@@ -78,9 +65,7 @@ export default function ProfileScreen() {
                 <ProfileInfo
                     avatar={avatar}
                     name={name}
-                    pickImage={pickImage}
-                    handleConfirmEdit={handleConfirmEdit}
-                    isEditing={isEditing}
+                    email={email}
                 />
             </View>
             {/* Nút đăng xuất */}
