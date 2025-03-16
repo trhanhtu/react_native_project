@@ -1,18 +1,16 @@
 import GobalStorage from "./GlobalStorage";
 
 
-async function login() {
-    await GobalStorage.saveItem("user_id", "123");
-}
+
 
 async function logout() {
-    await GobalStorage.removeItem("user_id");
+    await GobalStorage.removeItem("id");
 }
 
 async function isLoggedIn() {
-    return await GobalStorage.getItem("user_id") !== null
+    return await GobalStorage.getItem("id") !== null
 }
 
 export default {
-    login, isLoggedIn, logout
+    isLoggedIn, logout
 }

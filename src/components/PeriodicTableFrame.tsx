@@ -2,6 +2,7 @@ import { Layout, Text } from "@ui-kitten/components";
 import React, { ReactNode } from "react";
 import { ScrollView, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
+import ZoomableComponent from "./ZoomComponent";
 
 interface PeriodicTableFrameProps {
     elementUIs: React.ReactNode[],
@@ -16,42 +17,45 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> =
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 nestedScrollEnabled={true}
-                style={tailwind(" h-85p flex mb-2 bg-transparent")}
+                style={tailwind(" flex mb-2 bg-transparent")}
                 contentContainerStyle={{ flexGrow: 1 }}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={false}
                     nestedScrollEnabled={true}
                     style={{ height: '100%' }}>
-                    <View id="row_0_to_2" style={tailwind("flex flex-row bg-transparent")}>
-                        {RenderElementNo1To12(elementUIs, tailwind)}
-                        {RenderInfoBox(contentForInfoBox, tailwind)}
-                        {RenderElementNo2To13AndSupplyRiskBox(elementUIs, tailwind)}
-                    </View>
+                    <ZoomableComponent>
 
-                    <View id="row_3_to_6">
-                        <Layout id="row_3" style={tailwind("flex flex-row justify-between bg-transparent")}>
-                            {elementUIs.slice(18, 36)}
-                        </Layout>
-                        <Layout id="row_4" style={tailwind("flex flex-row justify-between bg-transparent")}>
-                            {elementUIs.slice(36, 54)}
-                        </Layout>
-                        <Layout id="row_5" style={tailwind("flex flex-row justify-between bg-transparent")}>
-                            {[elementUIs[54], elementUIs[55], elementUIs.slice(70, 86)]}
-                        </Layout>
-                        <Layout id="row_6" style={tailwind("flex flex-row justify-between bg-transparent")}>
-                            {[elementUIs[86], elementUIs[87], ...elementUIs.slice(102, 118)]}
-                        </Layout>
-                    </View>
+                        <View id="row_0_to_2" style={tailwind("flex flex-row bg-transparent")}>
+                            {RenderElementNo1To12(elementUIs, tailwind)}
+                            {RenderInfoBox(contentForInfoBox, tailwind)}
+                            {RenderElementNo2To13AndSupplyRiskBox(elementUIs, tailwind)}
+                        </View>
 
-                    <View id="row_7_to_8" style={tailwind("pt-4")}>
-                        <Layout id="row_7" style={tailwind("flex flex-row justify-center bg-transparent")}>
-                            {elementUIs.slice(56, 70)}
-                        </Layout>
-                        <Layout id="row_8" style={tailwind("flex flex-row justify-center bg-transparent")}>
-                            {elementUIs.slice(88, 102)}
-                        </Layout>
-                    </View>
+                        <View id="row_3_to_6">
+                            <Layout id="row_3" style={tailwind("flex flex-row justify-between bg-transparent")}>
+                                {elementUIs.slice(18, 36)}
+                            </Layout>
+                            <Layout id="row_4" style={tailwind("flex flex-row justify-between bg-transparent")}>
+                                {elementUIs.slice(36, 54)}
+                            </Layout>
+                            <Layout id="row_5" style={tailwind("flex flex-row justify-between bg-transparent")}>
+                                {[elementUIs[54], elementUIs[55], elementUIs.slice(70, 86)]}
+                            </Layout>
+                            <Layout id="row_6" style={tailwind("flex flex-row justify-between bg-transparent")}>
+                                {[elementUIs[86], elementUIs[87], ...elementUIs.slice(102, 118)]}
+                            </Layout>
+                        </View>
+
+                        <View id="row_7_to_8" style={tailwind("pt-4")}>
+                            <Layout id="row_7" style={tailwind("flex flex-row justify-center bg-transparent")}>
+                                {elementUIs.slice(56, 70)}
+                            </Layout>
+                            <Layout id="row_8" style={tailwind("flex flex-row justify-center bg-transparent")}>
+                                {elementUIs.slice(88, 102)}
+                            </Layout>
+                        </View>
+                    </ZoomableComponent>
                 </ScrollView>
             </ScrollView>
         );

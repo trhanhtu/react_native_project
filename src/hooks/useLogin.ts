@@ -7,6 +7,7 @@ import { ApiResponse, LoginResponse } from "../utils/types";
 export default function useLogin() {
     const { toastShow } = useToast();
     const router = useRouter();
+    const [loginButtonIsPressed, setLoginButtonIsPressed] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -27,12 +28,14 @@ export default function useLogin() {
         return null;
     };
     async function handleLogin() {
+        setLoginButtonIsPressed(true);
         const errorMessage = validateFormData();
         if (errorMessage) {
             toastShow(errorMessage, 'error');
             return;
         }
         const response: ApiResponse<LoginResponse> | null = await login(formData.email, formData.password);
+        setLoginButtonIsPressed(false);
         if (response === null) {
             toastShow("Đăng nhập thất bại", "error");
             return;
@@ -66,5 +69,6 @@ export default function useLogin() {
         secureTextEntry,
         setSecureTextEntry,
         handleForgotPassword,
+        loginButtonIsPressed
     }
 }

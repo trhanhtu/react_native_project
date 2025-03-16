@@ -13,7 +13,8 @@ export default function LoginScreen() {
         handleLogin,
         secureTextEntry,
         setSecureTextEntry,
-        handleForgotPassword
+        handleForgotPassword,
+        loginButtonIsPressed,
     } = useLogin();
 
     const renderIcon = (props: IconProps) => (
@@ -60,7 +61,7 @@ export default function LoginScreen() {
                             </Button>
                         </View>
     
-                        <Button style={tailwind('mt-15p')} status="info" onPress={handleLogin}>
+                        <Button disabled={loginButtonIsPressed} style={tailwind('mt-15p')} status="info" onPress={handleLogin}>
                             Đăng nhập
                         </Button>
                     </View>
