@@ -1,19 +1,24 @@
 import Slider from '@react-native-community/slider';
-import { Input, Layout, Text } from "@ui-kitten/components";
-import React from "react";
+import { Button, Input, Layout, Text } from "@ui-kitten/components";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
+import { useLayout } from '../context/ApplicationLayoutProvider';
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import CustomStyles from '../utils/styles';
 import { ViewElement_t } from '../utils/types';
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
+const MAX_TEMPERATURE: number = 6000
+
 const TemperatureTable: React.FC = React.memo(
     () => {
-        const { elements, loading } = usePeriodicTable();
         const tailwind = useTailwind();
-        const [currentTemperature, setCurrentTemperature] = React.useState<number>(0);
+        const {
+            ChangeTextInput, currentTemperature, elements,
+            loading, setCurrentTemperature
+        } = useTemperatureTable();
         if (loading) {
             return (
                 <LoadingBars />
@@ -21,23 +26,21 @@ const TemperatureTable: React.FC = React.memo(
         }
 
         return (
-            <View style={tailwind("flex-1 flex-col p-2")}>
-                <PeriodicTableFrame contentForInfoBox={RenderInfoBox(tailwind)} elementUIs={GenerateElementUIs(elements, currentTemperature, tailwind)} />
-                <Layout style={[CustomStyles.shadow, tailwind("flex-1 bg-gray-300/100 rounded-3xl flex-row flex-wrap justify-center")]}>
-                    <Slider
-                        style={{ paddingLeft: 5, width: 600, height: 40 }}
-                        value={currentTemperature}
-                        onValueChange={(v: number) => setCurrentTemperature(v)}
-                        minimumValue={0}
-                        maximumValue={6000}
-                        step={1}
-                        minimumTrackTintColor="#FF0000FF"
-                        maximumTrackTintColor="#0000FFFF"
-                        thumbTintColor='#FF0000FF'
-                    />
-                    <Input value={currentTemperature.toString()} />
-                </Layout>
-            </View>
+            <React.Fragment>
+
+                <View style={tailwind("flex-1 flex-col p-2")}>
+                    <PeriodicTableFrame contentForInfoBox={RenderInfoBox(tailwind)} elementUIs={GenerateElementUIs(elements, currentTemperature, tailwind)} />
+                </View>
+                <View style={[CustomStyles.shadow,
+                tailwind("absolute bottom-2 left-0 right-0 bg-transparent"),]}>
+                    <Layout style={tailwind("flex items-center")}>
+                        <Controllers ChangeTextInput={ChangeTextInput}
+                            currentSliderTemperature={currentTemperature}
+                            setCurrentSliderTemperature={setCurrentTemperature}
+                            tailwind={tailwind} />
+                    </Layout>
+                </View>
+            </React.Fragment >
         )
     }
 )
@@ -83,4 +86,75 @@ function RenderInfoBox(tailwind: (_classNames: string) => Style): React.ReactNod
 
         </View>
     )
+}
+
+interface ControllersProps {
+    tailwind: (_classNames: string) => Style,
+    ChangeTextInput: (v: string) => void,
+    currentSliderTemperature: number,
+    setCurrentSliderTemperature: React.Dispatch<React.SetStateAction<number>>,
+
+}
+
+const Controllers: React.FC<ControllersProps> =
+    ({ ChangeTextInput, currentSliderTemperature, setCurrentSliderTemperature, tailwind }) => {
+        return (
+            <Layout style={[{ backgroundColor: "#DDDDDDFF" }, tailwind("flex-row rounded-3xl items-center justify-center w-90p p-4")]}>
+                <Button style={[tailwind("p-0 mr-3"), { borderColor: "#874F00FF", backgroundColor: "#874F00FF" }]}
+                    size="large" onPress={() => setCurrentSliderTemperature(prev => Math.max(0, prev - 1))}>
+                    -
+                </Button>
+                <Slider
+                    style={{ width: 700, height: 40 }}
+                    value={currentSliderTemperature}
+                    onValueChange={(v: number) => setCurrentSliderTemperature(v)}
+                    minimumValue={0}
+                    maximumValue={MAX_TEMPERATURE}
+                    step={1}
+                    minimumTrackTintColor="#FF0000FF"
+                    maximumTrackTintColor="#0000FFFF"
+                    thumbTintColor='#FF0000FF'
+                />
+                <Button style={[tailwind("p-0 mx-3"), { borderColor: "#874F00FF", backgroundColor: "#874F00FF" }]}
+                    size="large" onPress={() => setCurrentSliderTemperature(prev => Math.min(2025, prev + 1))}>
+                    +
+                </Button>
+                <Input
+                    style={[tailwind("text-center"), { width: 100 }]}
+                    value={currentSliderTemperature.toString()}
+                    onChangeText={ChangeTextInput}
+                    keyboardType="numeric"
+                />
+            </Layout>
+        )
+    }
+
+function useTemperatureTable() {
+    const { elements, loading } = usePeriodicTable();
+
+    const [currentTemperature, setCurrentTemperature] = React.useState<number>(0);
+    const { lockLandscape } = useLayout();
+    const ChangeTextInput = (v: string) => {
+        let num = Number(v);
+        if (!num) {
+            return;
+        }
+        if (num > MAX_TEMPERATURE) {
+            num = MAX_TEMPERATURE;
+        }
+        if (num < 0) {
+            num = 0;
+        }
+        setCurrentTemperature(num);
+
+    }
+    useEffect(() => lockLandscape()
+        , [])
+    return {
+        elements, loading,
+        currentTemperature,
+        ChangeTextInput,
+        setCurrentTemperature,
+    }
+
 }

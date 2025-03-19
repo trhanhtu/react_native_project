@@ -1,9 +1,7 @@
 // ZoomableComponent.tsx
 import React, { useRef } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 import { PinchGestureHandler, State } from 'react-native-gesture-handler';
-// Nếu cần dùng tailwind-rn để style, bạn có thể import useTailwind ở đây
-// import { useTailwind } from 'tailwind-rn';
 
 const ZoomableComponent = ({ children }: { children: React.ReactNode }) => {
   // Giá trị scale khởi tạo là 1
@@ -27,7 +25,12 @@ const ZoomableComponent = ({ children }: { children: React.ReactNode }) => {
       scale.setValue(lastScale.current);
     }
   };
-
+  // On Web, return a normal View instead
+  if (Platform.OS === "web") {
+    return <Animated.View style={{ transform: [{ scale }] }}>
+      {children}
+    </Animated.View>
+  }
   return (
     <PinchGestureHandler
       onGestureEvent={onPinchEvent}

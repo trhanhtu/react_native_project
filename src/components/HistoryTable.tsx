@@ -119,7 +119,7 @@ const Controllers: React.FC<ControllersProps> = ({ ChangeTextInput, currentSlide
             <Slider
                 style={{ flex: 1, maxWidth: 800 }}
                 value={currentSliderYear}
-                onSlidingComplete={(v: number) => setCurrentSliderYear(v)}
+                onValueChange={(v: number) => setCurrentSliderYear(v)}
                 minimumValue={0}
                 maximumValue={2025}
                 step={1}

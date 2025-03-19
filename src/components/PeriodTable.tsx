@@ -68,7 +68,7 @@ interface ControllersProps {
 const Controllers: React.FC<ControllersProps> = ({ period, setPeriod, tailwind }) => {
 
   return (
-    <React.Fragment>
+    <Layout style={[{ backgroundColor: "#DDDDDDFF" }, tailwind("flex-row rounded-3xl items-center justify-center w-90p p-4")]}>
       {ButtonText.map((text, index) => {
         return (
           <Button disabled={text === period} status="warning" size="small" key={index} style={tailwind("m-1")} onPress={() => setPeriod(text as Period_t)}>
@@ -77,6 +77,6 @@ const Controllers: React.FC<ControllersProps> = ({ period, setPeriod, tailwind }
         )
       }
       )}
-    </React.Fragment>
+    </Layout>
   )
 }

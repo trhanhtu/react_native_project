@@ -5,6 +5,7 @@ import HistoryTable from "@/src/components/HistoryTable";
 import ImageTable from "@/src/components/ImageTable";
 import PeriodTable from "@/src/components/PeriodTable";
 import TemperatureTable from "@/src/components/TemperatureTable";
+import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { PeriodicTableProvider } from "@/src/context/PeriodicTableProvider";
 import { createDrawerNavigator, DrawerNavigationOptions, DrawerNavigationProp } from "@react-navigation/drawer";
 import { Icon } from "@ui-kitten/components";
@@ -20,35 +21,50 @@ import ProfileScreen from "./profile";
 
 
 const Drawer = createDrawerNavigator();
-const DrawerLayout = () => (
-    <Drawer.Navigator
-        screenOptions={{
-            headerLeft: () => <HamburgerMenu />,
-            headerTitleAlign: "center",
-            headerBackgroundContainerStyle: { backgroundColor: "red" },
-            
+const screens = [
+    { name: "Cá nhân", component: ProfileScreen, isPortrait: true },
+    { name: "Bảng", component: ImageTable, isPortrait: false },
+    { name: "Niên đại", component: HistoryTable, isPortrait: false },
+    { name: "Chu kỳ", component: PeriodTable, isPortrait: false },
+    { name: "Nhóm", component: GroupTable, isPortrait: false },
+    { name: "Nhiệt độ", component: TemperatureTable, isPortrait: false },
+    { name: "phân loại", component: ClassificationTable, isPortrait: false },
+    { name: "phân lớp", component: BlockTable, isPortrait: false },
+    { name: "podcast", component: PodcastScreen, isPortrait: true },
+];
 
-        } as DrawerNavigationOptions}
-    >
+const DrawerLayout = () => {
+    const { lockLandscape, lockPortrait } = useLayout();
 
-        <Drawer.Screen name="Cá nhân" component={ProfileScreen} />
-        <Drawer.Screen name="Bảng" component={ImageTable} />
-        <Drawer.Screen name="Niên đại" component={HistoryTable} />
-        <Drawer.Screen name="Chu kỳ" component={PeriodTable} />
-        <Drawer.Screen name="Nhóm" component={GroupTable} />
-        <Drawer.Screen name="Nhiệt độ" component={TemperatureTable} />
-        <Drawer.Screen name="phân loại" component={ClassificationTable} />
-        <Drawer.Screen name="phân lớp" component={BlockTable} />
-        <Drawer.Screen name="podcast" component={PodcastScreen} />
+    const getScreenListeners = (isPortrait: boolean) => ({
+        focus: () => (isPortrait ? lockPortrait() : lockLandscape()),
+    });
 
-    </Drawer.Navigator >
-);
+    return (
+        <Drawer.Navigator
+            screenOptions={{
+                headerLeft: () => <HamburgerMenu />,
+                headerTitleAlign: "center",
+                headerBackgroundContainerStyle: { backgroundColor: "red" },
+            } as DrawerNavigationOptions}
+        >
+            {screens.map(({ name, component, isPortrait }) => (
+                <Drawer.Screen
+                    key={name}
+                    name={name}
+                    component={component}
+                    listeners={getScreenListeners(isPortrait)}
+                />
+            ))}
+        </Drawer.Navigator>
+    );
+};
 
 
 const HamburgerMenu = () => {
     const navigation = useNavigation<DrawerNavigationProp<{}>>();
     return (
-        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ marginLeft: 15 }}>
+        <TouchableOpacity onPress={() => { navigation.openDrawer() }} style={{ marginLeft: 15 }}>
             <Icon name="menu-outline" fill="black" style={{ width: 30, height: 30 }} />
         </TouchableOpacity>
     );
