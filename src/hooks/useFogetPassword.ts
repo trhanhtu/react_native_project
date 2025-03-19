@@ -1,10 +1,12 @@
+import { resendOTP, resetPassword } from "@/api/api";
 import { useToast } from "@/src/context/ToastProvider";
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { OTPInputRef } from "../components/OTPInput";
 
 export default function useForgotPassword() {
 
-    const { show } = useToast();
+    const { toastShow } = useToast();
     const otpRef = useRef<OTPInputRef>(null);
 
     const [formData, setFormData] = useState({
@@ -35,27 +37,45 @@ export default function useForgotPassword() {
             return 'Mật khẩu và xác nhận mật khẩu không khớp.';
         }
         const otp = otpRef.current?.getValue();
-        if (!otp || otp.length !== 5) {
+        if (!otp || otp.length !== 6) {
             return 'Vui lòng nhập mã OTP hợp lệ.';
         }
         return null;
     };
 
-    function handleSubmit() {
-        const errorMessage = validateFormData();
-        if (errorMessage) {
-            show(errorMessage, 'error');
-            return;
+    const handleSendOTP = () => {
+        if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+            toastShow('Vui lòng nhập email hợp lệ.', 'error');
+            return false;
         }
-        show('Đặt lại mật khẩu thành công!', 'success');
+        const response = resendOTP(formData.email);
+        if (response !== null) {
+            router.replace("/login");
+            toastShow('Gửi mã OTP thành công!', 'success');
+        }
+        return true;
     }
 
+    const handleResetPassword = () => {
+        const errorMessage = validateFormData();
+        if (errorMessage) {
+            toastShow(errorMessage, 'error');
+            return;
+        }
+        const response = resetPassword(formData.email, formData.password, formData.confirmPassword, otpRef.current?.getValue() || "");
+        if (response !== null) {
+            toastShow("Đặt lại mật khẩu thành công!", "success");
+            return;
+        }
+        toastShow('Lỗi!', 'error');
+    }
     return {
         otpRef,
         formData,
-        handleSubmit,
         handleChange,
+        handleSendOTP,
         secureTextEntry,
         toggleSecureEntry,
+        handleResetPassword,
     }
 }

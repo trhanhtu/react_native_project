@@ -109,7 +109,7 @@ const SlideShow: React.FC<SlideShowProps> = ({ slides }) => {
             pagingEnabled
             ref={scrollViewRef}
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => `slide ${item.id}${index.toString()}`}
             renderItem={({ item }) => (
                 <Image
                     source={{ uri: item.imageUrl }}
@@ -131,7 +131,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ onSelectCategory }) => {
             data={categories}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => `cate${item}${index.toString()}`}
             contentContainerStyle={tailwind('p-2')}
             renderItem={({ item }) => (
                 <Button style={tailwind('mx-1')} onPress={() => onSelectCategory(item)}>
@@ -154,7 +154,7 @@ const Top10Popular: React.FC<Top10PopularProps> = ({ products }) => {
             data={top10}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => "top_"+item.id.toString()}
+            keyExtractor={(item,index) => `top_ +${index}${item.id.toString()}`}
             contentContainerStyle={tailwind('p-2')}
             renderItem={({ item }) => (
                 <View style={tailwind('mr-4')}>
@@ -211,7 +211,7 @@ const AllProduct: React.FC<AllProductProps> = ({ selectedCategory, products, loa
 };
 
 // ---------------------- MAIN SCREEN: HomeScreen ----------------------
-const HomeScreen: React.FC = () => {
+const PodcastScreen: React.FC = () => {
     const tailwind = useTailwind();
 
     // State management for products and pagination
@@ -220,7 +220,7 @@ const HomeScreen: React.FC = () => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
+    const { lockPortrait } = useLayout();
     // Updated fetchProducts function
     const fetchProducts = async (page: number) => {
         try {
@@ -242,6 +242,7 @@ const HomeScreen: React.FC = () => {
 
     // Load initial products
     useEffect(() => {
+        lockPortrait();
         fetchProducts(1);
     }, []);
 
@@ -307,4 +308,4 @@ const HomeScreen: React.FC = () => {
     );
 };
 
-export default HomeScreen;
+export default PodcastScreen;

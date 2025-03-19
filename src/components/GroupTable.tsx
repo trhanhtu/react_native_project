@@ -1,7 +1,8 @@
 import { Button, Layout } from "@ui-kitten/components";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
-import { useTailwind } from "tailwind-rn";
+import { Style, useTailwind } from "tailwind-rn";
+import { useLayout } from "../context/ApplicationLayoutProvider";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import GenerateElementUIs from "../utils/GenerateArrayElementUI";
 import CustomStyles from "../utils/styles";
@@ -16,6 +17,12 @@ const GroupTable: React.FC = React.memo(
         const { elements, loading } = usePeriodicTable();
         const tailwind = useTailwind();
         const [group, setGroup] = React.useState<Group_t>("-");
+        const { lockLandscape } = useLayout();
+        useEffect(
+            () => {
+                lockLandscape();
+            }, []
+        )
         if (loading) {
             return (
                 <LoadingBars />
@@ -31,26 +38,49 @@ const GroupTable: React.FC = React.memo(
             element.isLightOn = false;
         })
         return (
-            <View style={tailwind("flex-1 flex-col p-2")}>
-                <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind)} />
-                <Layout style={[CustomStyles.shadow, tailwind("flex-1 bg-gray-400/100 rounded-3xl flex-row flex-wrap justify-center")]}>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={tailwind("flex-1 mx-5p")}>
+            <React.Fragment>
 
-                        {ButtonText.map((text, index) => {
-                            return (
-                                <Button disabled={text === group} status="warning" size="small" key={index} style={tailwind("m-1")} onPress={() => setGroup(text as Group_t)}>
-                                    {text}
-                                </Button>
-                            )
-                        }
-                        )}
-                    </ScrollView>
-                </Layout>
-            </View>
+                <View style={tailwind("flex-1 p-2")}>
+                    <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind)} />
+                </View>
+                <View style={[CustomStyles.shadow,
+                tailwind("absolute bottom-2 left-0 right-0 bg-transparent"),]}>
+                    <Layout style={tailwind("flex items-center")}>
+                        <Controllers tailwind={tailwind} group={group} setGroup={setGroup} />
+
+                    </Layout>
+
+                </View>
+            </React.Fragment>
+
         )
     }
 )
 export default GroupTable;
+
+interface ControllersProps {
+    tailwind: (_classNames: string) => Style,
+    group: Group_t,
+    setGroup: React.Dispatch<React.SetStateAction<Group_t>>,
+}
+
+const Controllers: React.FC<ControllersProps> = ({ group, setGroup, tailwind }) => {
+
+    return (
+        <Layout style={[{ backgroundColor: "#DDDDDDFF" }, tailwind("flex-row rounded-3xl items-center justify-center w-90p p-4")]}>
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+            >
+                {ButtonText.map((text, index) => {
+                    return (
+                        <Button disabled={text === group} status="warning" size="small" key={index} style={tailwind("m-1")} onPress={() => setGroup(text as Group_t)}>
+                            {text}
+                        </Button>
+                    )
+                }
+                )}
+            </ScrollView>
+        </Layout>
+    )
+}

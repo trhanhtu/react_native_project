@@ -19,7 +19,7 @@ const LeftSideBar: React.FC<LeftSideBarProps> = React.memo(
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 id="left-side-bar"
-                style={tailwind("max-w-10p h-full bg-blue-500/100")}>
+                style={tailwind("max-w-15p h-full bg-blue-500/100")}>
                 {TABS.map((tab, index) => (
                     <TouchableOpacity
                         key={tab.name}

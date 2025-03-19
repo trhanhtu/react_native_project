@@ -1,11 +1,13 @@
+import { login } from "@/api/api";
 import { useToast } from "@/src/context/ToastProvider";
-import authCheck from "@/src/utils/authCheck";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-
+import GlobalStorage from "../utils/GlobalStorage";
+import { ApiResponse, LoginResponse } from "../utils/types";
 export default function useLogin() {
     const { toastShow } = useToast();
     const router = useRouter();
+    const [loginButtonIsPressed, setLoginButtonIsPressed] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -25,14 +27,33 @@ export default function useLogin() {
         }
         return null;
     };
-    function handleLogin() {
+    async function handleLogin() {
+        setLoginButtonIsPressed(true);
         const errorMessage = validateFormData();
         if (errorMessage) {
             toastShow(errorMessage, 'error');
             return;
         }
-        toastShow('Đăng nhập thành công!', 'success');
-        authCheck.login().then(() => router.replace("/main"));
+        const response: ApiResponse<LoginResponse> | null = await login(formData.email, formData.password);
+        setLoginButtonIsPressed(false);
+        if (response === null) {
+            toastShow("Đăng nhập thất bại", "error");
+            return;
+        }
+        const loginResponse: LoginResponse | undefined = response?.data;
+        if (response !== null && loginResponse !== undefined) {
+            GlobalStorage.setItem("access_token", loginResponse.accessToken);
+            GlobalStorage.setItem("id", loginResponse.id.toString());
+            GlobalStorage.setItem("email", loginResponse.email);
+            GlobalStorage.setItem("name", loginResponse.name);
+            GlobalStorage.setItem("avatar", loginResponse.avatar || "");
+            GlobalStorage.setItem("role", loginResponse.role);
+        }
+
+        if (response !== null) {
+            router.replace("/main");
+        }
+
     }
     function handleForgotPassword() {
         router.replace("/forgotpassword")
@@ -48,5 +69,6 @@ export default function useLogin() {
         secureTextEntry,
         setSecureTextEntry,
         handleForgotPassword,
+        loginButtonIsPressed
     }
 }

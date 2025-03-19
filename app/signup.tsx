@@ -14,7 +14,7 @@ export default function SignUpScreen() {
         handleChange,
         secureTextEntry,
         toggleSecureEntry,
-        handleSubmitAndNavigate,
+        handleSignUp,
     } = useSignUp();
 
     const renderIcon = (props: IconProps) => (
@@ -64,13 +64,13 @@ export default function SignUpScreen() {
                     onChangeText={(value) => handleChange('confirmPassword', value)}
                     style={tailwind('mb-4')}
                 />
-                <Button style={tailwind('mt-4')} status="info" onPress={() => handleSubmitAndNavigate(router, "/sendemail")}>
+                <Button style={tailwind('mt-4')} status="info" onPress={() => handleSignUp(router)}>
                     Đăng ký ngay
                 </Button>
             </View>
             <View style={tailwind("flex flex-row flex-1 items-center")}>
                 <Text>Đã có tài khoản? </Text>
-                <Text onPress={() => router.replace("/login")} status='primary' style={tailwind("underline hover:font-bold")}>Đăng nhập ngay</Text>
+                <Text onPress={() => router.replace("/login")} status='primary' style={tailwind("underline")}>Đăng nhập ngay</Text>
             </View>
         </Layout>
     );
