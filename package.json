@@ -12,7 +12,7 @@
     "lint": "expo lint",
     "build:tailwind": "tailwindcss --input input.css --output tailwind.css --no-autoprefixer && tailwind-rn",
     "dev:tailwind": "concurrently \"tailwindcss --input input.css --output tailwind.css --no-autoprefixer --watch\" \"tailwind-rn --watch\"",
-    "dev": "concurrently \"npm run start\" \"npm run dev:tailwind\""
+    "dev": "concurrently \"npm run dev:tailwind\" \"npm run start\""
   },
   "jest": {
     "preset": "jest-expo"

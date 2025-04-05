@@ -13,7 +13,7 @@ const instance = axiosClient.create({
 });
 
 instance.interceptors.request.use(function (config) {
-    console.log(GlobalStorage.getItem('access_token'));
+    // console.log(GlobalStorage.getItem('access_token'));
     
     if (GlobalStorage.getItem('access_token')) {
         config.headers.Authorization = 'Bearer ' + GlobalStorage.getItem('access_token');
@@ -34,7 +34,7 @@ instance.interceptors.response.use(
     (res) => res,
     async (error) => {
         if (error.status === 401) {
-            console.log("401");
+            // console.log("401");
             await GlobalStorage.removeItem("access_token");
             return;
         }

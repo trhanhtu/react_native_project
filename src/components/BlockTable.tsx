@@ -1,4 +1,5 @@
 import { Button, Layout } from "@ui-kitten/components";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
@@ -18,6 +19,7 @@ const BlockTable: React.FC = React.memo(
         const tailwind = useTailwind();
         const [currentBlock, setCurrentBlock] = React.useState<Block_t>("-");
         const { lockLandscape } = useLayout();
+        const router = useRouter();
         useEffect(
             () => {
                 lockLandscape();
@@ -40,7 +42,7 @@ const BlockTable: React.FC = React.memo(
         return (
             <React.Fragment>
                 <View style={tailwind("flex-1 p-2")}>
-                    <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind)} />
+                    <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind, router)} />
                 </View>
                 <View style={[CustomStyles.shadow,
                 tailwind("absolute bottom-2 left-0 right-0 bg-transparent"),]}>
@@ -49,7 +51,7 @@ const BlockTable: React.FC = React.memo(
                         <Controllers tailwind={tailwind} block={currentBlock} setBlock={setCurrentBlock} />
 
                     </Layout>
-                  
+
                 </View>
             </React.Fragment>
         )

@@ -76,7 +76,7 @@ export default function useProfile() {
       });
 
       let data = await response.json();
-      console.log("Đường dẫn ảnh sau upload:", data.secure_url);
+      // console.log("Đường dẫn ảnh sau upload:", data.secure_url);
       return data.secure_url;
     } catch (error) {
       console.error('Upload error:', error);
@@ -92,7 +92,7 @@ export default function useProfile() {
     if (!imageUrl) return;
     setAvatar(imageUrl);
     const response = await editUser(name, imageUrl);
-    console.log("Kết quả cập nhật:", response);
+    // console.log("Kết quả cập nhật:", response);
     // Sau khi cập nhật thành công, tắt trạng thái chỉnh sửa
     setIsEditing(false);
   };

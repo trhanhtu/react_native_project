@@ -1,4 +1,5 @@
 import { Button, Layout } from "@ui-kitten/components";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
@@ -18,6 +19,7 @@ const GroupTable: React.FC = React.memo(
         const tailwind = useTailwind();
         const [group, setGroup] = React.useState<Group_t>("-");
         const { lockLandscape } = useLayout();
+        const router = useRouter();
         useEffect(
             () => {
                 lockLandscape();
@@ -28,20 +30,25 @@ const GroupTable: React.FC = React.memo(
                 <LoadingBars />
             )
         }
+        console.log(group);
+        
         const filteredElements: ViewElement_t[] = [];
         elements.forEach(element => {
-            if (group === "-" || element.group === group) {
+            
+            if (group === "-" || element.groupNumber === group) {
+                console.log(element.groupNumber);
                 element.isLightOn = true;
                 filteredElements.push(element);
                 return;
             }
             element.isLightOn = false;
         })
+
         return (
             <React.Fragment>
-
+            
                 <View style={tailwind("flex-1 p-2")}>
-                    <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind)} />
+                    <PeriodicTableFrame elementUIs={GenerateElementUIs(elements, tailwind, router)} />
                 </View>
                 <View style={[CustomStyles.shadow,
                 tailwind("absolute bottom-2 left-0 right-0 bg-transparent"),]}>
@@ -74,7 +81,10 @@ const Controllers: React.FC<ControllersProps> = ({ group, setGroup, tailwind }) 
             >
                 {ButtonText.map((text, index) => {
                     return (
-                        <Button disabled={text === group} status="warning" size="small" key={index} style={tailwind("m-1")} onPress={() => setGroup(text as Group_t)}>
+                        <Button disabled={text === group} status="warning" size="small" key={`controller_${index}`} style={tailwind("m-1")}
+                            onPress={() => {
+                                console.log(text); setGroup(text)
+                            }}>
                             {text}
                         </Button>
                     )

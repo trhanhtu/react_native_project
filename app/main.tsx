@@ -14,6 +14,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import PodcastScreen from "./podcast";
 import ProfileScreen from "./profile";
+import GlobalSearchScreen from "./search";
 
 
 
@@ -23,6 +24,7 @@ import ProfileScreen from "./profile";
 const Drawer = createDrawerNavigator();
 const screens = [
     { name: "Cá nhân", component: ProfileScreen, isPortrait: true },
+    { name: "Tìm kiếm", component: GlobalSearchScreen, isPortrait: true },
     { name: "Bảng", component: ImageTable, isPortrait: false },
     { name: "Niên đại", component: HistoryTable, isPortrait: false },
     { name: "Chu kỳ", component: PeriodTable, isPortrait: false },

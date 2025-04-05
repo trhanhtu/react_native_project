@@ -1,3 +1,4 @@
+import { fetchAllElements } from "@/api/api";
 import { createContext, useContext, useEffect, useState } from "react";
 import GetRandomBetween from "../utils/random";
 import { Block_t, Classification_t, DetailElement_t, Group_t, Period_t, ViewElement_t } from "../utils/types";
@@ -15,18 +16,15 @@ export const PeriodicTableProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         setLoading(true);
-        fetch("https://raw.githubusercontent.com/trhanhtu/dummyjson/refs/heads/main/detailElementsArray.json")
-            .then((response) => {
-                response.json().then((data: DetailElement_t[]) => {
-                    const elements: ViewElement_t[] = ConvertDetailElementArrayToViewElementArray(data);
-
-                    setElements(elements);
-                });
-
-            })
+        fetchAllElements()
+            .then((response) =>
+                setElements(
+                    ConvertDetailElementArrayToViewElementArray(response)
+                )
+            )
             .finally(() => setLoading(false));
-        // setElements(GenerateDummy());
     }, []);
+
 
     return (
         <PeriodicTableContext.Provider value={{ elements, loading }}>
@@ -51,7 +49,7 @@ function GenerateDummy(): ViewElement_t[] {
             symbol: GenerateSymbol(),
             atomicNumber: index + 1,
             block: GenerateBlock(),
-            group: GenerateGroup(),
+            groupNumber: GenerateGroup(),
             period: GeneratePeriod(),
             meltingPoint: ~~_meltingPoint,
             boilingPoint: ~~_boilingPoint,
@@ -110,7 +108,7 @@ function ConvertDetailElementArrayToViewElementArray(data: DetailElement_t[]): V
         image: element.image,
         atomicNumber: element.atomicNumber,
         block: element.block as Block_t,
-        group: element.group as Group_t,
+        groupNumber: element.groupNumber as Group_t,
         period: element.period as Period_t,
         meltingPoint: element.meltingPoint,
         boilingPoint: element.boilingPoint,

@@ -4,7 +4,7 @@ export type ViewElement_t = {
     atomicNumber: number,
     symbol: string,
     image: string,
-    group: Group_t
+    groupNumber: Group_t
     period: Period_t,
     block: Block_t,
     classification: Classification_t,
@@ -18,16 +18,24 @@ export interface ApiResponse<T> {
     message: string,
     data: T,
     error: string,
-  }
-
+}
+export interface SearchResult {
+    meta: {
+        current: number
+        pageSize: number
+        totalPages: number
+        totalItems: number
+    }
+    result: DetailElement_t[]
+}
 export type DetailElement_t = {
     atomicNumber: number,
     symbol: string,
     image: string,
-    group: string
+    groupNumber: string
     period: string,
     block: string,
-    classification: string,
+    classification: Classification_t,
     name: string,
     atomicMass: string,
     electronicConfiguration: string,

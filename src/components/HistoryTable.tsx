@@ -1,7 +1,8 @@
 import Slider from "@react-native-community/slider";
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
+import { Href, Router, useRouter } from "expo-router";
 import React, { useEffect } from "react";
-import { ImageBackground, View } from "react-native";
+import { ImageBackground, Pressable, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
 import { useLayout } from '../context/ApplicationLayoutProvider';
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
@@ -15,6 +16,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const HistoryTable: React.FC = React.memo(
     () => {
         const tailwind = useTailwind();
+        const router = useRouter();
         const {
             ChangeTextInput,
             currentSliderYear,
@@ -36,7 +38,7 @@ const HistoryTable: React.FC = React.memo(
             >
                 <View style={tailwind("flex-1 p-2")}>
                     <PeriodicTableFrame
-                        elementUIs={GenerateElementUIs(elements, currentSliderYear, tailwind)}
+                        elementUIs={GenerateElementUIs(elements, currentSliderYear, tailwind, router)}
                     />
                 </View>
                 <Layout style={[CustomStyles.shadow,
@@ -56,14 +58,17 @@ const HistoryTable: React.FC = React.memo(
 )
 export default HistoryTable;
 
-function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style,): React.ReactNode[] {
+function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style, router: Router,): React.ReactNode[] {
     return elements.map((element, index) => {
         const elementBg = GetBackgroundColor(element, currentTemperature);
+        
         return (
-            <Layout key={index} style={[tailwind(elementBg), { marginVertical: 1, marginHorizontal: 1, width: 100, height: 100 }]}>
-                <Text category="h3" style={{ flex: 1, alignContent: "center", textAlign: "center" }}>{element.symbol}</Text>
-                <Text style={tailwind(`text-lg text-center ${elementBg} text-black/100`)}>{element.atomicNumber}</Text>
-            </Layout>
+            <Pressable key={`${index}_`} onPress={() => router.push(`/detailelement/${element.atomicNumber}` as Href)}>
+                <Layout key={index} style={[tailwind(elementBg), { marginVertical: 1, marginHorizontal: 1, width: 100, height: 100 }]}>
+                    <Text category="h3" style={{ flex: 1, alignContent: "center", textAlign: "center" }}>{element.symbol}</Text>
+                    <Text style={tailwind(`text-lg text-center ${elementBg} text-black/100`)}>{element.atomicNumber}</Text>
+                </Layout>
+            </Pressable>
         )
     })
 }
@@ -119,7 +124,7 @@ const Controllers: React.FC<ControllersProps> = ({ ChangeTextInput, currentSlide
             <Slider
                 style={{ flex: 1, maxWidth: 800 }}
                 value={currentSliderYear}
-                onValueChange={(v: number) => setCurrentSliderYear(v)}
+                onSlidingComplete={(v: number) => setCurrentSliderYear(v)}
                 minimumValue={0}
                 maximumValue={2025}
                 step={1}

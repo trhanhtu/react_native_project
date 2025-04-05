@@ -4,7 +4,7 @@ export default function GetBackgroundColor(element: ViewElement_t): [string, str
     if (!element.isLightOn) {
         return ["bg-gray-200/100", "bg-gray-200/100"];
     }
-    switch (element.group) {
+    switch (element.groupNumber) {
         case "1":
             if (element.atomicNumber === 1) return ["bg-custom_oceanBlue/100", "bg-h_label/100"];
             return ["bg-custom_pinkBlush/100", "bg-g1_label/100"];

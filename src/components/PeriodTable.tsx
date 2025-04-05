@@ -1,4 +1,5 @@
 import { Button, Layout } from "@ui-kitten/components";
+import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
@@ -18,6 +19,7 @@ const PeriodTable: React.FC = React.memo(
     const tailwind = useTailwind();
     const [period, setPeriod] = React.useState<Period_t>("-");
     const { lockLandscape } = useLayout();
+    const router = useRouter();
     useEffect(
       () => {
         lockLandscape();
@@ -42,7 +44,7 @@ const PeriodTable: React.FC = React.memo(
 
         <View style={tailwind("flex-1 p-2")}>
           <PeriodicTableFrame
-            elementUIs={GenerateElementUIs(elements, tailwind)}
+            elementUIs={GenerateElementUIs(elements, tailwind,router)}
           />
         </View>
         <Layout style={[CustomStyles.shadow,
