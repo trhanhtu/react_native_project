@@ -31,7 +31,7 @@ const AudioControls: React.FC<Props> = ({
     const tailwind = useTailwind();
 
     const positionMillis = playbackStatus.positionMillis ?? 0;
-    const durationMillis = playbackStatus.durationMillis ?? 1;
+    const durationMillis = GetDurationMillis(playbackStatus.durationMillis);
 
     // Calculate progress percentage for visual indicator
     const progressPercent = Math.min(100, Math.round((positionMillis / durationMillis) * 100));
@@ -148,3 +148,12 @@ const CustomStyles = {
 };
 
 export default AudioControls;
+
+
+
+function GetDurationMillis(durationMillis?: number): number {
+    if (!durationMillis || isNaN(durationMillis)) {
+        return 1;
+    }
+    return durationMillis;
+}

@@ -144,35 +144,18 @@ export const fetchElementDetails = async (
         return null
     }
 }
-export const fetchPodcasts = async (page: number, pageSize: number): Promise<Podcast_t[] | null> => {
+export const fetchPodcasts = async (page: number, pageSize: number): Promise<PageResult<Podcast_t> | null> => {
     try {
-        // const response = await axios.get<ApiResponse<PageResult<Podcast>>>
-        const response = await fetch
-            (
-                // `${api_url}/comments/podcasts?current=${page}&pageSize=${pageSize}`,
-                `https://raw.githubusercontent.com/trhanhtu/dummyjson/refs/heads/main/podcast_${page}_${pageSize}.json`
-            )
-        const dataResponse = await response.json();
-        return dataResponse.result;
+        const response = await axios.get<ApiResponse<PageResult<Podcast_t>>>(
+            `${api_url}/podcasts?current=${page}&pageSize=${pageSize}&sortBy=id&sortDirection=desc`
+        )
+        return response.data.data;
     } catch (error) {
         return null;
     }
 }
 
-export const fetchPodcastDetail = async (id: string): Promise<Podcast_t | null> => {
 
-    try {
-        const response = await axios.get<ApiResponse<Podcast_t>>(`/api/v1/podcasts/${id}`);
-        if (response.data && response.data.statusCode === 200 && response.data.data) {
-            return response.data.data;
-        } else {
-            throw new Error(response.data.message || 'Không thể tải dữ liệu podcast.');
-        }
-    } catch (error: any) {
-        console.error("Lỗi fetch chi tiết podcast:", error);
-        return null
-    }
-}
 
 export const fetchPodcastDetailsAPI = async (id: string): Promise<Podcast_t | null> => {
     try {
@@ -200,12 +183,15 @@ export const fetchPodcastDetailsAPI = async (id: string): Promise<Podcast_t | nu
  * @param pageSize - Số lượng bình luận trên mỗi trang.
  * @returns Dữ liệu PageResult<PodcastComment> hoặc null.
  */
-export const fetchCommentsAPI = async (id: string, page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
+export const fetchCommentsAPI = async (id: string | undefined, page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
     try {
+        const podcast_query = id ? `&podcastId=${id}` : ""
         const response = await axios.get<ApiResponse<PageResult<PodcastComment>>>(
-            `${api_url}/comments/podcasts?current=${page}&pageSize=${pageSize}&podcastId=${id}`
+            `${api_url}/comments/podcasts?current=${page}&pageSize=${pageSize}${podcast_query}`
         );
-
+        for (let item of response.data.data.result) {
+            item.userAvatar = `https://picsum.photos/200?user=${item.userName}`
+        }
         return response.data.data;
 
     } catch (error: any) {
@@ -215,21 +201,32 @@ export const fetchCommentsAPI = async (id: string, page: number, pageSize: numbe
     }
 };
 
-export const fetchPodcastComments = async (page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
+export const fetchDummyPodcastComments = async (page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
     try {
         // const response = await axios.get<ApiResponse<PageResult<PodcastComment>>>
         const response = await fetch
             (
                 // `${api_url}/comments/podcasts?current=${page}&pageSize=${pageSize}`,
 
-                `https://raw.githubusercontent.com/trhanhtu/dummyjson/refs/heads/main/podcastcomment_${page}_${pageSize}.json`
+                `https://raw.githubusercontent.com/trhanhtu/dummyjson/refs/heads/main/podcastcomment_${1}_${5}.json`
             )
         const dataResponse = await response.json();
 
-        return dataResponse.result;
+        return dataResponse;
 
     } catch (error) {
         return null;
+    }
+}
+
+export const postPodcastComment = async (podcastId: string | undefined, text: string): Promise<void> => {
+    try {
+        await axios.post(`${api_url}/comments/podcasts`, {
+            content: text,
+            podcastId: Number(podcastId) ?? 1
+        })
+    } catch (error) {
+        return;
     }
 }
 
@@ -346,6 +343,14 @@ export const fetchProfileData = async (): Promise<ProfileData | null> => {
 export const postThisElementIsViewed = async (atomicNumber: number): Promise<void> => {
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/viewed-elements/element/${atomicNumber}`, {})
+    } catch (error) {
+        console.error("Error posting viewed element:", error)
+
+    }
+}
+export const postThisPodcastIsViewed = async (podcastId: string): Promise<void> => {
+    try {
+        await axios.post<ApiResponse<any>>(`${api_url}/viewed-podcasts/podcasts/${podcastId}`, {})
     } catch (error) {
         console.error("Error posting viewed element:", error)
 

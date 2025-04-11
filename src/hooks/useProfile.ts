@@ -76,11 +76,6 @@ export default function useProfile() {
     try {
       setLoadingMore((prev) => ({ ...prev, elements: true }))
 
-      // In a real app, we would fetch more data from the API
-      // For demo purposes, we'll just simulate loading more data
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // If we've loaded all items, set hasMore to false
       if (viewedElementsPage >= 3) {
@@ -255,7 +250,7 @@ export default function useProfile() {
   // Navigate to podcast detail
   const navigateToPodcastDetail = useCallback(
     (podcastId: string) => {
-      router.push(`detailelement/${podcastId}` as Href)
+      router.push(`detailpodcast/${podcastId}` as Href)
     },
     [router],
   )

@@ -1,9 +1,9 @@
 // hooks/usePodcastComments.ts
-import { fetchCommentsAPI } from '@/api/api';
+import { fetchCommentsAPI, postPodcastComment } from '@/api/api';
 import { useCallback, useEffect, useState } from 'react';
 import { PageResult, PaginationMeta, PodcastComment } from '../utils/types';
 
-export const usePodcastComments = (podcastId: string | undefined, initialPageSize = 10) => {
+export const usePodcastComments = (podcastId: string | undefined, initialPageSize = 5) => {
     const [comments, setComments] = useState<PodcastComment[]>([]);
     const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | null>(null);
     const [isLoadingInitial, setIsLoadingInitial] = useState<boolean>(true);
@@ -11,7 +11,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
     const [error, setError] = useState<string | null>(null);
 
     // Hàm fetch bình luận (gọi API function và xử lý kết quả null)
-    const fetchCommentsPage = useCallback(async (id: string, page = 1, pageSize = 10, appending = false) => {
+    const fetchCommentsPage = useCallback(async (id: string, page = 1, pageSize = 5, appending = false) => {
         if (!appending) {
             setIsLoadingInitial(true);
             // Không reset error ở đây ngay, chỉ reset nếu fetch thành công
@@ -20,7 +20,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
         }
 
         // Gọi hàm API đã có sẵn try-catch
-        const result: PageResult<PodcastComment> | null = await fetchCommentsAPI(id, page, pageSize);
+        const result: PageResult<PodcastComment> | null = await fetchCommentsAPI(podcastId ?? "1", page, pageSize);
 
         // Xử lý kết quả
         if (result !== null) {
@@ -38,7 +38,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
             // Chỉ đặt lỗi nếu là lần tải đầu tiên hoặc nếu chưa có lỗi trước đó
             // để tránh ghi đè lỗi cụ thể hơn bằng lỗi tải thêm
             if (!appending || !error) {
-               setError('Không thể tải bình luận. Vui lòng thử lại.');
+                setError('Không thể tải bình luận. Vui lòng thử lại.');
             }
             // Không thay đổi comments hoặc paginationMeta khi fetch lỗi
         }
@@ -75,6 +75,10 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
         }
     }, [podcastId, isFetchingMore, paginationMeta, fetchCommentsPage]);
 
+    const handleCommentSubmit = async (text: string) => {
+        await postPodcastComment(podcastId, text)
+        await fetchCommentsPage(podcastId ?? "1",1,5);
+    };
     return {
         comments,
         paginationMeta,
@@ -82,5 +86,6 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
         isFetchingMore,
         error,
         fetchMoreComments,
+        handleCommentSubmit
     };
 };

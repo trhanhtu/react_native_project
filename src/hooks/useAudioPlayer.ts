@@ -15,7 +15,7 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
 
     // --- Ref for the status update handler ---
     // This ref will hold the function that updates state based on playback status.
-    const onPlaybackStatusUpdateRef = useRef<(status: AVPlaybackStatus) => void>(() => {});
+    const onPlaybackStatusUpdateRef = useRef<(status: AVPlaybackStatus) => void>(() => { });
 
     // --- Effect to define and update the *content* of the ref ---
     // This effect runs when dependencies like `soundObject` change,
@@ -87,13 +87,13 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
 
             // Explicitly unload previous sound before creating a new one
             // This helps prevent potential resource conflicts or leaks
-             setSoundObject(prevSound => {
+            setSoundObject(prevSound => {
                 if (prevSound) {
-                     console.log("loadAudio: Unloading previous sound object.");
-                     prevSound.unloadAsync();
-                 }
+                    console.log("loadAudio: Unloading previous sound object.");
+                    prevSound.unloadAsync();
+                }
                 return null; // Set to null immediately
-             });
+            });
 
 
             try {
@@ -135,20 +135,20 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
                         isBuffering: initialStatus.isBuffering,
                     });
                 } else {
-                     console.warn("loadAudio: Initial status NOT loaded! Possible issue with audio source.");
-                      setAudioError("Tệp audio có thể không hợp lệ hoặc không tải được trạng thái ban đầu.");
+                    console.warn("loadAudio: Initial status NOT loaded! Possible issue with audio source.");
+                    setAudioError("Tệp audio có thể không hợp lệ hoặc không tải được trạng thái ban đầu.");
                 }
 
             } catch (error: any) {
                 console.error("Lỗi load audio:", error);
-                 if (isMounted) {
-                     setAudioError(`Không thể tải file audio. Lỗi: ${error.message}`);
-                     setSoundObject(null); // Ensure state is null on error
-                 }
+                if (isMounted) {
+                    setAudioError(`Không thể tải file audio. Lỗi: ${error.message}`);
+                    setSoundObject(null); // Ensure state is null on error
+                }
             } finally {
-                 if (isMounted) {
+                if (isMounted) {
                     setIsAudioLoading(false);
-                 }
+                }
             }
         };
 
@@ -156,23 +156,22 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
 
         // Cleanup function
         return () => {
-             isMounted = false; // Set flag on unmount
+            isMounted = false; // Set flag on unmount
             console.log("Cleanup: Unloading sound for effect instance associated with URL:", audioUrl);
             // Use the sound object captured in this effect's closure for cleanup
             currentSoundObject?.unloadAsync();
         };
-    // Effect now *only* depends on audioUrl
+        // Effect now *only* depends on audioUrl
     }, [audioUrl]);
-
 
     // Control functions (handlePlayPause, handleSeek*) remain mostly the same.
     // They use the `soundObject` state, which is correctly managed by the effects above.
 
     const handlePlayPause = useCallback(async () => {
-         console.log('handlePlayPause called. Sound:', soundObject ? 'Exists' : 'null', 'Loading:', isAudioLoading);
+        console.log('handlePlayPause called. Sound:', soundObject ? 'Exists' : 'null', 'Loading:', isAudioLoading);
         if (!soundObject || isAudioLoading) {
-             console.log('handlePlayPause: Aborted (no sound or loading)');
-             return;
+            console.log('handlePlayPause: Aborted (no sound or loading)');
+            return;
         }
         // ... (rest of play/pause logic is fine)
         try {
@@ -208,10 +207,10 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
             if (shouldPlayAfterSeek.current) {
                 await soundObject.playAsync();
             } else {
-                 const currentStatus = await soundObject.getStatusAsync();
-                 if (onPlaybackStatusUpdateRef.current) {
-                     onPlaybackStatusUpdateRef.current(currentStatus); // Manually update state if paused
-                 }
+                const currentStatus = await soundObject.getStatusAsync();
+                if (onPlaybackStatusUpdateRef.current) {
+                    onPlaybackStatusUpdateRef.current(currentStatus); // Manually update state if paused
+                }
             }
         } catch (error) { /*...*/ setAudioError("Lỗi khi tua audio."); }
     }, [soundObject, playbackStatus.durationMillis]); // Correct dependencies

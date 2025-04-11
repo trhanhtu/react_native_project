@@ -1,5 +1,5 @@
 // hooks/useDetailPodcast.ts
-import { fetchPodcastDetailsAPI } from '@/api/api';
+import { fetchPodcastDetailsAPI, postThisPodcastIsViewed } from '@/api/api';
 import { useCallback, useEffect, useState } from 'react';
 import { Podcast_t } from '../utils/types';
 
@@ -12,7 +12,7 @@ export const useDetailPodcast = (podcastId: string | undefined) => {
         setIsLoading(true);
         setError(null);
         setPodcastData(null);
-
+        postThisPodcastIsViewed(id);
         // Gọi hàm API đã có sẵn try-catch
         const result = await fetchPodcastDetailsAPI(id);
 

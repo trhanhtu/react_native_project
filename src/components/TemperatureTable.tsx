@@ -1,7 +1,8 @@
 import Slider from '@react-native-community/slider';
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
+import { Router, useRouter } from 'expo-router';
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
 import { useLayout } from '../context/ApplicationLayoutProvider';
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
@@ -14,6 +15,7 @@ const MAX_TEMPERATURE: number = 6000
 
 const TemperatureTable: React.FC = React.memo(
     () => {
+        const router = useRouter();
         const tailwind = useTailwind();
         const {
             ChangeTextInput, currentTemperature, elements,
@@ -29,7 +31,7 @@ const TemperatureTable: React.FC = React.memo(
             <React.Fragment>
 
                 <View style={tailwind("flex-1 flex-col p-2")}>
-                    <PeriodicTableFrame contentForInfoBox={RenderInfoBox(tailwind)} elementUIs={GenerateElementUIs(elements, currentTemperature, tailwind)} />
+                    <PeriodicTableFrame contentForInfoBox={RenderInfoBox(tailwind)} elementUIs={GenerateElementUIs(elements, currentTemperature, tailwind, router)} />
                 </View>
                 <View style={[CustomStyles.shadow,
                 tailwind("absolute bottom-2 left-0 right-0 bg-transparent"),]}>
@@ -46,13 +48,16 @@ const TemperatureTable: React.FC = React.memo(
 )
 export default TemperatureTable;
 
-function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style,): React.ReactNode[] {
+function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style, router: Router): React.ReactNode[] {
     return elements.map((element, index) => {
         const elementBg = GetBackgroundColor(element, currentTemperature);
         return (
             <Layout key={index} style={[tailwind(elementBg), { marginVertical: 1, marginHorizontal: 1, width: 100, height: 100 }]}>
-                <Text category="h3" style={{ flex: 1, alignContent: "center", textAlign: "center" }}>{element.symbol}</Text>
-                <Text style={tailwind(`text-lg text-center ${elementBg} text-black/100`)}>{element.atomicNumber}</Text>
+                <Pressable onPress={() => router.push(`/detailelement/${element.atomicNumber}`)}>
+                    <Text category="h3" style={{ flex: 1, alignContent: "center", textAlign: "center" }}>{element.symbol}</Text>
+                    <Text style={tailwind(`text-lg text-center ${elementBg} text-black/100`)}>{element.atomicNumber}</Text>
+                </Pressable>
+
             </Layout>
         )
     })

@@ -1,4 +1,4 @@
-import { Layout, Text } from "@ui-kitten/components";
+import { Layout } from "@ui-kitten/components";
 import React, { ReactNode } from "react";
 import { ScrollView, View } from "react-native";
 import { Style, useTailwind } from "tailwind-rn";
@@ -68,9 +68,9 @@ export default PeriodicTableFrame;
 function RenderElementNo2To13AndSupplyRiskBox(elementUIs: ReactNode[], tailwind: (_classNames: string) => Style): ReactNode {
     return (
         <View>
-            <Layout id="row_1" style={tailwind("flex flex-row")} >
-                <View id="supply box" style={tailwind("flex-1 bg-gray-200/100")}>
-                    <Text>Supply box</Text>
+            <Layout id="row_1" style={tailwind("flex flex-row bg-transparent")} >
+                <View id="supply box" style={tailwind("flex-1 bg-transparent")}>
+                  
                 </View>
                 {elementUIs[1]}
             </Layout>

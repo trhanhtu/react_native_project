@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchElementDetails, fetchPodcastComments, fetchPodcasts } from "@/api/api"
+import { fetchCommentsAPI, fetchElementDetails, fetchPodcasts } from "@/api/api"
 import { useEffect, useState } from "react"
 import type { DetailElement_t, Podcast_t, PodcastComment } from "../utils/types"
 
@@ -50,12 +50,12 @@ export const useHomeData = () => {
         try {
             setEpisodesLoading(true)
             const response = await fetchPodcasts(1, 5);
-  
-            
+
+
             if (!response) {
                 setEpisodesError("Không thể lấy dữ liệu podcast")
             } else {
-                setLatestEpisodes(response)
+                setLatestEpisodes(response.result)
             }
         } catch (err) {
             setEpisodesError("Đã xảy ra lỗi khi kết nối với máy chủ")
@@ -69,7 +69,7 @@ export const useHomeData = () => {
     const fetchRecentComments = async () => {
         try {
             setCommentsLoading(true)
-            const response = await fetchPodcastComments(1, 5)
+            const response = await fetchCommentsAPI(undefined, 1, 5)
 
             if (response) {
                 setRecentComments(response.result)

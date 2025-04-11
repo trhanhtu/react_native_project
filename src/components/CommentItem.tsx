@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ColorValue, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
@@ -32,13 +33,19 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
             tailwind('flex-row items-start p-3 bg-gray-800/100 rounded-xl'),
             CustomStyles.shadow
         ]}>
-            {/* User avatar with gradient border */}
-            <View style={tailwind('rounded-full p-0.5 bg-gradient-to-r from-purple-500/100 to-blue-500/100')}>
+            <LinearGradient
+                // Define your gradient colors matching purple to blue
+                colors={['#A855F7', '#3B82F6']}
+                start={[0, 0]}
+                end={[1, 0]}
+                // Apply tailwind classes for rounded corners and padding
+                style={tailwind('rounded-full p-0.5')}
+            >
                 <Image
                     source={{ uri: avatarUrl }}
                     style={tailwind('w-10 h-10 rounded-full')}
                 />
-            </View>
+            </LinearGradient>
 
             {/* Comment content */}
             <View style={tailwind('flex-1 ml-3')}>

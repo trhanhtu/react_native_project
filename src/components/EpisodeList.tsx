@@ -57,7 +57,7 @@ const EpisodeList: React.FC<EpisodeListProps> = ({ episodes, onEpisodePress, isL
       <TouchableOpacity onPress={() => onEpisodePress(item)} activeOpacity={0.7} style={tw("mb-3")}>
         <View style={tw("flex-row")}>
           <Image
-            source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjyXwqhQtILhLrXLuyZZQ03dz0mFaxX150MA&s" }}
+            source={{ uri: `https://picsum.photos/200?user=${item.title}` }}
             style={tw("w-16 h-16 rounded-lg")}
           />
 
