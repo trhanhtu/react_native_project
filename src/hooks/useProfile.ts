@@ -1,120 +1,312 @@
-import { editUser } from '@/api/api';
-import { useLayout } from '@/src/context/ApplicationLayoutProvider';
-import authCheck from '@/src/utils/authCheck';
-import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import GlobalStorage from '../utils/GlobalStorage';
-import { str } from '../utils/types';
+import { fetchFavoritePodcasts, fetchProfileData, fetchViewedElements, resendOTP, verifyOTP } from "@/api/api"
+import { Href, useRouter } from "expo-router"
+import { useCallback, useEffect, useState } from "react"
+import authCheck from "../utils/authCheck"
+import { ProfileData, UpdateUserRequest } from "../utils/types"
 
-
-/**
- * Hook useProfile: Xử lý các logic liên quan đến profile
- */
 export default function useProfile() {
-  const router = useRouter();
-  const { lockPortrait } = useLayout();
+  const router = useRouter()
 
-  // Khóa chế độ dọc khi component mount
-  useEffect(() => {
-    lockPortrait();
-  }, []);
+  // State
+  const [loading, setLoading] = useState<boolean>(true)
+  const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [profileData, setProfileData] = useState<ProfileData | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  // Lấy tên và avatar từ GlobalStorage hoặc dùng giá trị mặc định
-  const [name, setName] = useState<str<"name">>(
-    (GlobalStorage.getItem("name") || "empty_User_name") as str<"name">
-  );
-  const [email, setEmail] = useState(
-    (GlobalStorage.getItem("email") || "empty_User_email") as str<"email">
-  );
-  const [avatar, setAvatar] = useState(
-    (GlobalStorage.getItem("avatar") ||
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Male_Avatar.jpg/1200px-Male_Avatar.jpg'
-    ) as str<"avatar">
-  );
-  // Trạng thái đánh dấu khi người dùng đang chỉnh sửa
-  const [isEditing, setIsEditing] = useState(false);
+  // Edit profile modal state
+  const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false)
+  const [editName, setEditName] = useState<string>("")
+  const [editEmail, setEditEmail] = useState<string>("")
+  const [editAvatar, setEditAvatar] = useState<string>("")
 
-  /**
-   * Hàm mở thư viện ảnh để chọn ảnh mới
-   */
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  // OTP verification state
+  const [isVerifying, setIsVerifying] = useState<boolean>(false)
+  const [otp, setOtp] = useState<string>("")
+  const [otpSent, setOtpSent] = useState<boolean>(false)
+  const [otpError, setOtpError] = useState<string | null>(null)
 
-    // Nếu người dùng chọn ảnh thành công thì cập nhật avatar và chuyển sang trạng thái chỉnh sửa
-    if (!result.canceled) {
-      setAvatar(result.assets[0].uri as str<"avatar">);
-      setIsEditing(true);
-    }
-  };
+  // Pagination state
+  const [viewedElementsPage, setViewedElementsPage] = useState<number>(1)
+  const [viewedPodcastsPage, setViewedPodcastsPage] = useState<number>(1)
+  const [loadingMore, setLoadingMore] = useState<{
+    elements: boolean
+    podcasts: boolean
+  }>({ elements: false, podcasts: false })
+  const [hasMore, setHasMore] = useState<{
+    elements: boolean
+    podcasts: boolean
+  }>({ elements: true, podcasts: true })
 
-  /**
-   * Hàm upload ảnh lên server (ví dụ: Cloudinary)
-   * @param imageUri Đường dẫn của ảnh
-   * @returns URL ảnh sau khi upload thành công
-   */
-  const uploadImage = async (imageUri: string) => {
+  // Fetch profile data
+  const fetchData = useCallback(
+    async (refresh = false) => {
+      try {
+        if (refresh) {
+          setRefreshing(true)
+        } else if (!profileData) {
+          setLoading(true)
+        }
+
+        const data = await fetchProfileData()
+
+        if (data !== null) {
+          setProfileData(data)
+          setEditName(data.name)
+          setEditEmail(data.email)
+          setEditAvatar(data.avatar || "https://picsum.photos/200")
+          setError(null)
+        } else {
+          setError("Failed to fetch profile data")
+        }
+      } catch (err) {
+        setError("An error occurred while fetching profile data")
+        console.error(err)
+      } finally {
+        setLoading(false)
+        setRefreshing(false)
+      }
+    },
+    [profileData],
+  )
+
+  // Load more viewed elements
+  const loadMoreViewedElements = useCallback(async () => {
+    if (loadingMore.elements || !hasMore.elements) return
+
     try {
-      let formData = new FormData();
-      // Tạo file upload với tên file dựa vào phần mở rộng (có thể cần điều chỉnh thêm)
-      formData.append('file', {
-        uri: imageUri,
-        name: `${imageUri.split(".")[1]}.jpg`,
-        type: 'image/jpeg',
-      } as any);
-      formData.append('upload_preset', process.env.EXPO_PUBLIC_UPLOAD_PRESET || '');
+      setLoadingMore((prev) => ({ ...prev, elements: true }))
 
-      let response = await fetch(process.env.EXPO_PUBLIC_CLOUDINARY_URL || '', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      // In a real app, we would fetch more data from the API
+      // For demo purposes, we'll just simulate loading more data
 
-      let data = await response.json();
-      // console.log("Đường dẫn ảnh sau upload:", data.secure_url);
-      return data.secure_url;
-    } catch (error) {
-      console.error('Upload error:', error);
-      return null;
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // If we've loaded all items, set hasMore to false
+      if (viewedElementsPage >= 3) {
+        setHasMore((prev) => ({ ...prev, elements: false }))
+      } else {
+        setViewedElementsPage((prev) => prev + 1)
+
+        // Add more dummy data
+        if (profileData) {
+          const newElement = await fetchViewedElements(viewedElementsPage)
+          if (!newElement) return
+          setProfileData((prev) => {
+            if (!prev) return prev
+            return {
+              ...prev,
+              viewedElements: [...prev.viewedElements, newElement],
+            } as ProfileData
+          })
+        }
+      }
+    } catch (err) {
+      console.error("Error loading more viewed elements:", err)
+    } finally {
+      setLoadingMore((prev) => ({ ...prev, elements: false }))
     }
-  };
+  }, [loadingMore.elements, hasMore.elements, viewedElementsPage, profileData])
 
-  /**
-   * Hàm xác nhận chỉnh sửa thông tin: upload ảnh mới và cập nhật backend
-   */
-  const handleConfirmEdit = async () => {
-    const imageUrl = await uploadImage(avatar);
-    if (!imageUrl) return;
-    setAvatar(imageUrl);
-    const response = await editUser(name, imageUrl);
-    // console.log("Kết quả cập nhật:", response);
-    // Sau khi cập nhật thành công, tắt trạng thái chỉnh sửa
-    setIsEditing(false);
-  };
+  // Load more viewed podcasts
+  const loadMoreViewedPodcasts = useCallback(async () => {
+    if (loadingMore.podcasts || !hasMore.podcasts) return
 
-  /**
-   * Hàm đăng xuất
-   */
+    try {
+      setLoadingMore((prev) => ({ ...prev, podcasts: true }))
+
+      // In a real app, we would fetch more data from the API
+      // For demo purposes, we'll just simulate loading more data
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // If we've loaded all items, set hasMore to false
+      if (viewedPodcastsPage >= 3) {
+        setHasMore((prev) => ({ ...prev, podcasts: false }))
+      } else {
+        setViewedPodcastsPage((prev) => prev + 1)
+
+        // Add more dummy data
+        if (profileData) {
+          const newPodcast = await fetchFavoritePodcasts(viewedPodcastsPage);
+          if (!newPodcast) return
+          setProfileData((prev) => {
+            if (!prev) return prev
+            return {
+              ...prev,
+              viewedPodcasts: [...prev.viewedPodcasts, newPodcast],
+            } as ProfileData
+          })
+        }
+      }
+    } catch (err) {
+      console.error("Error loading more viewed podcasts:", err)
+    } finally {
+      setLoadingMore((prev) => ({ ...prev, podcasts: false }))
+    }
+  }, [loadingMore.podcasts, hasMore.podcasts, viewedPodcastsPage, profileData])
+
+  // Open edit profile modal
+  const openEditModal = useCallback(() => {
+    if (profileData) {
+      setEditName(profileData.name)
+      setEditEmail(profileData.email)
+      setEditAvatar(profileData.avatar || "https://picsum.photos/200")
+      setIsEditModalVisible(true)
+    }
+  }, [profileData])
+
+  // Close edit profile modal
+  const closeEditModal = useCallback(() => {
+    setIsEditModalVisible(false)
+    setOtp("")
+    setOtpSent(false)
+    setOtpError(null)
+    setIsVerifying(false)
+  }, [])
+
+  // Send OTP
+  const handleSendOTP = useCallback(async () => {
+    try {
+      setIsVerifying(true)
+      setOtpError(null)
+
+      const success = await resendOTP(editEmail)
+
+      if (success) {
+        setOtpSent(true)
+      } else {
+        setOtpError("Failed to send OTP. Please try again.")
+      }
+    } catch (err) {
+      setOtpError("An error occurred while sending OTP")
+      console.error(err)
+    } finally {
+      setIsVerifying(false)
+    }
+  }, [editEmail])
+
+  // Verify OTP
+  const handleVerifyOTP = useCallback(async () => {
+    try {
+      setIsVerifying(true)
+      setOtpError(null)
+
+      const response = await verifyOTP(editEmail, otp)
+
+      if (response && response.data.verifyStatus === "verified") {
+        // Update profile after verification
+        await handleUpdateProfile()
+        closeEditModal()
+      } else {
+        setOtpError("Invalid OTP. Please try again.")
+      }
+    } catch (err) {
+      setOtpError("An error occurred while verifying OTP")
+      console.error(err)
+    } finally {
+      setIsVerifying(false)
+    }
+  }, [editEmail, otp, closeEditModal])
+
+  // Update profile
+  const handleUpdateProfile = useCallback(async () => {
+    try {
+      setIsVerifying(true)
+
+      const updateData: UpdateUserRequest = {
+        name: editName,
+        avatar: editAvatar,
+      }
+
+      // const updatedUser = await updateUserProfile(updateData)
+
+      // if (updatedUser && profileData) {
+      //   setProfileData({
+      //     ...profileData,
+      //     user: {
+      //       ...profileData.user,
+      //       name: updatedUser.name,
+      //       avatar: updatedUser.avatar,
+      //     },
+      //   })
+
+      //   return true
+      // }
+
+      return false
+    } catch (err) {
+      console.error("Error updating profile:", err)
+      return false
+    } finally {
+      setIsVerifying(false)
+    }
+  }, [editName, editAvatar, profileData])
+
+  // Navigate to element detail
+  const navigateToElementDetail = useCallback(
+    (elementId: string) => {
+      router.push(`detailelement/${elementId}` as Href)
+    },
+    [router],
+  )
+
+  // Navigate to podcast detail
+  const navigateToPodcastDetail = useCallback(
+    (podcastId: string) => {
+      router.push(`detailelement/${podcastId}` as Href)
+    },
+    [router],
+  )
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchData()
+  }, [])
   const handleExitAccount = () => {
-    lockPortrait();
     authCheck.logout().then(() => router.replace("/login"));
   };
-
   return {
-    name,
-    email,
-    avatar,
-    setName,
-    isEditing,
-    pickImage,
-    setIsEditing,
+    // Data
+    profileData,
+    loading,
+    refreshing,
+    error,
+
+    // Edit profile
+    isEditModalVisible,
+    editName,
+    setEditName,
+    editEmail,
+    setEditEmail,
+    editAvatar,
+    setEditAvatar,
+    openEditModal,
+    closeEditModal,
+
+    // OTP verification
+    otp,
+    setOtp,
+    otpSent,
+    otpError,
+    isVerifying,
+    handleSendOTP,
+    handleVerifyOTP,
+
+    // Pagination
+    loadingMore,
+    hasMore,
+    loadMoreViewedElements,
+    loadMoreViewedPodcasts,
+
+    // Navigation
+    navigateToElementDetail,
+    navigateToPodcastDetail,
     handleExitAccount,
-    handleConfirmEdit,
-  };
+    // Actions
+    fetchData,
+    handleUpdateProfile,
+  }
 }
 

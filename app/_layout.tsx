@@ -4,17 +4,18 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Icon, IconProps, IconRegistry, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { Stack, useRouter } from "expo-router";
+import React from 'react';
 import { TailwindProvider } from 'tailwind-rn';
 import utilities from '../tailwind.json';
 
 
 const BackIcon = (props: IconProps) => <Icon {...props} name="arrow-back" />
 
-const BackButton = () => {
+const BackButton: React.FC<{ page_title: string }> = ({ page_title }) => {
   const router = useRouter()
   return (
     <TopNavigation
-      title="Chi tiết nguyên tố"
+      title={page_title}
       alignment="center"
       accessoryLeft={() => (
         <TopNavigationAction
@@ -41,7 +42,10 @@ export default function RootLayout() {
               <Stack.Screen name='signup' options={{ headerShown: false }} />
               <Stack.Screen name='verify' options={{ headerShown: false }} />
               <Stack.Screen name='detailelement/[elementId]' options={{
-                header: () => <BackButton />,
+                header: () => <BackButton page_title='Chi tiết nguyên tố' />,
+              }} />
+              <Stack.Screen name='detailpodcast/[podcastId]' options={{
+                headerShown: false
               }} />
               <Stack.Screen name='forgotpassword' options={{ headerShown: false }} />
             </Stack>

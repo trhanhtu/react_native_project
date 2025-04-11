@@ -19,14 +19,17 @@ export interface ApiResponse<T> {
     data: T,
     error: string,
 }
-export interface SearchResult {
-    meta: {
-        current: number
-        pageSize: number
-        totalPages: number
-        totalItems: number
-    }
-    result: DetailElement_t[]
+
+export interface PaginationMeta {
+    current: number;        // Trang hiện tại
+    pageSize: number;       // Số lượng mục trên mỗi trang
+    totalPages: number;     // Tổng số trang
+    totalItems: number;     // Tổng số mục
+};
+
+export interface PageResult<T> {
+    meta: PaginationMeta
+    result: T[]
 }
 export type DetailElement_t = {
     atomicNumber: number,
@@ -111,6 +114,74 @@ export interface ResetPasswordRequest {
 export interface UpdateUserRequest {
     name: string,
     avatar: string
+}
+
+export interface ElementComment {
+    id: number
+    content: string
+    likes: number
+    elementName: string
+    userName: string
+    userAvatar: string
+    createdAt: Date
+    active: boolean
+}
+
+export interface PodcastComment {
+    id: number
+    content: string
+    likes: number
+    podcastTitle: string
+    userName: string
+    userAvatar: string
+    createdAt: str<"date">
+    active: boolean
+}
+
+export interface Podcast_t {
+    id: string,
+    title: string,
+    audioUrl: string,
+    transcript: string,
+    element: string,
+    active: boolean
+}
+
+
+
+export interface FavoriteElement_t {
+    element: DetailElement_t,
+    active: boolean,
+}
+export interface FavoritePodcast_t {
+    podcast: Podcast_t,
+    active: boolean,
+}
+
+export interface ViewedElement_t {
+    element: DetailElement_t,
+    lastSeen: str<"date">
+}
+
+export interface ViewedPodcast_t {
+    podcast: Podcast_t,
+    lastSeen: str<"date">
+}
+
+export interface AppUser {
+    id: number
+    name: string
+    email: string
+    avatar: string | null
+    role: str<"role">
+    active: boolean
+}
+
+export type ProfileData = AppUser & {
+    favoriteElements: FavoriteElement_t[]
+    favoritePodcasts: FavoritePodcast_t[]
+    viewedElements: ViewedElement_t[]
+    viewedPodcasts: ViewedPodcast_t[]
 }
 
 

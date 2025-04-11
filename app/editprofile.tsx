@@ -33,7 +33,7 @@ export default function EditProfileScreen() {
     // };
     
     return (
-        <Layout style={tailwind("flex-1 p-4 bg-white")}>  
+        <Layout style={tailwind("flex-1 p-4 bg-white/100")}>  
             {/* <View style={tailwind("items-center mb-4")}>  
                 {avatar && <Image source={{ uri: avatar }} style={tailwind("w-24 h-24 rounded-full")} />}  
                 <Button onPress={pickImage} style={tailwind("mt-2")} disabled={loading}>

@@ -55,7 +55,7 @@ interface AllProductProps {
 const TopBar: React.FC = () => {
     const tailwind = useTailwind();
     return (
-        <View style={tailwind('flex-row items-center justify-between p-4 bg-gray-200')}>
+        <View style={tailwind('flex-row items-center justify-between p-4 bg-gray-200/100')}>
             {/* Back Button */}
             <TouchableOpacity>
                 <Icon name="arrow-back" width={24} height={24} fill="#000" />

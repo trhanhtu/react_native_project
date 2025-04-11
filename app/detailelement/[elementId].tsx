@@ -1,5 +1,5 @@
-import { fetchElementDetails } from "@/api/api"
-import { DetailElement_t } from "@/src/utils/types"
+import { fetchFavoriteElementDetail, postThisElementFavoriteToggle, postThisElementIsViewed } from "@/api/api"
+import { DetailElement_t, FavoriteElement_t } from "@/src/utils/types"
 import { Button, Card, Divider, Text } from "@ui-kitten/components"
 import { Href, useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect, useState } from "react"
@@ -9,7 +9,7 @@ import { useTailwind } from "tailwind-rn"
 const DetailElementScreen = () => {
     const { elementId } = useLocalSearchParams()
     const tw = useTailwind()
-    const { element, loading, error, goToPrevious, goToNext, goToPreviousDisabled } = useElementDetails(Number(elementId))
+    const { favoriteElement, loading, error, goToPrevious, goToNext, goToPreviousDisabled, handleToggleFavorite } = useElementDetails(Number(elementId))
 
     if (loading) {
         return (
@@ -20,7 +20,7 @@ const DetailElementScreen = () => {
         )
     }
 
-    if (error || !element) {
+    if (error || !favoriteElement!.element) {
         return (
             <View style={tw("flex-1 justify-center items-center p-4")}>
                 <Text category="h5" style={tw("text-red-500 text-center")}>
@@ -31,17 +31,20 @@ const DetailElementScreen = () => {
     }
 
     return (
-        <ScrollView style={tw("flex-1 bg-gray-100")} showsVerticalScrollIndicator={false}>
-            <ElementHeader element={element} />
-            <ElementClassification element={element} />
-            <ElementPhysicalProps element={element} />
-            <ElementElectronicProps element={element} />
-            <ElementAtomicProps element={element} />
-            <ElementOtherInfo element={element} />
+        <ScrollView style={tw("flex-1 bg-gray-100/100")} showsVerticalScrollIndicator={false}>
+            <ElementHeader element={favoriteElement!.element} />
+            <ElementClassification element={favoriteElement!.element} />
+            <ElementPhysicalProps element={favoriteElement!.element} />
+            <ElementElectronicProps element={favoriteElement!.element} />
+            <ElementAtomicProps element={favoriteElement!.element} />
+            <ElementOtherInfo element={favoriteElement!.element} />
             {/* Next & Previous Buttons */}
             <View style={tw("flex-row justify-between p-4")}>
                 <Button onPress={goToPrevious} disabled={goToPreviousDisabled} style={tw("flex-1 mr-2")}>
                     Previous
+                </Button>
+                <Button status={favoriteElement!.active ? "danger" : "success"} style={tw("flex-1 mr-2")} onPress={handleToggleFavorite}>
+                    {favoriteElement!.active ? "Hủy Theo dõi" : "Theo dõi"}
                 </Button>
                 <Button onPress={goToNext} style={tw("flex-1 ml-2")}>
                     Next
@@ -156,7 +159,7 @@ interface ElementElectronicPropsProps {
 
 // Component hiển thị đặc tính điện tử của nguyên tố
 const ElementElectronicProps: React.FC<ElementElectronicPropsProps> = ({ element }) => {
-    const tw = useTailwind()
+
 
     // Hàm để hiển thị mảng trạng thái oxi hóa
     const renderOxidationStates = (states: number[]) => {
@@ -180,7 +183,7 @@ interface ElementClassificationProps {
 
 // Component hiển thị thông tin phân loại của nguyên tố
 const ElementClassification: React.FC<ElementClassificationProps> = ({ element }) => {
-    const tw = useTailwind()
+
 
     const classificationProperties = [
         { label: "Phân loại", value: element.classification },
@@ -199,7 +202,7 @@ interface ElementAtomicPropsProps {
 
 // Component hiển thị kích thước nguyên tử
 const ElementAtomicProps: React.FC<ElementAtomicPropsProps> = ({ element }) => {
-    const tw = useTailwind()
+
 
     const atomicProperties = [
         { label: "Bán kính nguyên tử", value: `${element.atomicRadius} pm` },
@@ -212,16 +215,17 @@ const ElementAtomicProps: React.FC<ElementAtomicPropsProps> = ({ element }) => {
 
 // Custom hook để lấy thông tin chi tiết của nguyên tố
 const useElementDetails = (elementId: number) => {
-    const [element, setElement] = useState<DetailElement_t | null>(null)
+    const [favoriteElement, setElement] = useState<FavoriteElement_t | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const router = useRouter()
     useEffect(() => {
         const loadData = async () => {
             setLoading(true)
-            const data = await fetchElementDetails(elementId)
+            await postThisElementIsViewed(elementId);
+            const data = await fetchFavoriteElementDetail(elementId);
 
-            if (data) {
+            if (data !== null) {
                 setElement(data)
                 setError(null)
             } else {
@@ -243,6 +247,21 @@ const useElementDetails = (elementId: number) => {
     const goToNext = () => {
         router.push(`/detailelement/${elementId + 1}` as Href)
     }
-    return { element, loading, error, goToPrevious, goToNext, goToPreviousDisabled: elementId <= 1 }
+    const handleToggleFavorite = async () => {
+        if (favoriteElement) {
+            const updatedElement = { ...favoriteElement, active: !favoriteElement.active }
+            setElement(updatedElement)
+            await postThisElementFavoriteToggle(elementId)
+        }
+    }
+    return {
+        favoriteElement,
+        loading,
+        error,
+        goToPrevious,
+        goToNext,
+        handleToggleFavorite,
+        goToPreviousDisabled: elementId <= 1
+    }
 }
 

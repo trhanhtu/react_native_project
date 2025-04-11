@@ -2,6 +2,7 @@
 
 import { searchElements } from "@/api/api"
 import ElementCard from "@/src/components/ElementCard"
+import CustomStyles from "@/src/utils/styles"
 import { DetailElement_t } from "@/src/utils/types"
 import { Icon, IconProps, Input, Layout, Text } from "@ui-kitten/components"
 import { Href, useRouter } from "expo-router"
@@ -35,9 +36,9 @@ export default function GlobalSearchScreen() {
         searchQuery.length > 0 ? <Icon {...props} name="close-outline" onPress={clearSearch} /> : <React.Fragment />
 
     return (
-        <SafeAreaView style={tw("flex-1 bg-gray-100")}>
+        <SafeAreaView style={tw("flex-1 bg-gray-100/100")}>
             <Layout style={tw("flex-1")}>
-                <View style={tw("px-4 py-3 bg-white shadow-sm")}>
+                <View style={[tw("px-4 py-3 bg-white/100"), CustomStyles.shadow]}>
                     <Text category="h5" style={tw("mb-2 text-center")}>
                         Periodic Table Search
                     </Text>

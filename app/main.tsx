@@ -12,6 +12,7 @@ import { Icon } from "@ui-kitten/components";
 import { useNavigation } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
+import HomeScreen from "./home";
 import PodcastScreen from "./podcast";
 import ProfileScreen from "./profile";
 import GlobalSearchScreen from "./search";
@@ -23,6 +24,7 @@ import GlobalSearchScreen from "./search";
 
 const Drawer = createDrawerNavigator();
 const screens = [
+    { name: "Trang chủ", component: HomeScreen, isPortrait: true },
     { name: "Cá nhân", component: ProfileScreen, isPortrait: true },
     { name: "Tìm kiếm", component: GlobalSearchScreen, isPortrait: true },
     { name: "Bảng", component: ImageTable, isPortrait: false },
