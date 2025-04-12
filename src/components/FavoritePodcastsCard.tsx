@@ -27,7 +27,7 @@ const FavoritePodcastsCard: React.FC<FavoritePodcastsCardProps> = ({ favoritePod
                     <View>
                         {/* Use podcast ID (string) as key */}
                         {favoritePodcasts.map((fav) => (
-                            <View key={fav.id} style={tw("mb-3")}>
+                            <View key={`favpod${fav.id}`} style={tw("mb-3")}>
                                 <PodcastItem
                                     // Pass necessary props to PodcastItem
                                     item={{

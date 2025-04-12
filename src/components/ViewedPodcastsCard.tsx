@@ -37,15 +37,15 @@ const ViewedPodcastsCard: React.FC<ViewedPodcastsCardProps> = ({
           <View>
             {/* Use podcast ID (string) as key */}
             {viewedPodcasts.map((item) => (
-              <View key={item.id} style={tw("mb-3")}>
+              <View key={`vipod${item.id}`} style={tw("mb-3")}>
                 <PodcastItem
                   // MISSING: PodcastItem might need more props than available in AugmentedViewedPodcast
                   // It likely needs title, elementName, etc.
                   item={{
-                      id: item.id,
-                      title: item.title,
-                      elementName: item.elementName,
-                      // Add other fields PodcastItem expects, potentially from a fetch if needed
+                    id: item.id,
+                    title: item.title,
+                    elementName: item.elementName,
+                    // Add other fields PodcastItem expects, potentially from a fetch if needed
                   }}
                   isFavorite={false} // Viewed items are not necessarily favorite
                   onPress={() => onPressPodcast(item.id)} // Pass string ID

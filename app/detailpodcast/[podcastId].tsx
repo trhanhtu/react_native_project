@@ -6,10 +6,10 @@ import TranscriptItem from '@/src/components/TranscriptItem';
 import { useAudioPlayer } from '@/src/hooks/useAudioPlayer';
 import { useDetailPodcast } from '@/src/hooks/useDetailPodcast';
 import { usePodcastComments } from '@/src/hooks/usePodcastComments';
-import { PodcastComment, Podcast_t } from '@/src/utils/types';
+import { Podcast_t, PodcastComment, RepeatMode } from '@/src/utils/types';
 import { Ionicons } from '@expo/vector-icons';
 import { Tab, TabView } from '@ui-kitten/components';
-import { AVPlaybackStatusSuccess } from 'expo-av';
+import { Audio, AVPlaybackStatusSuccess } from 'expo-av';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -100,6 +100,7 @@ const PodcastInfoCard = ({ tailwind, podcastData, podcastId }: PodcastInfoCardPr
 
 // --- Audio Player Controls Wrapper ---
 interface AudioPlayerControlsWrapperProps {
+
     podcastId: number;
     tailwind: any;
     audioUrl: string | undefined;
@@ -112,8 +113,14 @@ interface AudioPlayerControlsWrapperProps {
     handlePlayPause: () => void;
     handleSeekStart: () => void;
     handleSeekComplete: (value: number) => void;
+    soundObject: Audio.Sound | null; // Add soundObject
+    repeatMode: RepeatMode;          // Add repeatMode state
+    onRepeatModeChange: (mode: RepeatMode) => void; // Add handler
 }
 const AudioPlayerControlsWrapper = ({
+    soundObject, 
+    repeatMode, 
+    onRepeatModeChange, 
     podcastId, tailwind, audioUrl, isPlaying, isAudioLoading, audioError,
     playbackStatus, formattedPosition, formattedDuration,
     handlePlayPause, handleSeekStart, handleSeekComplete
@@ -134,6 +141,9 @@ const AudioPlayerControlsWrapper = ({
                 onPlayPause={handlePlayPause}
                 onSeekStart={handleSeekStart}
                 onSeekComplete={handleSeekComplete}
+                soundObject={soundObject}
+                initialRepeatMode={repeatMode}
+                onRepeatModeChange={onRepeatModeChange}
             />
         </View>
     );
@@ -229,11 +239,28 @@ const PodcastPlayerScreen: React.FC = () => {
 
     // State for active tab
     const [selectedIndex, setSelectedIndex] = useState(0);
-
+    const [repeatMode, setRepeatMode] = useState<RepeatMode>('off');
     // --- Custom Hooks ---
-    const { podcastData, isLoading: isPodcastLoading, error: podcastError, } = useDetailPodcast(podcastId);
-    const { comments, isLoadingInitial: isCommentsLoading, isFetchingMore: isFetchingMoreComments, error: commentsError, fetchMoreComments, handleCommentSubmit } = usePodcastComments(podcastId);
-    const { isPlaying,
+    const {
+        podcastData,
+        isLoading: isPodcastLoading,
+        error: podcastError,
+    } = useDetailPodcast(podcastId);
+
+    const {
+        comments,
+        isLoadingInitial: isCommentsLoading,
+        isFetchingMore: isFetchingMoreComments,
+        error: commentsError,
+        fetchMoreComments,
+        handleCommentSubmit,
+        loadingLikeCommentId,
+        onLikePodcastComment,
+    } = usePodcastComments(podcastId);
+
+    const {
+        soundObject,
+        isPlaying,
         isAudioLoading,
         audioError,
         playbackStatus,
@@ -241,7 +268,8 @@ const PodcastPlayerScreen: React.FC = () => {
         formattedDuration,
         handlePlayPause,
         handleSeekStart,
-        handleSeekComplete, } = useAudioPlayer(podcastData?.audioUrl);
+        handleSeekComplete,
+    } = useAudioPlayer(podcastData?.audioUrl);
 
     // --- Render Loading State ---
     if (isPodcastLoading) {
@@ -268,7 +296,15 @@ const PodcastPlayerScreen: React.FC = () => {
         }
         return null;
     };
-
+    const handleRepeatModeChange = (newMode: RepeatMode) => {
+        console.log("Parent received repeat mode change:", newMode);
+        setRepeatMode(newMode);
+        // NOTE: "Repeat All" logic (restarting playlist, etc.)
+        // would typically be handled HERE or in a higher-level
+        // component that manages the playlist, based on the `newMode === 'all'` condition
+        // and potentially the `didJustFinish` status from useAudioPlayer.
+        // Since this screen only plays one podcast, 'all' currently acts just as a UI state step.
+    };
     // --- Render Main UI ---
     return (
         <SafeAreaView style={[styles.container, tailwind('flex-1 bg-gray-900/100')]}>
@@ -282,7 +318,7 @@ const PodcastPlayerScreen: React.FC = () => {
                     podcastId={podcastId}
                 />
                 <AudioPlayerControlsWrapper
-                    podcastId={podcastId ? Number(podcastId) : 1}
+                    podcastId={podcastId}
                     tailwind={tailwind}
                     audioUrl={podcastData?.audioUrl}
                     isPlaying={isPlaying}
@@ -294,6 +330,9 @@ const PodcastPlayerScreen: React.FC = () => {
                     handlePlayPause={handlePlayPause}
                     handleSeekStart={handleSeekStart}
                     handleSeekComplete={handleSeekComplete}
+                    soundObject={soundObject}
+                    repeatMode={repeatMode} 
+                    onRepeatModeChange={handleRepeatModeChange} 
                 />
             </View>
 
@@ -319,7 +358,7 @@ const PodcastPlayerScreen: React.FC = () => {
                                 data={comments}
                                 renderItem={({ item }: { item: PodcastComment }) => (
                                     <View style={tailwind('mb-2')}>
-                                        <CommentItem comment={item} />
+                                        <CommentItem comment={item} onLikeComment={onLikePodcastComment} loadingLikeCommentId={loadingLikeCommentId} />
                                     </View>
                                 )}
                                 keyExtractor={(item) => item.id.toString()}

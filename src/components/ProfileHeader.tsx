@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { useTailwind } from 'tailwind-rn'
 
 interface ProfileHeaderProps {
-  avatar: string | null, // Avatar can be null
+  avatar: string,
   name: string,
   email: string,
 }
@@ -17,10 +17,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ avatar, name, email }) =>
     <View style={tw("bg-purple-600/100 pt-12 pb-20 px-4")}>
       <View style={tw("flex-row items-center")}>
         <Avatar
-            // Provide a fallback source or style if avatar is null/empty
-            source={avatar ? { uri: avatar } : require('@/assets/images/default-avatar.png')} // MISSING: Add a default avatar image
-            size="giant"
-            style={tw("border-4 border-white/100 bg-purple-400/100")} // Added fallback bg
+          source={{ uri: avatar }}
+          size="giant"
+          style={tw("border-4 border-white/100 bg-purple-400/100")} // Added fallback bg
         />
         <View style={tw("ml-4 flex-shrink")}>
           <Text style={tw("text-2xl font-bold text-white/100")} numberOfLines={1} ellipsizeMode='tail'>{name}</Text>

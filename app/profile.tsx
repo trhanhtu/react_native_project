@@ -47,15 +47,15 @@ const ProfileScreen: React.FC = () => {
     navigateToPodcastDetail,
     fetchData,
     handleExitAccount,
-    favoriteElementList, // Assume this is now AugmentedFavoriteElement[] | null from hook
-    favoritePodcastList, // Assume this is now AugmentedFavoritePodcast[] | null from hook
+    favoriteElementList, 
+    favoritePodcastList, 
     handleVerifyOTPForEmailChange,
     initiateUpdateProfile,
     loadMoreFavoriteElements,
     loadMoreFavoritePodcasts,
     needsOtpVerification,
-    viewedElementList, // Assume this is now AugmentedViewedElement[] | null from hook
-    viewedPodcastList, // Assume this is now AugmentedViewedPodcast[] | null from hook
+    viewedElementList, 
+    viewedPodcastList, 
   } = useProfile()
 
   if (loading) {

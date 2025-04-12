@@ -97,9 +97,9 @@ export default function useProfile() {
         const [pdata, viewedElementsRes, viewedPodcastsRes, favoriteElementsRes, favoritePodcastsRes] =
           await Promise.all([
             fetchProfileData(),
-            fetchViewedElements(1, 5), // Fetch first page
+            fetchViewedElements(1, 999), // Fetch first page
             fetchViewedPodcasts(1, 5), // Fetch first page
-            fetchFavoriteElements(1, 5), // Fetch first page
+            fetchFavoriteElements(1, 999), // Fetch first page
             fetchFavoritePodcasts(1, 5), // Fetch first page
           ])
 
@@ -119,9 +119,9 @@ export default function useProfile() {
           setViewedElementList(viewedElementsRes.result)
           setHasMore((prev) => ({ ...prev, elements: viewedElementsRes.meta.current < viewedElementsRes.meta.totalPages }))
         } else {
-           setViewedElementList([]) // Set to empty array if fetch failed or returned no data
-           setHasMore(prev => ({...prev, elements: false}));
-           // Optionally set an error if needed: setError(prev => prev + " Failed to fetch viewed elements.");
+          setViewedElementList([]) // Set to empty array if fetch failed or returned no data
+          setHasMore(prev => ({ ...prev, elements: false }));
+          // Optionally set an error if needed: setError(prev => prev + " Failed to fetch viewed elements.");
         }
 
         // Process Viewed Podcasts
@@ -130,12 +130,12 @@ export default function useProfile() {
           setHasMore((prev) => ({ ...prev, podcasts: viewedPodcastsRes.meta.current < viewedPodcastsRes.meta.totalPages }))
         } else {
           setViewedPodcastList([]) // Set to empty array
-          setHasMore(prev => ({...prev, podcasts: false}));
+          setHasMore(prev => ({ ...prev, podcasts: false }));
           // Optionally set an error: setError(prev => prev + " Failed to fetch viewed podcasts.");
         }
 
-         // Process Favorite Elements
-         if (favoriteElementsRes?.result) {
+        // Process Favorite Elements
+        if (favoriteElementsRes?.result) {
           setFavoriteElementList(favoriteElementsRes.result);
           setHasMore(prev => ({ ...prev, favElements: favoriteElementsRes.meta.current < favoriteElementsRes.meta.totalPages }));
         } else {
@@ -166,7 +166,7 @@ export default function useProfile() {
         setRefreshing(false)
       }
     },
-    [profileData], // Dependency includes profileData to trigger re-check loading state correctly
+    [], // Dependency includes profileData to trigger re-check loading state correctly
   )
 
   // --- Load More Functions ---
@@ -179,19 +179,19 @@ export default function useProfile() {
     try {
       const response = await fetchViewedElements(nextPage, 5)
       if (response?.result) {
-         setViewedElementList((prev) => [...(prev ?? []), ...response.result])
-         setViewedElementsPage(nextPage)
-         setHasMore((prev) => ({ ...prev, elements: response.meta.current < response.meta.totalPages }))
+        setViewedElementList((prev) => [...(prev ?? []), ...response.result])
+        setViewedElementsPage(nextPage)
+        setHasMore((prev) => ({ ...prev, elements: response.meta.current < response.meta.totalPages }))
       } else {
         setHasMore((prev) => ({ ...prev, elements: false })) // Stop trying if API fails or returns null/empty
-         // Optionally set an error specific to loading more
-         console.error("Failed to load more viewed elements");
+        // Optionally set an error specific to loading more
+        console.error("Failed to load more viewed elements");
       }
     } catch (err) {
-        console.error("Error loading more viewed elements:", err);
-        // Optionally set a general error state
-        // setError("Failed to load more viewed elements.");
-        setHasMore((prev) => ({ ...prev, elements: false })); // Stop trying on error
+      console.error("Error loading more viewed elements:", err);
+      // Optionally set a general error state
+      // setError("Failed to load more viewed elements.");
+      setHasMore((prev) => ({ ...prev, elements: false })); // Stop trying on error
     } finally {
       setLoadingMore((prev) => ({ ...prev, elements: false }))
     }
@@ -208,18 +208,18 @@ export default function useProfile() {
     setLoadingMore((prev) => ({ ...prev, podcasts: true }))
     const nextPage = viewedPodcastsPage + 1
     try {
-        const response = await fetchViewedPodcasts(nextPage, 5)
-        if (response?.result) {
-          setViewedPodcastList((prev) => [...(prev ?? []), ...response.result])
-          setViewedPodcastsPage(nextPage)
-          setHasMore((prev) => ({ ...prev, podcasts: response.meta.current < response.meta.totalPages }))
-        } else {
-          setHasMore((prev) => ({ ...prev, podcasts: false }))
-          console.error("Failed to load more viewed podcasts");
-        }
+      const response = await fetchViewedPodcasts(nextPage, 5)
+      if (response?.result) {
+        setViewedPodcastList((prev) => [...(prev ?? []), ...response.result])
+        setViewedPodcastsPage(nextPage)
+        setHasMore((prev) => ({ ...prev, podcasts: response.meta.current < response.meta.totalPages }))
+      } else {
+        setHasMore((prev) => ({ ...prev, podcasts: false }))
+        console.error("Failed to load more viewed podcasts");
+      }
     } catch (err) {
-        console.error("Error loading more viewed podcasts:", err);
-        setHasMore((prev) => ({ ...prev, podcasts: false }));
+      console.error("Error loading more viewed podcasts:", err);
+      setHasMore((prev) => ({ ...prev, podcasts: false }));
     } finally {
       setLoadingMore((prev) => ({ ...prev, podcasts: false }))
     }
@@ -236,20 +236,20 @@ export default function useProfile() {
     setLoadingMore(prev => ({ ...prev, favElements: true }));
     const nextPage = favoriteElementsPage + 1;
     try {
-        const response = await fetchFavoriteElements(nextPage, 5);
-        if (response?.result) {
-            setFavoriteElementList(prev => [...(prev ?? []), ...response.result]);
-            setFavoriteElementsPage(nextPage);
-            setHasMore(prev => ({ ...prev, favElements: response.meta.current < response.meta.totalPages }));
-        } else {
-            setHasMore(prev => ({ ...prev, favElements: false }));
-            console.error("Failed to load more favorite elements");
-        }
-    } catch (err) {
-        console.error("Error loading more favorite elements:", err);
+      const response = await fetchFavoriteElements(nextPage, 5);
+      if (response?.result) {
+        setFavoriteElementList(prev => [...(prev ?? []), ...response.result]);
+        setFavoriteElementsPage(nextPage);
+        setHasMore(prev => ({ ...prev, favElements: response.meta.current < response.meta.totalPages }));
+      } else {
         setHasMore(prev => ({ ...prev, favElements: false }));
+        console.error("Failed to load more favorite elements");
+      }
+    } catch (err) {
+      console.error("Error loading more favorite elements:", err);
+      setHasMore(prev => ({ ...prev, favElements: false }));
     } finally {
-        setLoadingMore(prev => ({ ...prev, favElements: false }));
+      setLoadingMore(prev => ({ ...prev, favElements: false }));
     }
   }, [loadingMore.favElements, hasMore.favElements, favoriteElementsPage, favoriteElementList]);
 
@@ -258,21 +258,21 @@ export default function useProfile() {
 
     setLoadingMore(prev => ({ ...prev, favPodcasts: true }));
     const nextPage = favoritePodcastsPage + 1;
-     try {
-        const response = await fetchFavoritePodcasts(nextPage, 5);
-        if (response?.result) {
-            setFavoritePodcastList(prev => [...(prev ?? []), ...response.result]);
-            setFavoritePodcastsPage(nextPage);
-            setHasMore(prev => ({ ...prev, favPodcasts: response.meta.current < response.meta.totalPages }));
-        } else {
-            setHasMore(prev => ({ ...prev, favPodcasts: false }));
-            console.error("Failed to load more favorite podcasts");
-        }
-    } catch (err) {
-        console.error("Error loading more favorite podcasts:", err);
+    try {
+      const response = await fetchFavoritePodcasts(nextPage, 5);
+      if (response?.result) {
+        setFavoritePodcastList(prev => [...(prev ?? []), ...response.result]);
+        setFavoritePodcastsPage(nextPage);
+        setHasMore(prev => ({ ...prev, favPodcasts: response.meta.current < response.meta.totalPages }));
+      } else {
         setHasMore(prev => ({ ...prev, favPodcasts: false }));
+        console.error("Failed to load more favorite podcasts");
+      }
+    } catch (err) {
+      console.error("Error loading more favorite podcasts:", err);
+      setHasMore(prev => ({ ...prev, favPodcasts: false }));
     } finally {
-        setLoadingMore(prev => ({ ...prev, favPodcasts: false }));
+      setLoadingMore(prev => ({ ...prev, favPodcasts: false }));
     }
   }, [loadingMore.favPodcasts, hasMore.favPodcasts, favoritePodcastsPage, favoritePodcastList]);
 
@@ -329,7 +329,7 @@ export default function useProfile() {
       const result: ApiResponse<any> | null = await resendOTP(editEmail) // Send to NEW email
 
       if (result && result.statusCode >= 200 && result.statusCode < 300) {
-         // Check statusCode for success from ApiResponse
+        // Check statusCode for success from ApiResponse
         setOtpSent(true)
         // Keep modal open, waiting for OTP input
       } else {
@@ -377,7 +377,7 @@ export default function useProfile() {
         success = true;
         closeEditModal() // Close modal on success
       } else {
-         setError("Failed to update profile. Please try again.")
+        setError("Failed to update profile. Please try again.")
       }
     } catch (err: any) {
       setError("An error occurred while updating profile.")
@@ -406,7 +406,7 @@ export default function useProfile() {
         // OTP verified for new email, now proceed with the actual profile update
         await handleUpdateProfile(true); // Pass true indicating OTP was verified
       } else {
-         setOtpError("Invalid OTP or verification failed. Please try again.")
+        setOtpError("Invalid OTP or verification failed. Please try again.")
       }
     } catch (err: any) {
       setOtpError("An error occurred while verifying OTP.")
@@ -455,15 +455,15 @@ export default function useProfile() {
 
   // --- Logout ---
   const handleExitAccount = useCallback(() => {
-      setLoading(true); // Show loading indicator during logout
-      authCheck.logout().then(() => {
-              router.replace("/login");
-      }).catch(err => {
-          setError("An error occurred during logout.");
-          console.error("Logout error:", err);
-      }).finally(() => {
-         setLoading(false);
-      });
+    setLoading(true); // Show loading indicator during logout
+    authCheck.logout().then(() => {
+      router.replace("/login");
+    }).catch(err => {
+      setError("An error occurred during logout.");
+      console.error("Logout error:", err);
+    }).finally(() => {
+      setLoading(false);
+    });
   }, [router]); // Added router as dependency
 
 

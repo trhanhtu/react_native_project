@@ -1,7 +1,7 @@
 // hooks/usePodcastComments.ts
-import { fetchPodcastComments, postPodcastComment } from '@/api/api';
+import { fetchPodcastComments, likePodcastComment, postPodcastComment } from '@/api/api';
 import { useCallback, useEffect, useState } from 'react';
-import { PageResult, PaginationMeta, PodcastComment } from '../utils/types';
+import { LikeResponse, PageResult, PaginationMeta, PodcastComment } from '../utils/types';
 
 export const usePodcastComments = (podcastId: number, initialPageSize = 5) => {
     const [comments, setComments] = useState<PodcastComment[]>([]);
@@ -9,7 +9,7 @@ export const usePodcastComments = (podcastId: number, initialPageSize = 5) => {
     const [isLoadingInitial, setIsLoadingInitial] = useState<boolean>(true);
     const [isFetchingMore, setIsFetchingMore] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
+    const [loadingLikeCommentId, setLoadingLikeCommentId] = useState<number>(Infinity)
     // Hàm fetch bình luận (gọi API function và xử lý kết quả null)
     const fetchCommentsPage = useCallback(async (id: number, page = 1, pageSize = 5, appending = false) => {
         if (!appending) {
@@ -79,6 +79,40 @@ export const usePodcastComments = (podcastId: number, initialPageSize = 5) => {
         await postPodcastComment(podcastId, text)
         await fetchCommentsPage(podcastId ?? "1", 1, 5);
     };
+
+    const onLikePodcastComment = useCallback(async (commentId: number) => {
+        // Optional: Add a loading state specific to this comment ID if needed for UI feedback
+        setLoadingLikeCommentId(commentId);
+
+        try {
+            // Call the API function to like the comment
+            const response: LikeResponse | null = await likePodcastComment(commentId);
+
+            if (response !== null) {
+                setComments(prevComments =>
+                    prevComments.map(comment =>
+                        comment.id === commentId
+                            ? { ...comment, likes: response.likes } // Update with the count from API response
+                            : comment
+                    )
+                );
+                // ------------------------------------
+
+                // Optional: Show a success message
+                // toastShow("Comment liked!", "success");
+
+            } else {
+                // Handle the case where the API call returns null (likely an error)
+                setError("Failed to like comment. Please try again.");
+            }
+        } catch (error) {
+            setError("An error occurred while liking the comment.");
+        } finally {
+            // Optional: Clear the specific loading state if you added one
+            setLoadingLikeCommentId(Infinity);
+        }
+    }, [setComments, setError]);
+
     return {
         comments,
         paginationMeta,
@@ -86,6 +120,8 @@ export const usePodcastComments = (podcastId: number, initialPageSize = 5) => {
         isFetchingMore,
         error,
         fetchMoreComments,
-        handleCommentSubmit
+        handleCommentSubmit,
+        loadingLikeCommentId,
+        onLikePodcastComment,
     };
 };

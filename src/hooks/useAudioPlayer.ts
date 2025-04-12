@@ -221,6 +221,7 @@ export const useAudioPlayer = (audioUrl: string | undefined) => {
     const formattedDuration = formatMillisToTime(playbackStatus.durationMillis);
 
     return {
+        soundObject,
         isPlaying,
         isAudioLoading,
         audioError,

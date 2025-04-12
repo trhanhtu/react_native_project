@@ -28,7 +28,7 @@ const FavoriteElementsCard: React.FC<FavoriteElementsCardProps> = ({ favoriteEle
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={tw("py-1")}>
                         {/* Use atomicNumber (number) as key */}
                         {favoriteElements.map((fav) => (
-                            <View key={fav.id} style={tw("mr-4")}>
+                            <View key={`favele${fav.id}`} style={tw("mr-4")}>
                                 <ElementItem
                                     // Pass necessary props to ElementItem
                                     item={{

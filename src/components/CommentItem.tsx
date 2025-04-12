@@ -7,9 +7,11 @@ import { PodcastComment } from '../utils/types';
 
 interface Props {
     comment: PodcastComment;
+    onLikeComment: (commentId: number) => void,
+    loadingLikeCommentId: number
 }
 
-const CommentItem: React.FC<Props> = ({ comment }) => {
+const CommentItem: React.FC<Props> = ({ comment, loadingLikeCommentId, onLikeComment }) => {
     const tailwind = useTailwind();
 
     const formatDate = (dateString: string) => {
@@ -64,9 +66,9 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
                     </Text>
 
                     <View style={tailwind('flex-row')}>
-                        <TouchableOpacity style={tailwind('flex-row items-center mr-4')}>
+                        <TouchableOpacity disabled={comment.id === loadingLikeCommentId} style={tailwind('flex-row items-center mr-4')} onPress={() => onLikeComment(comment.id)}>
                             <Ionicons name="heart-outline" size={16} color={tailwind('text-gray-400/100').color as ColorValue} />
-                            <Text style={tailwind('text-gray-400/100 text-xs ml-1')}>12</Text>
+                            <Text style={tailwind('text-gray-400/100 text-xs ml-1')}>{comment.likes}</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={tailwind('flex-row items-center')}>

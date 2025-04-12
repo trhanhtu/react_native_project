@@ -304,7 +304,7 @@ export interface CreatePodcastCommentRequest {
 export interface UpdatePodcastCommentRequest {
     content: string;
 }
-
+export type RepeatMode = 'off' | 'all' | 'one';
 // User Controller Types (Inferred)
 // Assuming ChangePasswordRequest structure
 export interface ChangePasswordRequest {
