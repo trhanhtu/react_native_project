@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { AVPlaybackStatusSuccess } from 'expo-av';
-import React from 'react';
+import { Href, router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ColorValue, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import GlobalStorage from '../utils/GlobalStorage';
 
 interface Props {
+    podcastId: number;
     isPlaying: boolean;
     isAudioLoading: boolean;
     formattedPosition: string;
@@ -18,6 +21,7 @@ interface Props {
 }
 
 const AudioControls: React.FC<Props> = ({
+    podcastId,
     isPlaying,
     isAudioLoading,
     formattedPosition,
@@ -29,12 +33,20 @@ const AudioControls: React.FC<Props> = ({
     onSeekComplete,
 }) => {
     const tailwind = useTailwind();
-
+    const [isInPlayList, setIsInPlayList] = useState<boolean>(false);
     const positionMillis = playbackStatus.positionMillis ?? 0;
     const durationMillis = GetDurationMillis(playbackStatus.durationMillis);
 
     // Calculate progress percentage for visual indicator
     const progressPercent = Math.min(100, Math.round((positionMillis / durationMillis) * 100));
+
+    useEffect(() => {
+        if (CheckIsSavedBefore(podcastId) === true) {
+            setIsInPlayList(true);
+        }
+    }, [])
+
+
 
     return (
         <View style={tailwind('w-full px-5')}>
@@ -71,8 +83,8 @@ const AudioControls: React.FC<Props> = ({
             )}
 
             {/* Control buttons */}
-            <View style={tailwind('flex-row items-center justify-center mt-3')}>
-                <TouchableOpacity style={tailwind('p-2 rounded-full bg-gray-700/100 mx-3')}>
+            <View style={tailwind('flex-row items-center justify-center mt-3')} >
+                <TouchableOpacity style={tailwind('p-2 rounded-full bg-gray-700/100 mx-3')} onPress={() => { if (podcastId - 1 >= 1) router.replace(`detailpodcast/${podcastId - 1}` as Href) }}>
                     <Ionicons name="play-back" size={22} color={tailwind('text-gray-300/100').color as ColorValue} />
                 </TouchableOpacity>
 
@@ -99,7 +111,7 @@ const AudioControls: React.FC<Props> = ({
                     )}
                 </TouchableOpacity>
 
-                <TouchableOpacity style={tailwind('p-2 rounded-full bg-gray-700/100 mx-3')}>
+                <TouchableOpacity style={tailwind('p-2 rounded-full bg-gray-700/100 mx-3')} onPress={() => router.replace(`detailpodcast/${podcastId + 1}` as Href)}>
                     <Ionicons name="play-forward" size={22} color={tailwind('text-gray-300/100').color as ColorValue} />
                 </TouchableOpacity>
             </View>
@@ -116,9 +128,17 @@ const AudioControls: React.FC<Props> = ({
                     <Text style={tailwind('text-gray-400/100 text-xs mt-1')}>Ngẫu nhiên</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={tailwind('items-center')}>
-                    <Ionicons name="download-outline" size={18} color={tailwind('text-gray-400/100').color as ColorValue} />
-                    <Text style={tailwind('text-gray-400/100 text-xs mt-1')}>Tải về</Text>
+                <TouchableOpacity style={tailwind('items-center')} onPress={() => {
+                    if (isInPlayList) {
+                        RemoveFromMyPlayList(podcastId, setIsInPlayList);
+                        return;
+                    }
+                    SaveToMyPlayList(podcastId, setIsInPlayList)
+                }
+                }>
+
+                    <Ionicons name={isInPlayList ? "ban-outline" : "download-outline"} size={18} color={tailwind('text-gray-400/100').color as ColorValue} />
+                    <Text style={tailwind('text-gray-400/100 text-xs mt-1')}>{isInPlayList ? "Hủy Lưu" : "Lưu"}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={tailwind('items-center')}>
@@ -149,11 +169,27 @@ const CustomStyles = {
 
 export default AudioControls;
 
-
+function SaveToMyPlayList(podcastId: number, setDisableSave: React.Dispatch<React.SetStateAction<boolean>>): void {
+    const myPlayList: number[] = JSON.parse(GlobalStorage.getItem("my_play_list") ?? "[]");
+    myPlayList.push(podcastId)
+    GlobalStorage.setItem("my_play_list", JSON.stringify(myPlayList));
+    setDisableSave(true);
+}
 
 function GetDurationMillis(durationMillis?: number): number {
     if (!durationMillis || isNaN(durationMillis)) {
         return 1;
     }
     return durationMillis;
+}
+function CheckIsSavedBefore(podcastId: number): boolean {
+    const myPlayList: number[] = JSON.parse(GlobalStorage.getItem("my_play_list") ?? "[]");
+    return myPlayList.includes(podcastId);
+}
+
+function RemoveFromMyPlayList(podcastId: number, setIsInPlayList: React.Dispatch<React.SetStateAction<boolean>>): void {
+    const myPlayList: number[] = JSON.parse(GlobalStorage.getItem("my_play_list") ?? "[]");
+    const updatedPlayList = myPlayList.filter(id => id !== podcastId);
+    GlobalStorage.setItem("my_play_list", JSON.stringify(updatedPlayList));
+    setIsInPlayList(false);
 }

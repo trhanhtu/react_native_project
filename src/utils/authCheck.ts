@@ -1,7 +1,8 @@
 import GobalStorage from "./GlobalStorage";
 
-
-
+async function IsOutDatedToken() {
+    
+}
 
 async function logout() {
     await GobalStorage.removeItem("id");

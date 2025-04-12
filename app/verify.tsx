@@ -9,8 +9,8 @@ import { useTailwind } from "tailwind-rn";
 export default function VerifyScreen() {
     const tailwind = useTailwind()
     const { email,
-        disableConfirm,
-        disableResend,
+        isLoadingConfirm,
+        isLoadingResend,
         handleConfirmOTP,
         handleResendOTP,
         otpRef } = useVerify();
@@ -34,10 +34,10 @@ export default function VerifyScreen() {
                 </Text>
                 <OTPInput length={6} ref={otpRef} />
                 <View style={tailwind("flex flex-row flex-1 w-full justify-center items-end mt-5p")}>
-                    <Button disabled={disableConfirm} status="success" style={tailwind("mb-5 w-70p")} onPress={handleConfirmOTP}>Xác nhận</Button>
+                    <Button disabled={isLoadingConfirm} status="success" style={tailwind("mb-5 w-70p")} onPress={handleConfirmOTP}>Xác nhận</Button>
                 </View>
                 <View style={tailwind("flex flex-row flex-1 w-full justify-center items-end")}>
-                    <Button disabled={disableResend} style={tailwind("mb-5 w-70p")} onPress={handleResendOTP}>Gửi lại OTP</Button>
+                    <Button disabled={isLoadingResend} style={tailwind("mb-5 w-70p")} onPress={handleResendOTP}>Gửi lại OTP</Button>
                 </View>
             </View>
         </ScrollView>

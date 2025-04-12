@@ -3,12 +3,12 @@ import { fetchPodcastDetailsAPI, postThisPodcastIsViewed } from '@/api/api';
 import { useCallback, useEffect, useState } from 'react';
 import { Podcast_t } from '../utils/types';
 
-export const useDetailPodcast = (podcastId: string | undefined) => {
+export const useDetailPodcast = (podcastId: number) => {
     const [podcastData, setPodcastData] = useState<Podcast_t | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchPodcastDetails = useCallback(async (id: string) => {
+    const fetchPodcastDetails = useCallback(async (id: number) => {
         setIsLoading(true);
         setError(null);
         setPodcastData(null);

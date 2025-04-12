@@ -1,8 +1,6 @@
 import {
     ApiResponse,
     ChangePasswordRequest,
-    CheckFavoriteElementResponse,
-    CheckFavoritePodcastResponse,
     CreateDiscoveryRequest,
     CreateElementCommentRequest,
     CreateElementRequest,
@@ -28,8 +26,6 @@ import {
     Scientist_t,
     SendOTPRequest,
     ToggleActiveResponse,
-    ToggleFavoriteElementResponse,
-    ToggleFavoritePodcastResponse,
     UpdateDiscoveryRequest,
     UpdateElementCommentRequest,
     UpdateElementRequest,
@@ -131,7 +127,7 @@ export const fetchElementDetails = async (
 
 
 
-export const fetchPodcastDetailsAPI = async (id: number): Promise<Podcast_t | null> => {
+export const fetchPodcastDetailsAPI = async (id: string): Promise<Podcast_t | null> => {
     try {
         const response = await axios.get<ApiResponse<Podcast_t>>(`/api/v1/podcasts/${id}`);
         // Kiểm tra response và status code thành công
@@ -157,7 +153,7 @@ export const fetchPodcastDetailsAPI = async (id: number): Promise<Podcast_t | nu
  * @param pageSize - Số lượng bình luận trên mỗi trang.
  * @returns Dữ liệu PageResult<PodcastComment> hoặc null.
  */
-export const fetchCommentsAPI = async (id: number, page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
+export const fetchCommentsAPI = async (id: string | undefined, page: number, pageSize: number): Promise<PageResult<PodcastComment> | null> => {
     try {
         const podcast_query = id ? `&podcastId=${id}` : ""
         const response = await axios.get<ApiResponse<PageResult<PodcastComment>>>(
@@ -193,11 +189,11 @@ export const fetchDummyPodcastComments = async (page: number, pageSize: number):
     }
 }
 
-export const postPodcastComment = async (podcastId: number, text: string): Promise<void> => {
+export const postPodcastComment = async (podcastId: string | undefined, text: string): Promise<void> => {
     try {
         await axios.post(`${api_url}/comments/podcasts`, {
             content: text,
-            podcastId: podcastId
+            podcastId: Number(podcastId) ?? 1
         })
     } catch (error) {
         return;
@@ -235,7 +231,7 @@ export const postThisElementIsViewed = async (atomicNumber: number): Promise<voi
 
     }
 }
-export const postThisPodcastIsViewed = async (podcastId: number): Promise<void> => {
+export const postThisPodcastIsViewed = async (podcastId: string): Promise<void> => {
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/viewed-podcasts/podcasts/${podcastId}`, {})
     } catch (error) {
@@ -243,13 +239,12 @@ export const postThisPodcastIsViewed = async (podcastId: number): Promise<void> 
 
     }
 }
-export const postThisElementFavoriteToggle = async (atomicNumber: number): Promise<boolean | null> => {
+export const postThisElementFavoriteToggle = async (atomicNumber: number): Promise<void> => {
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/favorite-elements/elements/${atomicNumber}`, {})
-        return true;
     } catch (error) {
         console.error("Error posting viewed element:", error)
-        return null
+
     }
 }
 export const postThisPodcastFavoriteToggle = async (atomicNumber: number): Promise<void> => {
@@ -1173,7 +1168,24 @@ export const getProfile = async (): Promise<ProfileData | null> => {
         return null;
     }
 };
+// --- Helper Type Definitions (Inferred from Swagger examples for favorites) ---
 
+interface CheckFavoriteStatusResponse {
+    active: boolean;
+}
+
+// Specific types based on Swagger examples for check/toggle
+interface CheckFavoritePodcastResponse extends CheckFavoriteStatusResponse {
+    podcastId: number;
+}
+
+interface ToggleFavoritePodcastResponse extends CheckFavoritePodcastResponse { }
+
+interface CheckFavoriteElementResponse extends CheckFavoriteStatusResponse {
+    elementId: number;
+}
+
+interface ToggleFavoriteElementResponse extends CheckFavoriteElementResponse { }
 
 // --- Favorite Podcast Controller ---
 

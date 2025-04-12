@@ -74,7 +74,7 @@ const ScreenHeader = ({ tailwind, onBack }: ScreenHeaderProps) => (
 interface PodcastInfoCardProps {
     tailwind: any;
     podcastData: Podcast_t | null;
-    podcastId: string | undefined;
+    podcastId: number;
 }
 const PodcastInfoCard = ({ tailwind, podcastData, podcastId }: PodcastInfoCardProps) => (
     <View style={[tailwind('items-center pt-6 pb-4 rounded-3xl mt-2 bg-gray-800/100'), CustomStyles.shadow]}>
@@ -100,6 +100,7 @@ const PodcastInfoCard = ({ tailwind, podcastData, podcastId }: PodcastInfoCardPr
 
 // --- Audio Player Controls Wrapper ---
 interface AudioPlayerControlsWrapperProps {
+    podcastId: number;
     tailwind: any;
     audioUrl: string | undefined;
     isPlaying: boolean;
@@ -113,7 +114,7 @@ interface AudioPlayerControlsWrapperProps {
     handleSeekComplete: (value: number) => void;
 }
 const AudioPlayerControlsWrapper = ({
-    tailwind, audioUrl, isPlaying, isAudioLoading, audioError,
+    podcastId, tailwind, audioUrl, isPlaying, isAudioLoading, audioError,
     playbackStatus, formattedPosition, formattedDuration,
     handlePlayPause, handleSeekStart, handleSeekComplete
 }: AudioPlayerControlsWrapperProps) => {
@@ -123,6 +124,7 @@ const AudioPlayerControlsWrapper = ({
     return (
         <View style={[tailwind('mt-4 rounded-2xl bg-gray-800/100 py-3'), CustomStyles.shadow]}>
             <AudioControls
+                podcastId={podcastId}
                 isPlaying={isPlaying}
                 isAudioLoading={isAudioLoading}
                 formattedPosition={formattedPosition}
@@ -223,14 +225,14 @@ const PodcastPlayerScreen: React.FC = () => {
     const tailwind = useTailwind();
     const router = useRouter();
     const params = useLocalSearchParams<{ podcastId?: string }>();
-    const podcastId = params.podcastId;
+    const podcastId = Number(params.podcastId ?? 1);
 
     // State for active tab
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     // --- Custom Hooks ---
     const { podcastData, isLoading: isPodcastLoading, error: podcastError, } = useDetailPodcast(podcastId);
-    const { comments, isLoadingInitial: isCommentsLoading, isFetchingMore: isFetchingMoreComments, error: commentsError, fetchMoreComments,handleCommentSubmit } = usePodcastComments(podcastId);
+    const { comments, isLoadingInitial: isCommentsLoading, isFetchingMore: isFetchingMoreComments, error: commentsError, fetchMoreComments, handleCommentSubmit } = usePodcastComments(podcastId);
     const { isPlaying,
         isAudioLoading,
         audioError,
@@ -280,6 +282,7 @@ const PodcastPlayerScreen: React.FC = () => {
                     podcastId={podcastId}
                 />
                 <AudioPlayerControlsWrapper
+                    podcastId={podcastId ? Number(podcastId) : 1}
                     tailwind={tailwind}
                     audioUrl={podcastData?.audioUrl}
                     isPlaying={isPlaying}

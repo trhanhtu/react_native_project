@@ -1,267 +1,435 @@
-import { fetchFavoriteElementDetail, postThisElementFavoriteToggle, postThisElementIsViewed } from "@/api/api"
-import { DetailElement_t, FavoriteElement_t } from "@/src/utils/types"
-import { Button, Card, Divider, Text } from "@ui-kitten/components"
-import { Href, useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
-import { ActivityIndicator, Image, ScrollView, View } from "react-native"
-import { useTailwind } from "tailwind-rn"
+// DetailElementScreen.tsx
+import {
+    checkFavoriteElementStatus, // Import the function to check status
+    fetchElementDetails,
+    postThisElementIsViewed,
+    toggleFavoriteElement
+} from "@/api/api";
+import { DetailElement_t, ToggleFavoriteElementResponse } from "@/src/utils/types"; // Corrected path
+import { Button, Card, Divider, Spinner, Text } from "@ui-kitten/components"; // Added Spinner
+import { Href, useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Image, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { useTailwind } from "tailwind-rn";
 
+// --- Custom Hook for Element Details ---
+const useElementDetails = (elementIdParam: string | string[] | undefined) => {
+    const [elementData, setElementData] = useState<DetailElement_t | null>(null);
+    const [isFavorite, setIsFavorite] = useState<boolean | null>(null); // Separate state for favorite status
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isTogglingFavorite, setIsTogglingFavorite] = useState<boolean>(false); // Loading state for toggle action
+    const [error, setError] = useState<string | null>(null);
+    const [refreshing, setRefreshing] = useState<boolean>(false);
+    const router = useRouter();
+
+    // Parse elementId safely
+    const elementId = typeof elementIdParam === 'string' ? parseInt(elementIdParam, 10) : NaN;
+
+    const loadData = useCallback(async (refresh = false) => {
+        if (isNaN(elementId)) {
+            setError("Invalid Element ID");
+            setLoading(false);
+            setRefreshing(false);
+            return;
+        }
+
+        if (refresh) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
+        setError(null); // Clear previous errors
+
+        try {
+            // Mark as viewed and fetch details/status concurrently
+            await postThisElementIsViewed(elementId); // Mark as viewed first or concurrently
+            const [data, favoriteStatusResponse] = await Promise.all([
+                fetchElementDetails(elementId),
+                checkFavoriteElementStatus(elementId) // Fetch initial favorite status
+            ]);
+
+            if (data !== null) {
+                setElementData(data);
+                setError(null);
+            } else {
+                setElementData(null); // Clear data if fetch fails
+                setError("Could not fetch element data.");
+            }
+
+            if (favoriteStatusResponse !== null) {
+                setIsFavorite(favoriteStatusResponse.active); // Set favorite status from API
+            } else {
+                // Handle case where favorite status check fails (e.g., network error, 404 if not applicable)
+                // Decide default: null (unknown), or false? Let's use null for unknown.
+                setIsFavorite(null);
+                console.warn(`Could not fetch favorite status for element ${elementId}.`);
+            }
+
+        } catch (err) {
+            console.error("Error loading element data:", err);
+            setError("An error occurred while fetching data.");
+            setElementData(null); // Clear data on error
+            setIsFavorite(null); // Reset favorite status on error
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    }, [elementId]); // Depend on elementId
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]); // Run loadData when elementId changes
+
+    const goToPrevious = () => {
+        if (!isNaN(elementId) && elementId > 1) {
+            // Use replace to avoid building up history for prev/next navigation
+            router.replace(`/detailelement/${elementId - 1}` as Href);
+        }
+    };
+
+    const goToNext = () => {
+        // Consider element limit (e.g., 118) - Optional
+        if (!isNaN(elementId)) {
+            router.replace(`/detailelement/${elementId + 1}` as Href);
+        }
+    };
+
+    const handleToggleFavorite = async () => {
+        if (elementData === null || isNaN(elementId)) return; // Can't toggle if no element or invalid ID
+
+        setIsTogglingFavorite(true);
+        try {
+            const response: ToggleFavoriteElementResponse | null = await toggleFavoriteElement(elementId);
+            if (response !== null) {
+                // Update local state based on the response from the API
+                setIsFavorite(response.active);
+            } else {
+                // Handle toggle failure (show toast?)
+                console.error("Failed to toggle favorite status.");
+                // Optionally revert UI state or show error message
+            }
+        } catch (err) {
+            console.error("Error toggling favorite:", err);
+            // Handle error (show toast?)
+        } finally {
+            setIsTogglingFavorite(false);
+        }
+    };
+
+    return {
+        elementData,
+        isFavorite,
+        loading,
+        error,
+        refreshing, // Expose refreshing state
+        loadData, // Expose loadData for pull-to-refresh
+        goToPrevious,
+        goToNext,
+        handleToggleFavorite,
+        isTogglingFavorite, // Expose toggle loading state
+        goToPreviousDisabled: isNaN(elementId) || elementId <= 1,
+    };
+};
+
+
+// --- Main Screen Component ---
 const DetailElementScreen = () => {
-    const { elementId } = useLocalSearchParams()
-    const tw = useTailwind()
-    const { favoriteElement, loading, error, goToPrevious, goToNext, goToPreviousDisabled, handleToggleFavorite } = useElementDetails(Number(elementId))
+    const { elementId } = useLocalSearchParams();
+    const tw = useTailwind();
+    const {
+        elementData, // Renamed from favoriteElement
+        isFavorite, // New state for favorite status
+        loading,
+        error,
+        refreshing,
+        loadData,
+        goToPrevious,
+        goToNext,
+        goToPreviousDisabled,
+        handleToggleFavorite,
+        isTogglingFavorite, // Loading state for the toggle button
+    } = useElementDetails(elementId); // Pass param directly
+
+    // Loading Indicator for Toggle Button
+    const ToggleLoadingIndicator = (props: any): React.ReactElement => (
+        <View style={[props.style, styles.indicator]}>
+            <Spinner size='small' status='control' />
+        </View>
+    );
+
 
     if (loading) {
         return (
-            <View style={tw("flex-1 justify-center items-center")}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text style={tw("mt-4")}>Đang tải thông tin nguyên tố...</Text>
+            <View style={tw("flex-1 justify-center items-center bg-white/100 p-4")}>
+                <ActivityIndicator size="large" color={tw('text-purple-600/100').color as string} />
+                <Text style={tw("mt-4 text-gray-600/100")}>Loading Element Details...</Text>
             </View>
-        )
+        );
     }
 
-    if (error || !favoriteElement!.element) {
+    if (error || elementData === null) {
         return (
-            <View style={tw("flex-1 justify-center items-center p-4")}>
-                <Text category="h5" style={tw("text-red-500 text-center")}>
-                    {error || "Không tìm thấy thông tin nguyên tố"}
+            <View style={tw("flex-1 justify-center items-center bg-white/100 p-6")}>
+                <Text category="h6" style={tw("text-red-600/100 text-center mb-4")}>
+                    {error || "Element information not found."}
                 </Text>
+                <Button onPress={() => loadData()} status="primary" appearance="outline">
+                    Retry
+                </Button>
             </View>
-        )
+        );
     }
 
+    // Main content render
     return (
-        <ScrollView style={tw("flex-1 bg-gray-100/100")} showsVerticalScrollIndicator={false}>
-            <ElementHeader element={favoriteElement!.element} />
-            <ElementClassification element={favoriteElement!.element} />
-            <ElementPhysicalProps element={favoriteElement!.element} />
-            <ElementElectronicProps element={favoriteElement!.element} />
-            <ElementAtomicProps element={favoriteElement!.element} />
-            <ElementOtherInfo element={favoriteElement!.element} />
-            {/* Next & Previous Buttons */}
-            <View style={tw("flex-row justify-between p-4")}>
-                <Button onPress={goToPrevious} disabled={goToPreviousDisabled} style={tw("flex-1 mr-2")}>
+        <ScrollView
+            style={tw("flex-1 bg-gray-100/100")}
+            showsVerticalScrollIndicator={false}
+            refreshControl={ // Added RefreshControl
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => loadData(true)}
+                    colors={[tw('text-purple-600/100').color as string]}
+                    tintColor={tw('text-purple-600/100').color as string}
+                />
+            }
+        >
+            {/* Pass elementData to child components */}
+            <ElementHeader element={elementData} />
+            <ElementClassification element={elementData} />
+            <ElementPhysicalProps element={elementData} />
+            <ElementElectronicProps element={elementData} />
+            <ElementAtomicProps element={elementData} />
+            <ElementOtherInfo element={elementData} />
+
+            {/* Next, Previous & Favorite Buttons */}
+            <View style={tw("flex-row justify-between p-4 mt-2 mb-4")}>
+                <Button
+                    onPress={goToPrevious}
+                    disabled={goToPreviousDisabled || loading || refreshing}
+                    style={tw("flex-1 mr-2")}
+                    appearance="outline" // Less prominent style
+                >
                     Previous
                 </Button>
-                <Button status={favoriteElement!.active ? "danger" : "success"} style={tw("flex-1 mr-2")} onPress={handleToggleFavorite}>
-                    {favoriteElement!.active ? "Hủy Theo dõi" : "Theo dõi"}
+                {/* Favorite Button - uses isFavorite state */}
+                <Button
+                    status={isFavorite ? "danger" : "success"} // Use correct status based on isFavorite
+                    style={tw("flex-1")}
+                    onPress={handleToggleFavorite}
+                    disabled={isFavorite === null || isTogglingFavorite || loading || refreshing} // Disable if status unknown or during toggle/load
+                    accessoryLeft={isTogglingFavorite ? ToggleLoadingIndicator : undefined}
+                >
+                    {(evaProps) => (
+                        <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-semibold')]}>
+                            {isTogglingFavorite ? '...' : (isFavorite ? "Unfavorite" : "Favorite")}
+                        </Text>
+                    )}
                 </Button>
-                <Button onPress={goToNext} style={tw("flex-1 ml-2")}>
+                <Button
+                    onPress={goToNext}
+                    disabled={loading || refreshing} // Add disable check
+                    style={tw("flex-1 ml-2")}
+                    appearance="outline"
+                >
                     Next
                 </Button>
             </View>
         </ScrollView>
-    )
+    );
+};
+
+export default DetailElementScreen;
+
+
+// --- Child Components ---
+
+const defaultNA = "N/A"; // Default value for missing data
+
+// Helper to format potentially null/undefined numbers
+const formatValue = (value: number | string | null | undefined, unit: string = ""): string => {
+    if (value === null || value === undefined || value === "-") {
+        return defaultNA;
+    }
+    // Check if it's a number before adding unit, handle existing units
+    if (typeof value === 'number' && !isNaN(value)) {
+        return `${value}${unit ? ` ${unit}` : ''}`;
+    }
+    // If it's already a string, return it (might already have unit or be 'N/A')
+    return String(value);
+};
+
+
+interface ElementInfoCardProps {
+    title: string;
+    properties: PropertyPair[];
 }
-
-export default DetailElementScreen
-
-
-
-interface ElementPhysicalPropsProps {
-    element: DetailElement_t
-}
-
-// Component hiển thị đặc tính vật lý của nguyên tố
-const ElementPhysicalProps: React.FC<ElementPhysicalPropsProps> = ({ element }) => {
-    const tw = useTailwind()
-
-    const physicalProperties = [
-        { label: "Khối lượng nguyên tử", value: element.atomicMass },
-        { label: "Điểm nóng chảy", value: `${element.meltingPoint} K` },
-        { label: "Điểm sôi", value: `${element.boilingPoint} K` },
-        { label: "Mật độ", value: `${element.density} g/cm³` },
-        { label: "Trạng thái tiêu chuẩn", value: element.standardState },
-    ]
-
-    return <ElementInfoCard title="Đặc tính vật lý" properties={physicalProperties} />
-}
-
-interface ElementOtherInfoProps {
-    element: DetailElement_t
-}
-
-// Component hiển thị thông tin khác của nguyên tố
-const ElementOtherInfo: React.FC<ElementOtherInfoProps> = ({ element }) => {
-    const tw = useTailwind()
-
-    const otherProperties = [
-        { label: "Loại liên kết", value: element.bondingType },
-        { label: "Năm phát hiện", value: element.yearDiscovered },
-    ]
-
-    return <ElementInfoCard title="Thông tin khác" properties={otherProperties} />
-}
-
 
 type PropertyPair = {
-    label: string
-    value: string | number | React.ReactNode
-}
-interface ElementInfoCardProps {
-    title: string
-    properties: PropertyPair[]
-}
+    label: string;
+    value: string | number | React.ReactNode | null | undefined; // Allow null/undefined
+    unit?: string; // Optional unit
+};
 
-// Component tái sử dụng để hiển thị các thông tin nguyên tố theo nhóm
 const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) => {
-    const tw = useTailwind()
+    const tw = useTailwind();
 
     return (
-        <Card style={tw("m-4")}>
-            <Text category="h6" style={tw("mb-2 font-bold")}>
+        <Card style={tw("m-4 bg-white/100 rounded-lg shadow")}>
+            <Text category="h6" style={tw("mb-3 font-bold text-gray-800/100")}>
                 {title}
             </Text>
-            <Divider style={tw("mb-2")} />
+            <Divider style={tw("mb-3 bg-gray-200/100")} />
 
             {properties.map((prop, index) => (
-                <View key={index} style={tw("flex-row justify-between mb-2")}>
-                    <Text>{prop.label}:</Text>
-                    <Text>{prop.value as string}</Text>
+                <View key={`${title}-${index}-${prop.label}`} style={tw("flex-row justify-between items-center mb-2 py-1")}>
+                    <Text style={tw("text-gray-600/100 text-sm")}>{prop.label}:</Text>
+                    {/* Handle ReactNode separately */}
+                    {React.isValidElement(prop.value) ? (
+                        prop.value
+                    ) : (
+                        // Use formatValue for strings/numbers/null/undefined
+                        <Text style={tw("text-gray-800/100 font-medium text-sm text-right")}>
+                            {formatValue(prop.value as string | number | null | undefined, prop.unit)}
+                        </Text>
+                    )}
                 </View>
             ))}
         </Card>
-    )
-}
+    );
+};
 
 
 interface ElementHeaderProps {
-    element: DetailElement_t
+    element: DetailElement_t;
 }
 
-// Component hiển thị thông tin cơ bản của nguyên tố ở phần đầu
 const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
-    const tw = useTailwind()
+    const tw = useTailwind();
 
     return (
-        <Card style={tw("m-4")}>
+        // Use a different background or style for the header card
+        <View style={tw("m-4 p-5 bg-gradient-to-br from-purple-600/100 to-indigo-600/100 rounded-lg shadow-lg")}>
             <View style={tw("flex-row justify-between items-center")}>
-                <View>
-                    <Text category="h1" style={tw("text-3xl font-bold")}>
+                <View style={tw("flex-shrink pr-4")}>
+                    {/* Larger Symbol */}
+                    <Text style={tw("text-6xl font-bold text-white/100")}>
                         {element.symbol}
                     </Text>
-                    <Text category="h5">{element.name}</Text>
-                    <Text category="s1">Số nguyên tử: {element.atomicNumber}</Text>
+                    <Text category="h5" style={tw("text-white/100 font-semibold mt-1")}>{element.name}</Text>
+                    <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Atomic Number: {element.atomicNumber}</Text>
                 </View>
 
-                {/* Hiển thị hình ảnh nguyên tố nếu có */}
-                {element.image && (
-                    <Image source={{ uri: element.image }} style={tw("w-24 h-24 rounded-lg")} resizeMode="contain" />
+                {/* Element Image */}
+                {element.image ? (
+                    <Image
+                        source={{ uri: element.image }}
+                        style={tw("w-24 h-24 rounded-lg border-2 border-white/100 bg-white/20")} // Added background/border
+                        resizeMode="contain"
+                    // Add default source?
+                    />
+                ) : (
+                    // Placeholder if no image
+                    <View style={tw("w-24 h-24 rounded-lg border-2 border-white/100 bg-white/20 justify-center items-center")}>
+                        <Text style={tw("text-white/50")}>No Image</Text>
+                    </View>
                 )}
             </View>
-        </Card>
-    )
-}
+        </View>
+    );
+};
 
-interface ElementElectronicPropsProps {
-    element: DetailElement_t
-}
-
-// Component hiển thị đặc tính điện tử của nguyên tố
-const ElementElectronicProps: React.FC<ElementElectronicPropsProps> = ({ element }) => {
-
-
-    // Hàm để hiển thị mảng trạng thái oxi hóa
-    const renderOxidationStates = (states: number[]) => {
-        return states.join(", ")
-    }
-
-    const electronicProperties = [
-        { label: "Cấu hình điện tử", value: element.electronicConfiguration },
-        { label: "Độ âm điện", value: element.electronegativity },
-        { label: "Năng lượng ion hóa", value: `${element.ionizationEnergy} eV` },
-        { label: "Ái lực điện tử", value: `${element.electronAffinity} eV` },
-        { label: "Trạng thái oxi hóa", value: renderOxidationStates(element.oxidationStates) },
-    ]
-
-    return <ElementInfoCard title="Đặc tính điện tử" properties={electronicProperties} />
-}
 
 interface ElementClassificationProps {
-    element: DetailElement_t
+    element: DetailElement_t;
 }
 
-// Component hiển thị thông tin phân loại của nguyên tố
 const ElementClassification: React.FC<ElementClassificationProps> = ({ element }) => {
+    const classificationProperties: PropertyPair[] = [
+        { label: "Classification", value: element.classification },
+        { label: "Group", value: element.groupNumber },
+        { label: "Period", value: element.period },
+        { label: "Block", value: element.block },
+    ];
+
+    return <ElementInfoCard title="Classification" properties={classificationProperties} />;
+};
 
 
-    const classificationProperties = [
-        { label: "Phân loại", value: element.classification },
-        { label: "Nhóm", value: element.groupNumber },
-        { label: "Chu kỳ", value: element.period },
-        { label: "Khối", value: element.block },
-    ]
-
-    return <ElementInfoCard title="Phân loại" properties={classificationProperties} />
+interface ElementPhysicalPropsProps {
+    element: DetailElement_t;
 }
+
+const ElementPhysicalProps: React.FC<ElementPhysicalPropsProps> = ({ element }) => {
+    const physicalProperties: PropertyPair[] = [
+        { label: "Atomic Mass", value: element.atomicMass, unit: "u" }, // Assuming atomicMass is number-like string or number
+        { label: "Melting Point", value: element.meltingPoint, unit: "K" },
+        { label: "Boiling Point", value: element.boilingPoint, unit: "K" },
+        { label: "Density", value: element.density, unit: "g/cm³" },
+        { label: "Standard State", value: element.standardState },
+    ];
+
+    return <ElementInfoCard title="Physical Properties" properties={physicalProperties} />;
+};
+
+
+interface ElementElectronicPropsProps {
+    element: DetailElement_t;
+}
+
+const ElementElectronicProps: React.FC<ElementElectronicPropsProps> = ({ element }) => {
+    const renderOxidationStates = (states: number[] | null | undefined): string => {
+        if (!states || states.length === 0) {
+            return defaultNA;
+        }
+        return states.join(", ");
+    };
+
+    const electronicProperties: PropertyPair[] = [
+        { label: "Configuration", value: element.electronicConfiguration },
+        { label: "Electronegativity", value: element.electronegativity }, // Pauling scale usually unitless
+        { label: "Ionization Energy", value: element.ionizationEnergy, unit: "eV" },
+        { label: "Electron Affinity", value: element.electronAffinity, unit: "eV" },
+        { label: "Oxidation States", value: renderOxidationStates(element.oxidationStates) },
+    ];
+
+    return <ElementInfoCard title="Electronic Properties" properties={electronicProperties} />;
+};
 
 
 interface ElementAtomicPropsProps {
-    element: DetailElement_t
+    element: DetailElement_t;
 }
 
-// Component hiển thị kích thước nguyên tử
 const ElementAtomicProps: React.FC<ElementAtomicPropsProps> = ({ element }) => {
+    const atomicProperties: PropertyPair[] = [
+        { label: "Atomic Radius", value: element.atomicRadius, unit: "pm" },
+        { label: "Ion Radius", value: element.ionRadius, unit: "pm" }, // Note: type is string | null
+        { label: "Van der Waals Radius", value: element.vanDelWaalsRadius, unit: "pm" },
+    ];
+
+    return <ElementInfoCard title="Atomic Size" properties={atomicProperties} />;
+};
 
 
-    const atomicProperties = [
-        { label: "Bán kính nguyên tử", value: `${element.atomicRadius} pm` },
-        { label: "Bán kính ion", value: `${element.ionRadius} pm` },
-        { label: "Bán kính Van der Waals", value: `${element.vanDelWaalsRadius} pm` },
-    ]
-
-    return <ElementInfoCard title="Kích thước nguyên tử" properties={atomicProperties} />
+interface ElementOtherInfoProps {
+    element: DetailElement_t;
 }
 
-// Custom hook để lấy thông tin chi tiết của nguyên tố
-const useElementDetails = (elementId: number) => {
-    const [favoriteElement, setElement] = useState<FavoriteElement_t | null>(null)
-    const [loading, setLoading] = useState<boolean>(true)
-    const [error, setError] = useState<string | null>(null)
-    const router = useRouter()
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true)
-            await postThisElementIsViewed(elementId);
-            const data = await fetchFavoriteElementDetail(elementId);
+const ElementOtherInfo: React.FC<ElementOtherInfoProps> = ({ element }) => {
+    const otherProperties: PropertyPair[] = [
+        { label: "Bonding Type", value: element.bondingType },
+        { label: "Year Discovered", value: element.yearDiscovered },
+    ];
 
-            if (data !== null) {
-                setElement(data)
-                setError(null)
-            } else {
-                setError("Không thể lấy dữ liệu nguyên tố")
-            }
+    return <ElementInfoCard title="Other Information" properties={otherProperties} />;
+};
 
-            setLoading(false)
-        }
 
-        loadData()
-    }, [elementId])
-    const goToPrevious = () => {
-        if (elementId > 1) {
-            router.replace(`/detailelement/${elementId - 1}` as Href)
-        }
-
-    }
-
-    const goToNext = () => {
-        router.push(`/detailelement/${elementId + 1}` as Href)
-    }
-    const handleToggleFavorite = async () => {
-        if (favoriteElement) {
-            const updatedElement = { ...favoriteElement, active: !favoriteElement.active }
-            setElement(updatedElement)
-            await postThisElementFavoriteToggle(elementId)
-        }
-    }
-    return {
-        favoriteElement,
-        loading,
-        error,
-        goToPrevious,
-        goToNext,
-        handleToggleFavorite,
-        goToPreviousDisabled: elementId <= 1
-    }
-}
-
+// Add StyleSheet for spinner positioning
+const styles = StyleSheet.create({
+    indicator: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+});

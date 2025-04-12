@@ -1,5 +1,7 @@
+import authCheck from "@/src/utils/authCheck";
 import GlobalStorage from "@/src/utils/GlobalStorage";
 import axiosClient from "axios";
+import { router } from "expo-router";
 
 
 /**
@@ -14,10 +16,10 @@ const instance = axiosClient.create({
 
 instance.interceptors.request.use(function (config) {
     // console.log(GlobalStorage.getItem('access_token'));
-    
+
     if (GlobalStorage.getItem('access_token')) {
         config.headers.Authorization = 'Bearer ' + GlobalStorage.getItem('access_token');
-    
+
     }
     if (!config.headers.Accept && config.headers["Content-Type"]) {
         config.headers.Accept = "application/json";
@@ -34,8 +36,10 @@ instance.interceptors.response.use(
     (res) => res,
     async (error) => {
         if (error.status === 401) {
-            // console.log("401");
+            router.replace("/login");
             await GlobalStorage.removeItem("access_token");
+            await authCheck.logout();
+
             return;
         }
         throw error;

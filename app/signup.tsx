@@ -15,6 +15,8 @@ export default function SignUpScreen() {
         secureTextEntry,
         toggleSecureEntry,
         handleSignUp,
+        confirmPassword,
+        isLoading,
     } = useSignUp();
 
     const renderIcon = (props: IconProps) => (
@@ -36,8 +38,8 @@ export default function SignUpScreen() {
             <View style={tailwind('w-full px-6')}>
                 <Input
                     placeholder="Tên của bạn"
-                    value={formData.userName}
-                    onChangeText={(value) => handleChange('userName', value)}
+                    value={formData.name}
+                    onChangeText={(value) => handleChange('name', value)}
                     style={tailwind('mb-4')}
                 />
                 <Input
@@ -58,13 +60,13 @@ export default function SignUpScreen() {
                 />
                 <Input
                     placeholder="Nhập lại mật khẩu"
-                    value={formData.confirmPassword}
+                    value={confirmPassword}
                     secureTextEntry={true}
                     textContentType={'password'}
                     onChangeText={(value) => handleChange('confirmPassword', value)}
                     style={tailwind('mb-4')}
                 />
-                <Button style={tailwind('mt-4')} status="info" onPress={() => handleSignUp(router)}>
+                <Button disabled={isLoading} style={tailwind('mt-4')} status="info" onPress={handleSignUp}>
                     Đăng ký ngay
                 </Button>
             </View>

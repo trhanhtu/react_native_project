@@ -139,7 +139,7 @@ export interface PodcastComment {
 }
 
 export interface Podcast_t {
-    id: number,
+    id: string,
     title: string,
     audioUrl: string,
     transcript: string,
@@ -157,14 +157,19 @@ export interface ProfileData {
 }
 
 export interface ViewedPodcast_t {
-    id: number
     title: string;
     elementName: string;
     lastSeen: string;
 }
 
 export interface ViewedElement_t {
-    id: number
+    elementName: string;
+    symbol: string;
+    image: string;
+    lastSeen: string;
+}
+
+export interface UserProfileElement {
     elementName: string;
     symbol: string;
     image: string;
@@ -172,13 +177,11 @@ export interface ViewedElement_t {
 }
 
 export interface FavoritePodcast_t {
-    id: number
     title: string;
     elementName: string;
 }
 
 export interface FavoriteElement_t {
-    id: number
     elementName: string;
     symbol: string;
     image: string;
@@ -317,22 +320,3 @@ export interface ChangePasswordRequest {
 export interface UpdateUserRoleRequest {
     role: string; // Assuming role is passed as string e.g., "ADMIN", "USER"
 }
-
-// --- Helper Type Definitions (Inferred from Swagger examples for favorites) ---
-
-export interface CheckFavoriteStatusResponse {
-    active: boolean;
-}
-
-// Specific types based on Swagger examples for check/toggle
-export interface CheckFavoritePodcastResponse extends CheckFavoriteStatusResponse {
-    podcastId: number;
-}
-
-export interface ToggleFavoritePodcastResponse extends CheckFavoritePodcastResponse { }
-
-export interface CheckFavoriteElementResponse extends CheckFavoriteStatusResponse {
-    elementId: number;
-}
-
-export interface ToggleFavoriteElementResponse extends CheckFavoriteElementResponse { }

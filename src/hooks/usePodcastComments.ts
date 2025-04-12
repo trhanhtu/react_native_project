@@ -1,9 +1,9 @@
 // hooks/usePodcastComments.ts
-import { fetchCommentsAPI, postPodcastComment } from '@/api/api';
+import { fetchPodcastComments, postPodcastComment } from '@/api/api';
 import { useCallback, useEffect, useState } from 'react';
 import { PageResult, PaginationMeta, PodcastComment } from '../utils/types';
 
-export const usePodcastComments = (podcastId: string | undefined, initialPageSize = 5) => {
+export const usePodcastComments = (podcastId: number, initialPageSize = 5) => {
     const [comments, setComments] = useState<PodcastComment[]>([]);
     const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | null>(null);
     const [isLoadingInitial, setIsLoadingInitial] = useState<boolean>(true);
@@ -11,7 +11,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
     const [error, setError] = useState<string | null>(null);
 
     // Hàm fetch bình luận (gọi API function và xử lý kết quả null)
-    const fetchCommentsPage = useCallback(async (id: string, page = 1, pageSize = 5, appending = false) => {
+    const fetchCommentsPage = useCallback(async (id: number, page = 1, pageSize = 5, appending = false) => {
         if (!appending) {
             setIsLoadingInitial(true);
             // Không reset error ở đây ngay, chỉ reset nếu fetch thành công
@@ -20,7 +20,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
         }
 
         // Gọi hàm API đã có sẵn try-catch
-        const result: PageResult<PodcastComment> | null = await fetchCommentsAPI(podcastId ?? "1", page, pageSize);
+        const result: PageResult<PodcastComment> | null = await fetchPodcastComments(page, pageSize, undefined, podcastId);
 
         // Xử lý kết quả
         if (result !== null) {
@@ -77,7 +77,7 @@ export const usePodcastComments = (podcastId: string | undefined, initialPageSiz
 
     const handleCommentSubmit = async (text: string) => {
         await postPodcastComment(podcastId, text)
-        await fetchCommentsPage(podcastId ?? "1",1,5);
+        await fetchCommentsPage(podcastId ?? "1", 1, 5);
     };
     return {
         comments,
