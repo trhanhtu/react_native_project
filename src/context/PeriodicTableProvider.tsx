@@ -1,17 +1,17 @@
 import { fetchAllElements } from "@/api/api";
 import { createContext, useContext, useEffect, useState } from "react";
 import GetRandomBetween from "../utils/random";
-import { Block_t, Classification_t, DetailElement_t, Group_t, Period_t, ViewElement_t } from "../utils/types";
+import { Block_t, CellElement_t, Classification_t, DetailElement_t, Group_t, Period_t } from "../utils/types";
 
 type PeriodicTableContextType = {
-    elements: ViewElement_t[];
+    elements: CellElement_t[];
     loading: boolean;
 };
 
 const PeriodicTableContext = createContext<PeriodicTableContextType | undefined>(undefined);
 
 export const PeriodicTableProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [elements, setElements] = useState<ViewElement_t[]>([]);
+    const [elements, setElements] = useState<CellElement_t[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -41,7 +41,7 @@ export const usePeriodicTable = () => {
     return context;
 };
 
-function GenerateDummy(): ViewElement_t[] {
+function GenerateDummy(): CellElement_t[] {
     return Array.from({ length: 118 }, (_, index) => {
         const _meltingPoint = Math.random() * 6001
         const _boilingPoint = Math.random() * 6001 + _meltingPoint;
@@ -56,7 +56,7 @@ function GenerateDummy(): ViewElement_t[] {
             classification: GenerateClass(),
             isLightOn: true,
 
-        } as ViewElement_t;
+        } as CellElement_t;
     })
 }
 function GenerateBlock(): Block_t {
@@ -102,8 +102,9 @@ function GeneratePeriod(): Period_t {
     if (value === 8) return "act";
     return value.toString() as Period_t;
 }
-function ConvertDetailElementArrayToViewElementArray(data: DetailElement_t[]): ViewElement_t[] {
+function ConvertDetailElementArrayToViewElementArray(data: DetailElement_t[]): CellElement_t[] {
     return data.map((element) => ({
+        elementName: element.name,
         symbol: element.symbol,
         image: element.image,
         atomicNumber: element.atomicNumber,

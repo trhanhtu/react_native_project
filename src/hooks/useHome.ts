@@ -2,11 +2,11 @@ import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { IndexPath } from "@ui-kitten/components";
 import { useRouter } from "expo-router";
 import { useEffect, useReducer } from "react";
-import { ViewElement_t } from "../utils/types";
+import { CellElement_t } from "../utils/types";
 
 
 export type HomeState = {
-    elements: ViewElement_t[],
+    elements: CellElement_t[],
     selectedBlockIndex: IndexPath,
     selectedGroupIndex: IndexPath,
     selectedTemperature: number,
@@ -15,7 +15,7 @@ export type HomeState = {
     isShowImage: boolean,
 }
 export type HomeAction =
-    | { type: "SET_ELEMENTS", payload: ViewElement_t[] }
+    | { type: "SET_ELEMENTS", payload: CellElement_t[] }
     | { type: "SET_BLOCK", payload: IndexPath }
     | { type: "CLEAR_FILTER" }
     | { type: "SET_GROUP", payload: IndexPath }

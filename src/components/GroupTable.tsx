@@ -7,7 +7,7 @@ import { useLayout } from "../context/ApplicationLayoutProvider";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import GenerateElementUIs from "../utils/GenerateArrayElementUI";
 import CustomStyles from "../utils/styles";
-import { Group_t, ViewElement_t } from "../utils/types";
+import { CellElement_t, Group_t } from "../utils/types";
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
@@ -32,7 +32,7 @@ const GroupTable: React.FC = React.memo(
         }
         console.log(group);
         
-        const filteredElements: ViewElement_t[] = [];
+        const filteredElements: CellElement_t[] = [];
         elements.forEach(element => {
             
             if (group === "-" || element.groupNumber === group) {

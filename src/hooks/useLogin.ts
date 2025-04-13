@@ -48,6 +48,7 @@ export default function useLogin() {
         try {
             // Call login API with the formData object
             const loginResponse: LoginResponse | null = await login(formData);
+            
 
             if (loginResponse !== null) {
                 // Login successful, store user data
@@ -59,15 +60,16 @@ export default function useLogin() {
                 // Provide a default avatar if null/empty, using ID or name for consistency
                 GlobalStorage.setItem("avatar", loginResponse.avatar || `https://picsum.photos/seed/${loginResponse.id || loginResponse.name}/200`);
                 GlobalStorage.setItem("role", loginResponse.role);
-                GlobalStorage.setItem("isActive", loginResponse.isActive.toString()); // Store isActive status
+                GlobalStorage.setItem("isActive", loginResponse.active.toString()); // Store isActive status
 
                 // Optional: Check if user is active before navigating
-                if (!loginResponse.isActive) {
+                if (!loginResponse.active) {
                     toastShow("Tài khoản của bạn chưa được kích hoạt hoặc đã bị khóa.", "error");
                     // Optionally clear storage or logout here if inactive users shouldn't proceed
                     // GlobalStorage.clearAll(); // Example
                 } else {
                     toastShow("Đăng nhập thành công!", "success");
+                   
                     router.replace("/main" as Href); // Navigate to main screen
                 }
 

@@ -7,7 +7,7 @@ import { useLayout } from "../context/ApplicationLayoutProvider";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import GenerateElementUIs from "../utils/GenerateArrayElementUI";
 import CustomStyles from "../utils/styles";
-import { Classification_t, ViewElement_t } from "../utils/types";
+import { CellElement_t, Classification_t } from "../utils/types";
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
@@ -30,7 +30,7 @@ const ClassificationTable: React.FC = React.memo(
                 <LoadingBars />
             )
         }
-        const filteredElements: ViewElement_t[] = [];
+        const filteredElements: CellElement_t[] = [];
         elements.forEach(element => {
             if (currentClassification === "-" || element.classification === currentClassification) {
                 element.isLightOn = true;

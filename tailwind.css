@@ -46,11 +46,6 @@
   margin: 5%
 }
 
-.mx-1 {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem
-}
-
 .mx-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem
@@ -185,6 +180,10 @@
   margin-top: 1rem
 }
 
+.mt-5 {
+  margin-top: 1.25rem
+}
+
 .mt-5p {
   margin-top: 5%
 }
@@ -195,10 +194,6 @@
 
 .mt-8 {
   margin-top: 2rem
-}
-
-.mt-5 {
-  margin-top: 1.25rem
 }
 
 .block {
@@ -229,6 +224,10 @@
   height: 6rem
 }
 
+.h-3 {
+  height: 0.75rem
+}
+
 .h-32 {
   height: 8rem
 }
@@ -249,10 +248,6 @@
   height: 100%
 }
 
-.h-3 {
-  height: 0.75rem
-}
-
 .w-1\/2 {
   width: 50%
 }
@@ -269,6 +264,10 @@
   width: 91.666667%
 }
 
+.w-12 {
+  width: 3rem
+}
+
 .w-16 {
   width: 4rem
 }
@@ -283,6 +282,10 @@
 
 .w-24 {
   width: 6rem
+}
+
+.w-3 {
+  width: 0.75rem
 }
 
 .w-3\/4 {
@@ -311,14 +314,6 @@
 
 .w-full {
   width: 100%
-}
-
-.w-12 {
-  width: 3rem
-}
-
-.w-3 {
-  width: 0.75rem
 }
 
 .flex-1 {
@@ -435,9 +430,8 @@
   border-top-width: 1px
 }
 
-.border-gray-300 {
-  --tw-border-opacity: 1;
-  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1))
+.border-gray-200\/100 {
+  border-color: rgb(229 231 235 / 1)
 }
 
 .border-gray-300\/100 {
@@ -446,6 +440,10 @@
 
 .border-gray-700\/100 {
   border-color: rgb(55 65 81 / 1)
+}
+
+.border-gray-800\/100 {
+  border-color: rgb(31 41 55 / 1)
 }
 
 .border-gray-900\/100 {
@@ -470,10 +468,6 @@
 
 .border-white\/100 {
   border-color: rgb(255 255 255 / 1)
-}
-
-.border-gray-800\/100 {
-  border-color: rgb(31 41 55 / 1)
 }
 
 .bg-amber-100\/100 {
@@ -858,6 +852,10 @@
   line-height: 1
 }
 
+.text-\[8px\] {
+  font-size: 8px
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem
@@ -881,10 +879,6 @@
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem
-}
-
-.text-\[8px\] {
-  font-size: 8px
 }
 
 .font-bold {
@@ -1018,6 +1012,10 @@
   color: rgb(252 165 165 / 1)
 }
 
+.text-red-400\/100 {
+  color: rgb(248 113 113 / 1)
+}
+
 .text-red-500\/100 {
   color: rgb(239 68 68 / 1)
 }
@@ -1039,18 +1037,14 @@
   color: rgb(255 255 255 / 0.5)
 }
 
-.text-red-400\/100 {
-  color: rgb(248 113 113 / 1)
-}
-
 .underline {
   text-decoration-line: underline
 }
 
-.opacity-80 {
-  opacity: 0.8
-}
-
 .opacity-50 {
   opacity: 0.5
+}
+
+.opacity-80 {
+  opacity: 0.8
 }

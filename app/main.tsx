@@ -4,6 +4,7 @@ import GroupTable from "@/src/components/GroupTable";
 import HistoryTable from "@/src/components/HistoryTable";
 import ImageTable from "@/src/components/ImageTable";
 import PeriodTable from "@/src/components/PeriodTable";
+import PodcastTable from "@/src/components/PodcastTable";
 import TemperatureTable from "@/src/components/TemperatureTable";
 import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { PeriodicTableProvider } from "@/src/context/PeriodicTableProvider";
@@ -13,7 +14,6 @@ import { useNavigation } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import HomeScreen from "./home";
-import PodcastScreen from "./podcast";
 import ProfileScreen from "./profile";
 import GlobalSearchScreen from "./search";
 
@@ -34,7 +34,7 @@ const screens = [
     { name: "Nhiệt độ", component: TemperatureTable, isPortrait: false },
     { name: "phân loại", component: ClassificationTable, isPortrait: false },
     { name: "phân lớp", component: BlockTable, isPortrait: false },
-    { name: "podcast", component: PodcastScreen, isPortrait: true },
+    { name: "podcast", component: PodcastTable, isPortrait: false },
 ];
 
 const DrawerLayout = () => {

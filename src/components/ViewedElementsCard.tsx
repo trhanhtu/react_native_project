@@ -46,14 +46,14 @@ const ViewedElementsCard: React.FC<ViewedElementsCardProps> = ({
                                         // Pass necessary props to ElementItem
                                         // It likely needs symbol, elementName, image, atomicNumber etc.
                                         item={{
-                                            atomicNumber: item.id,
+                                            atomicNumber: item.elementId,
                                             symbol: item.symbol,
                                             elementName: item.elementName,
                                             image: item.image,
                                             // Add other fields ElementItem expects
                                         }}
                                         isFavorite={false} // Viewed items are not necessarily favorite
-                                        onPress={() => onPressElement(item.id)} // Pass number ID
+                                        onPress={() => onPressElement(item.elementId)} // Pass number ID
                                         lastSeen={item.lastSeen} // Pass lastSeen if ElementItem uses it
                                     />
                                 </View>

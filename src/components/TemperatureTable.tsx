@@ -7,7 +7,7 @@ import { Style, useTailwind } from "tailwind-rn";
 import { useLayout } from '../context/ApplicationLayoutProvider';
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import CustomStyles from '../utils/styles';
-import { ViewElement_t } from '../utils/types';
+import { CellElement_t } from '../utils/types';
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
@@ -48,7 +48,7 @@ const TemperatureTable: React.FC = React.memo(
 )
 export default TemperatureTable;
 
-function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style, router: Router): React.ReactNode[] {
+function GenerateElementUIs(elements: CellElement_t[], currentTemperature: number, tailwind: (_classNames: string) => Style, router: Router): React.ReactNode[] {
     return elements.map((element, index) => {
         const elementBg = GetBackgroundColor(element, currentTemperature);
         return (
@@ -63,7 +63,7 @@ function GenerateElementUIs(elements: ViewElement_t[], currentTemperature: numbe
     })
 }
 
-function GetBackgroundColor(element: ViewElement_t, currentTemperature: number): string {
+function GetBackgroundColor(element: CellElement_t, currentTemperature: number): string {
     if (element.boilingPoint === element.meltingPoint && ~~element.meltingPoint === 0)
         return "bg-gray-300/100";
     if (currentTemperature < element.meltingPoint)

@@ -41,8 +41,9 @@ instance.interceptors.response.use(
             await authCheck.logout();
 
             return;
+        }else{
+            throw error;
         }
-        throw error;
     }
 );
 

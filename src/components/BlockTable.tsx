@@ -7,7 +7,7 @@ import { useLayout } from "../context/ApplicationLayoutProvider";
 import { usePeriodicTable } from "../context/PeriodicTableProvider";
 import GenerateElementUIs from "../utils/GenerateArrayElementUI";
 import CustomStyles from "../utils/styles";
-import { Block_t, ViewElement_t } from "../utils/types";
+import { Block_t, CellElement_t } from "../utils/types";
 import LoadingBars from "./LoadingBars";
 import PeriodicTableFrame from "./PeriodicTableFrame";
 
@@ -30,7 +30,7 @@ const BlockTable: React.FC = React.memo(
                 <LoadingBars />
             )
         }
-        const filteredElements: ViewElement_t[] = [];
+        const filteredElements: CellElement_t[] = [];
         elements.forEach(element => {
             if (currentBlock === "-" || element.block === currentBlock) {
                 element.isLightOn = true;

@@ -23,7 +23,174 @@ import {
     View
 } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+// --- Main Screen Component ---
+const PodcastPlayerScreen: React.FC = () => {
+    const tailwind = useTailwind();
+    const router = useRouter();
+    const params = useLocalSearchParams<{ podcastId?: string }>();
+    const podcastId = Number(params.podcastId ?? 1);
 
+    // State for active tab
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [repeatMode, setRepeatMode] = useState<RepeatMode>('off');
+    // --- Custom Hooks ---
+    const {
+        podcastData,
+        isLoading: isPodcastLoading,
+        error: podcastError,
+    } = useDetailPodcast(podcastId);
+
+    const {
+        comments,
+        isLoadingInitial: isCommentsLoading,
+        isFetchingMore: isFetchingMoreComments,
+        error: commentsError,
+        fetchMoreComments,
+        handleCommentSubmit,
+        loadingLikeCommentId,
+        onLikePodcastComment,
+    } = usePodcastComments(podcastId);
+
+    const {
+        soundObject,
+        isPlaying,
+        isAudioLoading,
+        audioError,
+        playbackStatus,
+        formattedPosition,
+        formattedDuration,
+        handlePlayPause,
+        handleSeekStart,
+        handleSeekComplete,
+    } = useAudioPlayer(podcastData?.audioUrl);
+
+    // --- Render Loading State ---
+    if (isPodcastLoading) {
+        return <LoadingIndicator tailwind={tailwind} />;
+    }
+
+    // --- Render Error State ---
+    if (podcastError) {
+        return <ErrorDisplay tailwind={tailwind} error={podcastError} onBack={() => router.back()} />;
+    }
+
+    // --- Render Function for Empty Comments ---
+    const renderEmptyComments = () => {
+        if (!isCommentsLoading && !commentsError && comments && comments.length === 0) {
+            return <CommentsEmptyState tailwind={tailwind} />;
+        }
+        return null;
+    };
+
+    // --- Render Function for Empty Transcript ---
+    const renderEmptyTranscript = () => {
+        if (!podcastData?.transcript) {
+            return <TranscriptEmptyState tailwind={tailwind} />;
+        }
+        return null;
+    };
+    const handleRepeatModeChange = (newMode: RepeatMode) => {
+        console.log("Parent received repeat mode change:", newMode);
+        setRepeatMode(newMode);
+        // NOTE: "Repeat All" logic (restarting playlist, etc.)
+        // would typically be handled HERE or in a higher-level
+        // component that manages the playlist, based on the `newMode === 'all'` condition
+        // and potentially the `didJustFinish` status from useAudioPlayer.
+        // Since this screen only plays one podcast, 'all' currently acts just as a UI state step.
+    };
+    // --- Render Main UI ---
+    return (
+        <SafeAreaView style={[styles.container, tailwind('flex-1 bg-gray-900/100')]}>
+            <ScreenHeader tailwind={tailwind} onBack={() => router.back()} />
+
+            {/* Podcast Info and Audio Controls */}
+            <View style={tailwind('px-4')}>
+                <PodcastInfoCard
+                    tailwind={tailwind}
+                    podcastData={podcastData}
+                    podcastId={podcastId}
+                />
+                <AudioPlayerControlsWrapper
+                    podcastId={podcastId}
+                    tailwind={tailwind}
+                    audioUrl={podcastData?.audioUrl}
+                    isPlaying={isPlaying}
+                    isAudioLoading={isAudioLoading}
+                    audioError={audioError}
+                    playbackStatus={playbackStatus}
+                    formattedPosition={formattedPosition}
+                    formattedDuration={formattedDuration}
+                    handlePlayPause={handlePlayPause}
+                    handleSeekStart={handleSeekStart}
+                    handleSeekComplete={handleSeekComplete}
+                    soundObject={soundObject}
+                    repeatMode={repeatMode}
+                    onRepeatModeChange={handleRepeatModeChange}
+                />
+            </View>
+
+            {/* UI Kitten TabView */}
+            <View style={tailwind('flex-1 px-4 mt-4')}>
+                <TabView
+                    selectedIndex={selectedIndex}
+                    onSelect={index => setSelectedIndex(index)}
+                    style={[tailwind('flex-1 rounded-xl overflow-hidden'), CustomStyles.shadow]}
+                    tabBarStyle={tailwind('bg-gray-800/100')}
+                    indicatorStyle={tailwind('bg-purple-600/100')}
+                >
+                    <Tab title={() => <CommentsTabTitle tailwind={tailwind} />}>
+                        <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
+                            <CommentsHeader
+                                tailwind={tailwind}
+                                isCommentsLoading={isCommentsLoading}
+                                commentsError={commentsError}
+                            />
+
+                            <FlatList
+                                showsVerticalScrollIndicator={false}
+                                data={comments}
+                                renderItem={({ item }: { item: PodcastComment }) => (
+                                    <View style={tailwind('mb-2')}>
+                                        <CommentItem comment={item} onLikeComment={onLikePodcastComment} loadingLikeCommentId={loadingLikeCommentId} />
+                                    </View>
+                                )}
+                                keyExtractor={(item) => item.id.toString()}
+                                onEndReached={fetchMoreComments}
+                                onEndReachedThreshold={0.5}
+                                ListFooterComponent={
+                                    <>
+                                        {isFetchingMoreComments && (
+                                            <View style={tailwind('py-6 items-center')}>
+                                                <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
+                                            </View>
+                                        )}
+                                        <View style={tailwind('h-4')} />
+                                    </>
+                                }
+                                ListEmptyComponent={renderEmptyComments}
+                                contentContainerStyle={tailwind('pb-20')} // Add more padding to accommodate the input
+                            />
+
+                            {/* Add the comment input at the bottom */}
+                            <View style={tailwind('absolute bottom-0 left-0 right-0 px-2 pb-2 bg-gray-900/100')}>
+                                <CommentInput onSubmit={handleCommentSubmit} />
+                            </View>
+                        </View>
+                    </Tab>
+                    <Tab title={() => <TranscriptTabTitle tailwind={tailwind} />}>
+                        <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
+                            {podcastData?.transcript ? (
+                                <TranscriptItem transcript={podcastData.transcript} />
+                            ) : (
+                                renderEmptyTranscript()
+                            )}
+                        </View>
+                    </Tab>
+                </TabView>
+            </View>
+        </SafeAreaView>
+    );
+};
 // --- Helper Functions / Sub-Components (defined within the same file) ---
 
 // --- Loading State ---
@@ -118,9 +285,9 @@ interface AudioPlayerControlsWrapperProps {
     onRepeatModeChange: (mode: RepeatMode) => void; // Add handler
 }
 const AudioPlayerControlsWrapper = ({
-    soundObject, 
-    repeatMode, 
-    onRepeatModeChange, 
+    soundObject,
+    repeatMode,
+    onRepeatModeChange,
     podcastId, tailwind, audioUrl, isPlaying, isAudioLoading, audioError,
     playbackStatus, formattedPosition, formattedDuration,
     handlePlayPause, handleSeekStart, handleSeekComplete
@@ -230,174 +397,7 @@ const TranscriptTabTitle = ({ tailwind }: { tailwind: any }) => (
     </View>
 );
 
-// --- Main Screen Component ---
-const PodcastPlayerScreen: React.FC = () => {
-    const tailwind = useTailwind();
-    const router = useRouter();
-    const params = useLocalSearchParams<{ podcastId?: string }>();
-    const podcastId = Number(params.podcastId ?? 1);
 
-    // State for active tab
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const [repeatMode, setRepeatMode] = useState<RepeatMode>('off');
-    // --- Custom Hooks ---
-    const {
-        podcastData,
-        isLoading: isPodcastLoading,
-        error: podcastError,
-    } = useDetailPodcast(podcastId);
-
-    const {
-        comments,
-        isLoadingInitial: isCommentsLoading,
-        isFetchingMore: isFetchingMoreComments,
-        error: commentsError,
-        fetchMoreComments,
-        handleCommentSubmit,
-        loadingLikeCommentId,
-        onLikePodcastComment,
-    } = usePodcastComments(podcastId);
-
-    const {
-        soundObject,
-        isPlaying,
-        isAudioLoading,
-        audioError,
-        playbackStatus,
-        formattedPosition,
-        formattedDuration,
-        handlePlayPause,
-        handleSeekStart,
-        handleSeekComplete,
-    } = useAudioPlayer(podcastData?.audioUrl);
-
-    // --- Render Loading State ---
-    if (isPodcastLoading) {
-        return <LoadingIndicator tailwind={tailwind} />;
-    }
-
-    // --- Render Error State ---
-    if (podcastError) {
-        return <ErrorDisplay tailwind={tailwind} error={podcastError} onBack={() => router.back()} />;
-    }
-
-    // --- Render Function for Empty Comments ---
-    const renderEmptyComments = () => {
-        if (!isCommentsLoading && !commentsError && comments && comments.length === 0) {
-            return <CommentsEmptyState tailwind={tailwind} />;
-        }
-        return null;
-    };
-
-    // --- Render Function for Empty Transcript ---
-    const renderEmptyTranscript = () => {
-        if (!podcastData?.transcript) {
-            return <TranscriptEmptyState tailwind={tailwind} />;
-        }
-        return null;
-    };
-    const handleRepeatModeChange = (newMode: RepeatMode) => {
-        console.log("Parent received repeat mode change:", newMode);
-        setRepeatMode(newMode);
-        // NOTE: "Repeat All" logic (restarting playlist, etc.)
-        // would typically be handled HERE or in a higher-level
-        // component that manages the playlist, based on the `newMode === 'all'` condition
-        // and potentially the `didJustFinish` status from useAudioPlayer.
-        // Since this screen only plays one podcast, 'all' currently acts just as a UI state step.
-    };
-    // --- Render Main UI ---
-    return (
-        <SafeAreaView style={[styles.container, tailwind('flex-1 bg-gray-900/100')]}>
-            <ScreenHeader tailwind={tailwind} onBack={() => router.back()} />
-
-            {/* Podcast Info and Audio Controls */}
-            <View style={tailwind('px-4')}>
-                <PodcastInfoCard
-                    tailwind={tailwind}
-                    podcastData={podcastData}
-                    podcastId={podcastId}
-                />
-                <AudioPlayerControlsWrapper
-                    podcastId={podcastId}
-                    tailwind={tailwind}
-                    audioUrl={podcastData?.audioUrl}
-                    isPlaying={isPlaying}
-                    isAudioLoading={isAudioLoading}
-                    audioError={audioError}
-                    playbackStatus={playbackStatus}
-                    formattedPosition={formattedPosition}
-                    formattedDuration={formattedDuration}
-                    handlePlayPause={handlePlayPause}
-                    handleSeekStart={handleSeekStart}
-                    handleSeekComplete={handleSeekComplete}
-                    soundObject={soundObject}
-                    repeatMode={repeatMode} 
-                    onRepeatModeChange={handleRepeatModeChange} 
-                />
-            </View>
-
-            {/* UI Kitten TabView */}
-            <View style={tailwind('flex-1 px-4 mt-4')}>
-                <TabView
-                    selectedIndex={selectedIndex}
-                    onSelect={index => setSelectedIndex(index)}
-                    style={[tailwind('flex-1 rounded-xl overflow-hidden'), CustomStyles.shadow]}
-                    tabBarStyle={tailwind('bg-gray-800/100')}
-                    indicatorStyle={tailwind('bg-purple-600/100')}
-                >
-                    <Tab title={() => <CommentsTabTitle tailwind={tailwind} />}>
-                        <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
-                            <CommentsHeader
-                                tailwind={tailwind}
-                                isCommentsLoading={isCommentsLoading}
-                                commentsError={commentsError}
-                            />
-
-                            <FlatList
-                                showsVerticalScrollIndicator={false}
-                                data={comments}
-                                renderItem={({ item }: { item: PodcastComment }) => (
-                                    <View style={tailwind('mb-2')}>
-                                        <CommentItem comment={item} onLikeComment={onLikePodcastComment} loadingLikeCommentId={loadingLikeCommentId} />
-                                    </View>
-                                )}
-                                keyExtractor={(item) => item.id.toString()}
-                                onEndReached={fetchMoreComments}
-                                onEndReachedThreshold={0.5}
-                                ListFooterComponent={
-                                    <>
-                                        {isFetchingMoreComments && (
-                                            <View style={tailwind('py-6 items-center')}>
-                                                <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
-                                            </View>
-                                        )}
-                                        <View style={tailwind('h-4')} />
-                                    </>
-                                }
-                                ListEmptyComponent={renderEmptyComments}
-                                contentContainerStyle={tailwind('pb-20')} // Add more padding to accommodate the input
-                            />
-
-                            {/* Add the comment input at the bottom */}
-                            <View style={tailwind('absolute bottom-0 left-0 right-0 px-2 pb-2 bg-gray-900/100')}>
-                                <CommentInput onSubmit={handleCommentSubmit} />
-                            </View>
-                        </View>
-                    </Tab>
-                    <Tab title={() => <TranscriptTabTitle tailwind={tailwind} />}>
-                        <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
-                            {podcastData?.transcript ? (
-                                <TranscriptItem transcript={podcastData.transcript} />
-                            ) : (
-                                renderEmptyTranscript()
-                            )}
-                        </View>
-                    </Tab>
-                </TabView>
-            </View>
-        </SafeAreaView>
-    );
-};
 
 // --- Styles ---
 const styles = StyleSheet.create({

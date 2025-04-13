@@ -1,5 +1,6 @@
 export type str<T extends string> = string & { __brand: T };
-export type ViewElement_t = {
+export type CellElement_t = {
+    elementName: string,
     isLightOn: boolean,
     atomicNumber: number,
     symbol: string,
@@ -96,7 +97,7 @@ export interface LoginResponse {
     avatar: string,
     accessToken: string,
     role: string,
-    isActive: boolean,
+    active: boolean,
 }
 
 export interface LoginRequest {
@@ -157,14 +158,14 @@ export interface ProfileData {
 }
 
 export interface ViewedPodcast_t {
-    id: number
+    podcastId: number
     title: string;
     elementName: string;
     lastSeen: string;
 }
 
 export interface ViewedElement_t {
-    id: number
+    elementId: number
     elementName: string;
     symbol: string;
     image: string;
@@ -172,13 +173,13 @@ export interface ViewedElement_t {
 }
 
 export interface FavoritePodcast_t {
-    id: number
+    podcastId: number
     title: string;
     elementName: string;
 }
 
 export interface FavoriteElement_t {
-    id: number
+    elementId: number
     elementName: string;
     symbol: string;
     image: string;

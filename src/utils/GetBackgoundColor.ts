@@ -1,6 +1,6 @@
-import { ViewElement_t } from "./types";
+import { CellElement_t } from "./types";
 
-export default function GetBackgroundColor(element: ViewElement_t): [string, string] {
+export default function GetBackgroundColor(element: CellElement_t): [string, string] {
     if (!element.isLightOn) {
         return ["bg-gray-200/100", "bg-gray-200/100"];
     }

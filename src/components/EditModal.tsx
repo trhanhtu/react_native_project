@@ -3,6 +3,7 @@ import { Button, Card, Input, Modal, Text } from "@ui-kitten/components"
 import type { FC } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useTailwind } from "tailwind-rn"
+import CustomStyles from "../utils/styles"
 
 interface EditProfileModalProps {
   visible: boolean
@@ -52,7 +53,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
 
   return (
     <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={isVerifying ? undefined : onClose}>
-      <Card disabled style={tw("w-11/12 rounded-xl bg-white/100 shadow-xl")}>
+      <Card disabled style={[tw("w-11/12 rounded-xl bg-white/100"),CustomStyles.shadow]}>
         <Text style={tw("text-xl font-bold mb-5 text-center text-purple-600/100")}>Edit Profile</Text>
 
         {/* Inputs */}

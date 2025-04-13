@@ -41,6 +41,7 @@ export default function RootLayout() {
               <Stack.Screen name='login' options={{ headerShown: false }} />
               <Stack.Screen name='signup' options={{ headerShown: false }} />
               <Stack.Screen name='verify' options={{ headerShown: false }} />
+              <Stack.Screen name='podcastlist/[elementName]' options={{ headerShown: false }} />
               <Stack.Screen name='detailelement/[elementId]' options={{
                 header: () => <BackButton page_title='Chi tiết nguyên tố' />,
               }} />

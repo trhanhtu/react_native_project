@@ -3,9 +3,9 @@ import { Href, Router } from "expo-router";
 import { Pressable } from "react-native";
 import { Style } from "tailwind-rn";
 import GetBackgroundColor from "./GetBackgoundColor";
-import { ViewElement_t } from "./types";
+import { CellElement_t } from "./types";
 
-export default function GenerateElementUIs(elements: ViewElement_t[], tailwind: (_classNames: string) => Style, router: Router,): React.ReactNode[] {
+export default function GenerateElementUIs(elements: CellElement_t[], tailwind: (_classNames: string) => Style, router: Router,): React.ReactNode[] {
     return elements.map((element, index) => {
         const [elementBg, labelBg] = GetBackgroundColor(element);
         
