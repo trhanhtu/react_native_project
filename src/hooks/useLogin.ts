@@ -58,7 +58,7 @@ export default function useLogin() {
                 GlobalStorage.setItem("email", loginResponse.email);
                 GlobalStorage.setItem("name", loginResponse.name);
                 // Provide a default avatar if null/empty, using ID or name for consistency
-                GlobalStorage.setItem("avatar", loginResponse.avatar || `https://picsum.photos/seed/${loginResponse.id || loginResponse.name}/200`);
+                GlobalStorage.setItem("avatar", loginResponse.avatar || `https://picsum.photos/seed/${loginResponse.name}/200`);
                 GlobalStorage.setItem("role", loginResponse.role);
                 GlobalStorage.setItem("isActive", loginResponse.active.toString()); // Store isActive status
 

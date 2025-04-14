@@ -5,11 +5,18 @@ import {
     postThisElementIsViewed,
     toggleFavoriteElement
 } from "@/api/api";
-import { DetailElement_t, ToggleFavoriteElementResponse } from "@/src/utils/types"; // Corrected path
+import CommentsEmptyState from "@/src/components/CommentEmpty";
+import { CommentsHeader } from "@/src/components/CommentHeader";
+import CommentInput from "@/src/components/CommentInput";
+import CommentItem from "@/src/components/CommentItem";
+import { useElementComments } from "@/src/hooks/useElementComments";
+import CustomStyles from "@/src/utils/styles";
+import { DetailElement_t, ElementComment, ToggleFavoriteElementResponse } from "@/src/utils/types"; // Corrected path
 import { Button, Card, Divider, Spinner, Text } from "@ui-kitten/components"; // Added Spinner
+import { LinearGradient } from "expo-linear-gradient";
 import { Href, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Image, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, ColorValue, FlatList, Image, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 
 // --- Custom Hook for Element Details ---
@@ -235,6 +242,7 @@ const DetailElementScreen = () => {
                     Next
                 </Button>
             </View>
+            <ElementCommentSection elementId={Number(elementId) ?? 1} />
         </ScrollView>
     );
 };
@@ -275,7 +283,7 @@ const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) 
     const tw = useTailwind();
 
     return (
-        <Card style={tw("m-4 bg-white/100 rounded-lg shadow")}>
+        <Card style={[tw("m-4 bg-white/100 rounded-lg"), CustomStyles.shadow]}>
             <Text category="h6" style={tw("mb-3 font-bold text-gray-800/100")}>
                 {title}
             </Text>
@@ -299,6 +307,64 @@ const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) 
     );
 };
 
+const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) => {
+    const {
+        comments,
+        isLoadingInitial: isCommentsLoading,
+        isFetchingMore: isFetchingMoreComments,
+        error: commentsError,
+        fetchMoreComments,
+        handleCommentSubmit,
+        loadingLikeCommentId,
+        onLikeElementComment,
+    } = useElementComments(elementId);
+    const tailwind = useTailwind();
+    const renderEmptyComments = () => {
+        if (!isCommentsLoading && !commentsError && comments && comments.length === 0) {
+            return <CommentsEmptyState tailwind={tailwind} />;
+        }
+        return null;
+    };
+    return (
+        <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
+            <CommentsHeader
+                tailwind={tailwind}
+                isCommentsLoading={isCommentsLoading}
+                commentsError={commentsError}
+            />
+
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                data={comments}
+                renderItem={({ item }: { item: ElementComment }) => (
+                    <View style={tailwind('mb-2')}>
+                        <CommentItem comment={item} onLikeComment={onLikeElementComment} loadingLikeCommentId={loadingLikeCommentId} />
+                    </View>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                onEndReached={fetchMoreComments}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                    <>
+                        {isFetchingMoreComments && (
+                            <View style={tailwind('py-6 items-center')}>
+                                <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
+                            </View>
+                        )}
+                        <View style={tailwind('h-4')} />
+                    </>
+                }
+                ListEmptyComponent={renderEmptyComments}
+                contentContainerStyle={tailwind('pb-20')} // Add more padding to accommodate the input
+            />
+
+            {/* Add the comment input at the bottom */}
+            <View style={tailwind('absolute bottom-0 left-0 right-0 px-2 pb-2 bg-gray-900/100')}>
+                <CommentInput onSubmit={handleCommentSubmit} />
+            </View>
+        </View>
+    )
+}
 
 interface ElementHeaderProps {
     element: DetailElement_t;
@@ -309,16 +375,27 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
 
     return (
         // Use a different background or style for the header card
-        <View style={tw("m-4 p-5 bg-gradient-to-br from-purple-600/100 to-indigo-600/100 rounded-lg shadow-lg")}>
+
+        <LinearGradient
+            colors={['#7C3AEDFF', '#4F46E5FF']} // from-purple-600 to-indigo-600
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[tw("m-4 p-5 rounded-lg"), CustomStyles.shadow]}
+        >
             <View style={tw("flex-row justify-between items-center")}>
+
                 <View style={tw("flex-shrink pr-4")}>
                     {/* Larger Symbol */}
-                    <Text style={tw("text-6xl font-bold text-white/100")}>
+                    <Text style={tw("text-4xl font-bold text-white/100")}>
                         {element.symbol}
                     </Text>
-                    <Text category="h5" style={tw("text-white/100 font-semibold mt-1")}>{element.name}</Text>
-                    <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Atomic Number: {element.atomicNumber}</Text>
+                    <View>
+
+                        <Text category="h5" style={tw("text-white/100 font-semibold mt-1")}>{element.name}</Text>
+                        <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Atomic Number: {element.atomicNumber}</Text>
+                    </View>
                 </View>
+
 
                 {/* Element Image */}
                 {element.image ? (
@@ -335,7 +412,7 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
                     </View>
                 )}
             </View>
-        </View>
+        </LinearGradient>
     );
 };
 

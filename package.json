@@ -62,6 +62,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "tailwind-rn": "^4.2.0",
+    "text-encoding-polyfill": "^0.6.7",
     "ws": "^8.18.1"
   },
   "devDependencies": {

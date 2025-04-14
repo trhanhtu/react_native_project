@@ -1,4 +1,6 @@
 import AudioControls from '@/src/components/AudioControls';
+import CommentsEmptyState from '@/src/components/CommentEmpty';
+import { CommentsHeader } from '@/src/components/CommentHeader';
 import CommentInput from '@/src/components/CommentInput';
 import CommentItem from '@/src/components/CommentItem';
 import PodcastPlayerImage from '@/src/components/PodcastPlayerImage';
@@ -317,29 +319,8 @@ const AudioPlayerControlsWrapper = ({
 };
 
 // --- Comments Section Header ---
-interface CommentsHeaderProps {
-    tailwind: any;
-    isCommentsLoading: boolean;
-    commentsError: string | null;
-}
-const CommentsHeader = ({ tailwind, isCommentsLoading, commentsError }: CommentsHeaderProps) => (
-    <View style={tailwind('pb-2')}>
-        {isCommentsLoading && (
-            <View style={tailwind('py-6 items-center w-full')}>
-                <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
-                <Text style={tailwind('text-gray-400/100 mt-2')}>Đang tải bình luận...</Text>
-            </View>
-        )}
 
-        {commentsError && !isCommentsLoading && (
-            <View style={tailwind('bg-red-900/100 rounded-lg p-3 mt-3')}>
-                <Text style={tailwind('text-red-300/100 text-center')}>
-                    Lỗi tải bình luận: {commentsError}
-                </Text>
-            </View>
-        )}
-    </View>
-);
+
 
 // --- Comments List Footer (Loading More Indicator) ---
 interface CommentsListFooterProps {
@@ -358,18 +339,7 @@ const CommentsListFooter = ({ tailwind, isFetchingMore }: CommentsListFooterProp
 };
 
 // --- Comments Empty State ---
-interface CommentsEmptyStateProps {
-    tailwind: any;
-}
-const CommentsEmptyState = ({ tailwind }: CommentsEmptyStateProps) => (
-    <View style={[tailwind('items-center py-8 px-4 bg-gray-800/100 rounded-xl mt-2'), CustomStyles.shadow]}>
-        <Ionicons name="chatbubbles-outline" size={40} color={tailwind('text-gray-500/100').color as ColorValue} />
-        <Text style={tailwind('text-gray-400/100 text-center mt-3')}>Chưa có bình luận nào.</Text>
-        <TouchableOpacity style={tailwind('mt-4 bg-purple-600/100 px-5 py-2 rounded-full')}>
-            <Text style={tailwind('text-white/100')}>Thêm bình luận đầu tiên</Text>
-        </TouchableOpacity>
-    </View>
-);
+
 
 // --- Transcript Empty State ---
 interface TranscriptEmptyStateProps {

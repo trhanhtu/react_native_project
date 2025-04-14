@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { ActivityIndicator, ColorValue, Image, Keyboard, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import GlobalStorage from '../utils/GlobalStorage';
 
 interface Props {
     userAvatar?: string;
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const CommentInput: React.FC<Props> = ({
-    userAvatar = 'https://i.pravatar.cc/40?u=currentuser',
+    userAvatar = GlobalStorage.getItem("avatar") ?? `https://i.pravatar.cc/40?u=${encodeURIComponent(GlobalStorage.getItem("name") ?? "")}`,
     onSubmit,
     placeholder = 'Thêm bình luận của bạn...',
     isSubmitting = false

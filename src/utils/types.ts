@@ -1,3 +1,5 @@
+import { Style } from "tailwind-rn";
+
 export type str<T extends string> = string & { __brand: T };
 export type CellElement_t = {
     elementName: string,
@@ -27,7 +29,7 @@ export interface NotificationPayload {
     type: string;
     title: string;
     message: string;
-    objectIdentifier: string; 
+    objectIdentifier: string;
     createdAt: string;
     read: boolean;
 }
@@ -348,3 +350,9 @@ export interface CheckFavoriteElementResponse extends CheckFavoriteStatusRespons
 }
 
 export interface ToggleFavoriteElementResponse extends CheckFavoriteElementResponse { }
+
+export interface CommentsHeaderProps {
+    tailwind: (_className:string)=> Style;
+    isCommentsLoading: boolean;
+    commentsError: string | null;
+}

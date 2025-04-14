@@ -3,10 +3,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { ColorValue, Image, Text, TouchableOpacity, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
-import { PodcastComment } from '../utils/types';
+import { ElementComment, PodcastComment } from '../utils/types';
 
 interface Props {
-    comment: PodcastComment;
+    comment: PodcastComment | ElementComment;
     onLikeComment: (commentId: number) => void,
     loadingLikeCommentId: number
 }
@@ -62,7 +62,7 @@ const CommentItem: React.FC<Props> = ({ comment, loadingLikeCommentId, onLikeCom
 
                 <View style={tailwind('flex-row justify-between items-center mt-2')}>
                     <Text style={tailwind('text-gray-500/100 text-xs')}>
-                        {formatDate(comment.createdAt)}
+                        {formatDate(comment.createdAt as string)}
                     </Text>
 
                     <View style={tailwind('flex-row')}>

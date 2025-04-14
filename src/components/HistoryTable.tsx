@@ -145,33 +145,3 @@ const Controllers: React.FC<ControllersProps> = ({ ChangeTextInput, currentSlide
         </Layout>
     )
 }
-/*
-
-
-
-                        {/* Wrapper for centering */
-/* <View style={tailwind("flex-row items-center justify-center")}>
-    <Button style={tailwind(" items-center justify-center py-7")} size='small' onPress={() => setCurrentSliderYear(prev => Math.max(0, prev - 1))}>
-        abv
-    </Button>
-    <Slider
-        style={{ flex: 1, maxWidth: 800 }} // Responsive width
-        value={currentSliderYear}
-        onSlidingComplete={(v: number) => setCurrentSliderYear(v)}
-        minimumValue={0}
-        maximumValue={2025}
-        step={1}
-        minimumTrackTintColor="#FF0000FF"
-        maximumTrackTintColor="#0000FFFF"
-        thumbTintColor='#D09D2FFF'
-    />
-    <Button style={tailwind("w-10 h-10 items-center justify-center")} onPress={() => setCurrentSliderYear(prev => Math.min(2025, prev + 1))}>
-        +
-    </Button>
-    <Input
-        style={[tailwind("text-center"), { width: 100 }]}
-        value={currentSliderYear.toString()}
-        onChangeText={ChangeTextInput}
-        keyboardType="numeric"
-    />
-</View> */
