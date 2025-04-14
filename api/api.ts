@@ -18,6 +18,7 @@ import {
     LoginRequest,
     LoginResponse,
     Milestone_t,
+    NotificationPayload,
     PageResult,
     Podcast_t,
     PodcastComment,
@@ -1286,5 +1287,53 @@ export const fetchFavoriteElements = async (
     } catch (error) {
         console.error("Error fetching favorite elements:", error);
         return null;
+    }
+};
+
+/**
+ * Marks a specific notification as read by sending a PUT request.
+ * Relies on a globally configured Axios interceptor to add the Authorization header.
+ * @param notificationId The ID of the notification to mark as read.
+ */
+export const markNotificationAsRead = async (notificationId: number): Promise<void> => {
+    try {
+        console.log(`Sending PUT request to mark notification ${notificationId} as read`);
+        // No need to manually add headers if Axios interceptor handles auth
+        await axios.put(
+            `${api_url}/notifications/${notificationId}/read`,
+            {} // Empty body for PUT request
+            // Removed the { headers } parameter
+        );
+        console.log(`Successfully marked notification ${notificationId} as read via API`);
+    } catch (error: any) {
+        // Log detailed error information from Axios
+        const status = error.response?.status;
+        const message = error.response?.data?.message || error.message;
+        console.error(`Error marking notification ${notificationId} as read (${status}):`, message, error.response?.data);
+        // Re-throw or handle error based on application needs
+        throw error;
+    }
+};
+
+/**
+ * Fetches the recent notification history for the logged-in user.
+ * Relies on a globally configured Axios interceptor to add the Authorization header.
+ * @returns A promise resolving to an array of NotificationPayload objects or an empty array on error.
+ */
+export const fetchNotificationHistory = async (): Promise<NotificationPayload[]> => { // Ensure NotificationPayload is defined/imported
+    try {
+        // No need to manually add headers if Axios interceptor handles auth
+        const response = await axios.get<NotificationPayload[]>( // Expecting an array directly or adapt if nested in response data
+            `${api_url}/notifications/history`
+            // Removed the { headers } parameter
+        );
+        console.log(`Workspaceed ${response.data.length} notifications from history`);
+        // Adjust if your API wraps the array in a 'data' property, e.g., return response.data.data;
+        return response.data;
+    } catch (error: any) {
+        const status = error.response?.status;
+        const message = error.response?.data?.message || error.message;
+        console.error(`Error fetching notification history (${status}):`, message, error.response?.data);
+        return []; // Return empty list on error as previously defined
     }
 };

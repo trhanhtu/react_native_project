@@ -21,6 +21,17 @@ export interface ApiResponse<T> {
     error: string,
 }
 
+export interface NotificationPayload {
+    id: number;
+    recipientUserId: number;
+    type: string;
+    title: string;
+    message: string;
+    objectIdentifier: string; 
+    createdAt: string;
+    read: boolean;
+}
+
 export interface PaginationMeta {
     current: number;        // Trang hiện tại
     pageSize: number;       // Số lượng mục trên mỗi trang
