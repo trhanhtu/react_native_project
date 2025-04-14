@@ -36,8 +36,8 @@ const ViewedPodcastsCard: React.FC<ViewedPodcastsCardProps> = ({
         {viewedPodcasts && viewedPodcasts.length > 0 ? (
           <View>
             {/* Use podcast ID (string) as key */}
-            {viewedPodcasts.map((item) => (
-              <View key={`vipod${item.podcastId}`} style={tw("mb-3")}>
+            {viewedPodcasts.map((item,index) => (
+              <View key={`vipod${item.podcastId} ${index}`} style={tw("mb-3")}>
                 <PodcastItem
                   // MISSING: PodcastItem might need more props than available in AugmentedViewedPodcast
                   // It likely needs title, elementName, etc.

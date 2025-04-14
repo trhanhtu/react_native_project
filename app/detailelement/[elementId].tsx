@@ -9,6 +9,7 @@ import CommentsEmptyState from "@/src/components/CommentEmpty";
 import { CommentsHeader } from "@/src/components/CommentHeader";
 import CommentInput from "@/src/components/CommentInput";
 import CommentItem from "@/src/components/CommentItem";
+import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { useElementComments } from "@/src/hooks/useElementComments";
 import CustomStyles from "@/src/utils/styles";
 import { DetailElement_t, ElementComment, ToggleFavoriteElementResponse } from "@/src/utils/types"; // Corrected path
@@ -28,7 +29,7 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
     const [error, setError] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const router = useRouter();
-
+    const { lockPortrait } = useLayout();
     // Parse elementId safely
     const elementId = typeof elementIdParam === 'string' ? parseInt(elementIdParam, 10) : NaN;
 
@@ -84,8 +85,9 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
     }, [elementId]); // Depend on elementId
 
     useEffect(() => {
+        lockPortrait();
         loadData();
-    }, [loadData]); // Run loadData when elementId changes
+    }, []); // Run loadData when elementId changes
 
     const goToPrevious = () => {
         if (!isNaN(elementId) && elementId > 1) {
@@ -143,6 +145,7 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
 const DetailElementScreen = () => {
     const { elementId } = useLocalSearchParams();
     const tw = useTailwind();
+
     const {
         elementData, // Renamed from favoriteElement
         isFavorite, // New state for favorite status

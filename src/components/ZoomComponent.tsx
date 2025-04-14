@@ -1,42 +1,72 @@
-// ZoomableComponent.tsx
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Animated, Platform } from 'react-native';
 import { PinchGestureHandler, State } from 'react-native-gesture-handler';
 
-const ZoomableComponent = ({ children }: { children: React.ReactNode }) => {
-  // Giá trị scale khởi tạo là 1
-  const scale = useRef(new Animated.Value(0.5)).current;
-  // Lưu giá trị scale cuối cùng sau mỗi gesture
-  const lastScale = useRef(1);
+interface ZoomableComponentProps {
+  children: React.ReactNode;
+  initialZoom?: number;
+  onZoomChange?: (zoom: number) => void;
+}
 
-  // Xử lý sự kiện pinch gesture, cập nhật giá trị scale
+const ZoomableComponent: React.FC<ZoomableComponentProps> = ({ 
+  children, 
+  initialZoom = 0.5,
+  onZoomChange
+}) => {
+  // Scale value for zooming
+  const scale = useRef(new Animated.Value(initialZoom)).current;
+  // Last scale value after gesture
+  const lastScale = useRef(initialZoom);
+  
+  // Update scale when initialZoom changes
+  useEffect(() => {
+    scale.setValue(initialZoom);
+    lastScale.current = initialZoom;
+  }, [initialZoom]);
+  
+  // Handle pinch gesture for zooming
   const onPinchEvent = Animated.event(
     [{ nativeEvent: { scale: scale } }],
     { useNativeDriver: true }
   );
-
-  // Xử lý thay đổi trạng thái gesture
+  
+  // Handle state changes for pinch gesture
   const onPinchStateChange = (event: any) => {
-    // Khi gesture kết thúc (oldState === ACTIVE)
     if (event.nativeEvent.oldState === State.ACTIVE) {
-      // Cập nhật giá trị lastScale với tỷ lệ pinch mới
+      // Update last scale value
       lastScale.current *= event.nativeEvent.scale;
-      // Đặt lại scale cho Animated.Value
+      // Reset scale animated value
       scale.setValue(lastScale.current);
+      
+      // Notify parent of zoom change
+      if (onZoomChange) {
+        onZoomChange(lastScale.current);
+      }
     }
   };
-  // On Web, return a normal View instead
+  
+  // For web platform, use a simple animated view
   if (Platform.OS === "web") {
-    return <Animated.View style={{ transform: [{ scale }] }}>
-      {children}
-    </Animated.View>
+    return (
+      <Animated.View style={{ transform: [{ scale }] }}>
+        {children}
+      </Animated.View>
+    );
   }
+  
+  // For mobile platforms, use pinch gesture handler
   return (
     <PinchGestureHandler
       onGestureEvent={onPinchEvent}
       onHandlerStateChange={onPinchStateChange}
     >
-      <Animated.View style={{ transform: [{ scale }] }}>
+      <Animated.View 
+        style={{ 
+          transform: [{ scale }],
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
         {children}
       </Animated.View>
     </PinchGestureHandler>

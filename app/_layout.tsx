@@ -3,7 +3,6 @@ import 'text-encoding-polyfill';
 
 import { LayoutProvider } from '@/src/context/ApplicationLayoutProvider';
 import { ToastProvider } from '@/src/context/ToastProvider';
-import { useNotificationSocket } from '@/src/hooks/useNotificationSocket';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Icon, IconProps, IconRegistry, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
@@ -32,7 +31,7 @@ const BackButton: React.FC<{ page_title: string }> = ({ page_title }) => {
 }
 
 export default function RootLayout() {
-  const { isConnected, isLoadingToken } = useNotificationSocket();
+  // const { isConnected, isLoadingToken } = useNotificationSocket();
 
   return (
     <TailwindProvider utilities={utilities}>
