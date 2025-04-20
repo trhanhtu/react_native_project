@@ -1,5 +1,5 @@
 // useVerify.ts
-import { resendOTP, verifyOTP, verifyOTPRegister } from "@/api/api"; // Added verifyOTPRegister
+import { resendOTP, verifyOTP, verifyOTPChangeEmail, verifyOTPRegister } from "@/api/api"; // Added verifyOTPRegister
 import { ApiResponse, VerifyOTPRequest, VerifyOTPResponse } from "@/src/utils/types"; // Import necessary types
 import { Href, useLocalSearchParams, useRouter } from "expo-router";
 import { useRef, useState } from "react";
@@ -42,10 +42,11 @@ export default function useVerify() {
             // Choose the correct verify endpoint based on the flow param
             // MISSING: Need to ensure the 'flow' param is correctly passed from the previous screen (e.g., signup)
             if (flow === 'register') {
+                
                 response = await verifyOTPRegister(requestData);
             } else if (flow === 'change-email') {
                 // MISSING: import verifyOTPChangeEmail if not already in api.ts
-                // response = await verifyOTPChangeEmail(requestData);
+                response = await verifyOTPChangeEmail(requestData);
                 toastShow("Chức năng này chưa được hỗ trợ (change-email)", "info"); // Placeholder
                 response = null; // Simulate failure for now
             }
@@ -55,7 +56,7 @@ export default function useVerify() {
             }
 
 
-            if (response !== null && response.verifyStatus === "success") { // Check response structure
+            if (response !== null && response.verifyStatus === "SUCCESS") { // Check response structure
                 toastShow("Xác thực thành công!", "success");
                 // Navigate based on flow
                 if (flow === 'register') {

@@ -416,7 +416,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                     <Slider
                         style={{ width: '100%', height: 40 }}
                         value={currentTemperature}
-                        onValueChange={(v: number) => setCurrentTemperature(Math.round(v))}
+                        onSlidingComplete={(v: number) => setCurrentTemperature(Math.round(v))}
                         minimumValue={0}
                         maximumValue={MAX_TEMPERATURE}
                         step={1}

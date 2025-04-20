@@ -63,10 +63,10 @@ export default function useSignUp() {
             // Pass the formData object directly as per RegisterRequest type
             const response: RegisterResponse | null = await register(formData);
 
-            if (response && response.status === "pending") { // Check response based on RegisterResponse structure
+            if (response && response.status === "PENDING_VERIFICATION") { // Check response based on RegisterResponse structure
                 toastShow("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.", "success");
                 // Navigate to verification screen, passing email
-                router.replace({ pathname: "/verify", params: { email: formData.email } } as Href);
+                router.replace({ pathname: "/verify", params: { email: formData.email, flow: "register" } } as Href);
             } else {
                 // Handle potential errors from API response if structure provides details
                 // Example: toastShow(response?.message || "Đăng ký thất bại. Vui lòng thử lại.", "error");
