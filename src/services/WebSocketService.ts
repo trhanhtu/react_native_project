@@ -1,135 +1,225 @@
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
-import { NotificationPayload } from '../utils/types';
-
-// Replace with your actual server URL/IP
-// If running locally on Android emulator: 'http://10.0.2.2:8080'
-// If running locally on iOS simulator or physical device on same network: 'http://<your-local-ip>:8080'
-// If deployed: 'https://your-azure-app-url'
-const SERVER_URL = process.env.EXPO_PUBLIC_BASE_URL!;
-const WS_ENDPOINT = `${SERVER_URL.replace(/^http/, 'ws')}/ws-connect`; // Use ws:// or wss://
-
-// Define the structure of your Notification object coming from the backend
+import GlobalStorage from '../utils/GlobalStorage';
+import { Notification_t } from '../utils/types';
 
 
-let client: Client | null = null;
-let userSubscription: StompSubscription | null = null;
-let connectionPromise: Promise<void> | null = null;
-let resolveConnectionPromise: () => void;
-let rejectConnectionPromise: (reason?: any) => void;
+const WS_ENDPOINT = '/ws'; 
+const NOTIFICATION_TOPIC = '/user/queue/notifications';
+const RECONNECT_DELAY_BASE = 5000; 
+const MAX_RECONNECT_ATTEMPTS = 5; 
 
-const setupConnectionPromise = () => {
-  connectionPromise = new Promise((resolve, reject) => {
-    resolveConnectionPromise = resolve;
-    rejectConnectionPromise = reject;
-  });
-};
+// Define the expected structure of the notification payload received via WebSocket
+interface NotificationPayload extends Notification_t { }
 
-export const connectWebSocket = (authToken: string): Promise<void> => {
-    if (client && client.active) {
-        console.log('WebSocket already connected.');
-        return connectionPromise || Promise.resolve();
+class WebSocketServiceController {
+    private client: Client | null = null;
+    private notificationSubscription: StompSubscription | null = null;
+    private notificationCallback: ((payload: NotificationPayload) => void) | null = null;
+    private reconnectAttempts = 0;
+    private reconnectTimeoutId: NodeJS.Timeout | null = null;
+    private baseUrl: string | undefined = process.env.EXPO_PUBLIC_BASE_URL;
+
+    constructor() {
+        if (!this.baseUrl) {
+            console.error("WebSocketService: EXPO_PUBLIC_BASE_URL is not defined!");
+        }
     }
 
-    console.log(`Attempting to connect WebSocket to ${WS_ENDPOINT}`);
-    setupConnectionPromise(); // Setup the promise before connecting
-
-    client = new Client({
-        brokerURL: WS_ENDPOINT,
-        connectHeaders: {
-            Authorization: `Bearer ${authToken}`, // Send JWT token here
-        },
-        debug: function (str) {
-            // console.log('STOMP Debug:', str); // Enable for detailed logs
-        },
-        reconnectDelay: 5000, // Try to reconnect every 5 seconds
-        heartbeatIncoming: 4000,
-        heartbeatOutgoing: 4000,
-        // Use WebSocket factory for React Native compatibility if needed
-         webSocketFactory: () => {
-             // This might require extra setup or specific WebSocket libraries on RN
-             // For Expo Go, the polyfill often suffices. For bare RN, check compatibility.
-             // If using SockJS on backend: you might need SockJS client library instead of raw WebSocket
-             return new WebSocket(WS_ENDPOINT); // Standard WebSocket constructor
-         },
-    });
-
-    client.onConnect = (frame) => {
-        console.log('WebSocket Connected:', frame);
-        if (resolveConnectionPromise) {
-          resolveConnectionPromise(); // Resolve the promise on successful connection
-        }
-    };
-
-    client.onStompError = (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
-         if (rejectConnectionPromise) {
-            rejectConnectionPromise(new Error(frame.headers['message'] || 'STOMP Error'));
-        }
-    };
-
-    client.onWebSocketError = (event) => {
-        console.error("WebSocket error", event);
-        if (rejectConnectionPromise) {
-             rejectConnectionPromise(event);
-        }
-    };
-
-     client.onDisconnect = (frame) => {
-         console.log('WebSocket Disconnected.');
-          // Reset subscription on disconnect
-         userSubscription = null;
-         // Reset promise state if connection is lost unexpectedly
-         if (connectionPromise) {
-             setupConnectionPromise(); // Reset promise for next connect attempt
-         }
-     };
-
-    client.activate(); // Start the connection
-
-    return connectionPromise as Promise<void>; // Return the promise
-};
-
-export const subscribeToUserNotifications = (
-    onNotificationReceived: (notification: NotificationPayload) => void
-): StompSubscription | null => {
-    if (!client || !client.active) {
-        console.error('Cannot subscribe, WebSocket is not connected.');
-        return null;
+    private getBrokerURL(): string | null {
+        if (!this.baseUrl) return null;
+        // Determine ws:// or wss:// based on http:// or https://
+        const protocol = this.baseUrl.startsWith('https') ? 'wss' : 'ws';
+        // Remove http(s):// prefix to construct WebSocket URL
+        const domain = this.baseUrl.replace(/^https?:\/\//, '');
+        const url = `${protocol}://${domain}${WS_ENDPOINT}`;
+        console.log("WebSocket Broker URL:", url);
+        return url;
     }
 
-    if (userSubscription) {
-        console.log('Already subscribed to user notifications.');
-        return userSubscription;
+    private clearReconnectTimer() {
+        if (this.reconnectTimeoutId) {
+            clearTimeout(this.reconnectTimeoutId);
+            this.reconnectTimeoutId = null;
+        }
     }
 
-    console.log('Subscribing to /user/queue/notifications');
-    userSubscription = client.subscribe('/user/queue/notifications', (message: IMessage) => {
-        console.log('Received raw message:', message.body);
+    private scheduleReconnect() {
+        this.clearReconnectTimer();
+        if (this.reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+            console.warn('WebSocketService: Maximum reconnect attempts reached.');
+            return; // Stop trying to reconnect
+        }
+
+        const delay = RECONNECT_DELAY_BASE * Math.pow(2, this.reconnectAttempts);
+        console.log(`WebSocketService: Scheduling reconnect attempt ${this.reconnectAttempts + 1} in ${delay}ms`);
+
+        this.reconnectTimeoutId = setTimeout(() => {
+            this.reconnectAttempts++;
+            console.log('WebSocketService: Attempting to reconnect...');
+            this.connect(); // Try connecting again
+        }, delay);
+    }
+
+    async connect(): Promise<void> {
+        if (this.client?.active) {
+            console.log('WebSocketService: Already connected or connecting.');
+            return;
+        }
+
+        const brokerURL = this.getBrokerURL();
+        if (!brokerURL) {
+            console.error("WebSocketService: Cannot connect without a valid Broker URL.");
+            return;
+        }
+
+        const jwtToken = GlobalStorage.getItem('access_token');
+        console.log('WebSocketService: JWT token:', jwtToken);
+        if (!jwtToken) {
+            console.warn('WebSocketService: No JWT token found. Cannot connect.');
+            // Optionally, trigger logout or prompt login
+            return;
+        }
+
+        console.log('WebSocketService: Creating new STOMP client...');
+        this.client = new Client({
+            brokerURL: brokerURL,
+            // Use SockJS wrapper if needed by your backend
+            // webSocketFactory: () => new SockJS(brokerURL.replace(/^ws/,'http')) as WebSocket,
+            connectHeaders: {
+                Authorization: `Bearer ${jwtToken}`,
+            },
+            debug: (str) => {
+                // Avoid logging sensitive info like tokens in production
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('STOMP Debug:', str);
+                }
+            },
+            reconnectDelay: 0, // Disable automatic library reconnect, handle manually
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+
+            onConnect: (frame) => {
+                console.log('WebSocketService: Connected to STOMP broker.');
+                this.reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+                this.clearReconnectTimer(); // Clear any pending reconnect timer
+                // Subscribe to notifications if a callback is registered
+                if (this.notificationCallback) {
+                    this.subscribeToNotifications(this.notificationCallback);
+                }
+            },
+
+            onStompError: (frame) => {
+                console.error('WebSocketService: Broker reported STOMP error:', frame.headers['message'], frame.body);
+                // Consider specific actions based on error type
+                this.scheduleReconnect();
+            },
+
+            onWebSocketError: (event) => {
+                console.error('WebSocketService: WebSocket error:', event);
+                // WebSocket errors often lead to disconnects, schedule reconnect
+                this.scheduleReconnect();
+            },
+
+            onDisconnect: (frame) => {
+                console.log('WebSocketService: Disconnected from STOMP broker.');
+                this.notificationSubscription = null; // Clear subscription
+                // Only schedule reconnect if it wasn't an intentional disconnect
+                if (!frame?.headers?.message?.includes('Close initiated by client')) {
+                    this.scheduleReconnect();
+                }
+            },
+            // Add other handlers as needed (e.g., onWebSocketClose)
+        });
+
+        console.log('WebSocketService: Activating STOMP client...');
+        this.client.activate();
+    }
+
+    disconnect(): void {
+        this.clearReconnectTimer(); // Prevent reconnect attempts after manual disconnect
+        this.reconnectAttempts = MAX_RECONNECT_ATTEMPTS; // Prevent future automatic reconnects
+        if (this.client?.active) {
+            console.log('WebSocketService: Deactivating STOMP client...');
+            this.client.deactivate();
+            this.client = null;
+            this.notificationSubscription = null;
+        } else {
+            console.log('WebSocketService: Client already inactive.');
+        }
+    }
+
+    subscribeToNotifications(callback: (payload: NotificationPayload) => void): void {
+        this.notificationCallback = callback; // Store callback for reconnections
+
+        if (!this.client?.active) {
+            console.warn('WebSocketService: Client not connected. Cannot subscribe yet.');
+            // Attempt to connect if not already connecting/connected
+            if (this.getClientState() !== 'CONNECTING') {
+                this.connect();
+            }
+            return;
+        }
+
+        if (this.notificationSubscription) {
+            console.log('WebSocketService: Already subscribed to notifications.');
+            return;
+        }
+
+        console.log(`WebSocketService: Subscribing to ${NOTIFICATION_TOPIC}...`);
         try {
-            const notification = JSON.parse(message.body) as NotificationPayload;
-            onNotificationReceived(notification);
+            this.notificationSubscription = this.client.subscribe(NOTIFICATION_TOPIC, (message: IMessage) => {
+                console.log(`WebSocketService: Received message on ${NOTIFICATION_TOPIC}`);
+                try {
+                    const payload: NotificationPayload = JSON.parse(message.body);
+                    console.log('WebSocketService: Parsed notification payload:', payload);
+                    callback(payload);
+                } catch (error) {
+                    console.error('WebSocketService: Error parsing notification message body:', error, message.body);
+                }
+            }, {
+                // Add specific subscription headers if needed
+                // ack: 'client-individual' // Example for manual acknowledgment
+            });
+            console.log('WebSocketService: Subscription successful.');
         } catch (error) {
-            console.error('Failed to parse notification message:', error);
+            console.error('WebSocketService: Error during subscription:', error);
         }
-    });
-    console.log('Subscription initiated.');
-    return userSubscription;
-};
-
-export const disconnectWebSocket = () => {
-    if (client && client.active) {
-        console.log('Deactivating WebSocket connection...');
-        userSubscription = null; // Clear subscription reference
-        client.deactivate(); // Gracefully disconnect
-        client = null;
-         connectionPromise = null; // Reset promise
-        console.log('WebSocket deactivated.');
-    } else {
-        console.log('WebSocket already disconnected or not initialized.');
     }
-};
 
-export const isWebSocketConnected = (): boolean => {
-    return client?.active ?? false;
-};
+    unsubscribeFromNotifications(): void {
+        if (this.notificationSubscription) {
+            console.log(`WebSocketService: Unsubscribing from ${NOTIFICATION_TOPIC}...`);
+            try {
+                this.notificationSubscription.unsubscribe();
+                this.notificationSubscription = null;
+                this.notificationCallback = null; // Clear stored callback
+                console.log('WebSocketService: Unsubscribed successfully.');
+            } catch (error) {
+                console.error('WebSocketService: Error during unsubscribe:', error);
+            }
+        } else {
+            console.log('WebSocketService: No active notification subscription to unsubscribe from.');
+        }
+    }
+
+    getClientState(): 'CONNECTING' | 'CONNECTED' | 'DISCONNECTING' | 'DISCONNECTED' | 'UNKNOWN' {
+        if (!this.client) return 'DISCONNECTED';
+
+        // Explicitly cast state to number to resolve linter comparison error
+        const stateValue = this.client.state as number;
+
+        switch (stateValue) {
+            case 0: return 'CONNECTING'; // Assuming CONNECTING is 0
+            case 1: return 'CONNECTED';  // Assuming OPEN/ACTIVE is 1
+            case 2: return 'DISCONNECTING';// Assuming CLOSING/DEACTIVATING is 2
+            case 3: return 'DISCONNECTED'; // Assuming CLOSED/INACTIVE is 3
+            default:
+                console.warn('WebSocketService: Unknown client state value:', stateValue);
+                return 'UNKNOWN';
+        }
+    }
+}
+
+// Export a singleton instance
+const WebSocketService = new WebSocketServiceController();
+export default WebSocketService; 

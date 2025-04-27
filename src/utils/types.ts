@@ -352,7 +352,26 @@ export interface CheckFavoriteElementResponse extends CheckFavoriteStatusRespons
 export interface ToggleFavoriteElementResponse extends CheckFavoriteElementResponse { }
 
 export interface CommentsHeaderProps {
-    tailwind: (_className:string)=> Style;
+    tailwind: (_className: string) => Style;
     isCommentsLoading: boolean;
     commentsError: string | null;
+}
+
+export interface Notification_t {
+    id: number
+    type: string
+    message: string
+    relatedId: number
+    read: boolean
+    createdAt: string
+}
+
+export interface NotificationsResponse {
+    meta: {
+        current: number
+        pageSize: number
+        totalPages: number
+        totalItems: number
+    }
+    result: Notification_t[]
 }

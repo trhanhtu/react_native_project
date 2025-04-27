@@ -5,6 +5,8 @@ import { useToast } from "@/src/context/ToastProvider"; // Assuming correct path
 import {
     ApiResponse // For typing the response from resendOTP
     ,
+
+
     ResetPasswordRequest, // For typing the request to resendOTP
     VerifyOTPResponse
 } from "@/src/utils/types"; // Corrected path
@@ -21,8 +23,7 @@ export default function useForgotPassword() {
         password: '',
         passwordConfirm: '' // Use passwordConfirm based on ResetPasswordRequest type
     });
-    const [otp, setOtp] = useState(''); // Separate state for OTP from input ref
-    const [confirmPassword, setConfirmPassword] = useState(''); // Keep for validation check if needed, though type uses passwordConfirm
+    const [_, setConfirmPassword] = useState(''); // Keep for validation check if needed, though type uses passwordConfirm
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [otpSent, setOtpSent] = useState(false); // Track if OTP has been sent
     const [isLoadingSendOTP, setIsLoadingSendOTP] = useState(false);
@@ -30,16 +31,16 @@ export default function useForgotPassword() {
 
     // Handle input changes dynamically
     const handleChange = (key: keyof Omit<ResetPasswordRequest, 'otp'> | 'confirmPassword', value: string) => {
-         if (key === 'confirmPassword') {
+        if (key === 'confirmPassword') {
             // If using a separate confirmPassword field for UI validation before submitting
-             setConfirmPassword(value);
-             // Also update passwordConfirm if it's the direct field from the type
-             if ('passwordConfirm' in formData) {
+            setConfirmPassword(value);
+            // Also update passwordConfirm if it's the direct field from the type
+            if ('passwordConfirm' in formData) {
                 setFormData({ ...formData, passwordConfirm: value });
-             }
+            }
         } else if (key === 'passwordConfirm') {
-             setFormData({ ...formData, [key]: value });
-             setConfirmPassword(value); // Keep them in sync if using both
+            setFormData({ ...formData, [key]: value });
+            setConfirmPassword(value); // Keep them in sync if using both
         }
         else {
             setFormData({ ...formData, [key]: value });
@@ -135,11 +136,11 @@ export default function useForgotPassword() {
             // Call the resetPassword API
             const response: VerifyOTPResponse | null = await resetPassword(requestData);
 
-            if (response !== null && response.verifyStatus === 'success') { // Check response structure
+            if (response !== null && response.verifyStatus === 'SUCCESS') { // Check response structure
                 toastShow("Đặt lại mật khẩu thành công!", "success");
                 router.replace("/login" as Href); // Navigate to login screen on success
             } else {
-                 // Provide more specific error if available from response
+                // Provide more specific error if available from response
                 toastShow('Đặt lại mật khẩu thất bại. Mã OTP có thể không đúng hoặc đã hết hạn.', 'error');
             }
         } catch (error) {

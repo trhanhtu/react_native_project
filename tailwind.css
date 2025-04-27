@@ -14,6 +14,10 @@
   position: relative
 }
 
+.inset-0 {
+  inset: 0px
+}
+
 .bottom-0 {
   bottom: 0px
 }
@@ -46,8 +50,24 @@
   top: 1rem
 }
 
+.-right-1 {
+  right: -0.25rem
+}
+
+.-top-1 {
+  top: -0.25rem
+}
+
+.right-2 {
+  right: 0.5rem
+}
+
 .z-10 {
   z-index: 10
+}
+
+.m-0 {
+  margin: 0px
 }
 
 .m-1 {
@@ -56,10 +76,6 @@
 
 .m-4 {
   margin: 1rem
-}
-
-.m-0 {
-  margin: 0px
 }
 
 .mx-2 {
@@ -168,6 +184,10 @@
   margin-right: 0.5rem
 }
 
+.mr-3 {
+  margin-right: 0.75rem
+}
+
 .mr-4 {
   margin-right: 1rem
 }
@@ -210,10 +230,6 @@
 
 .mt-8 {
   margin-top: 2rem
-}
-
-.mr-3 {
-  margin-right: 0.75rem
 }
 
 .block {
@@ -280,6 +296,14 @@
   height: 100%
 }
 
+.h-2 {
+  height: 0.5rem
+}
+
+.max-h-\[85vh\] {
+  max-height: 85vh
+}
+
 .w-1\/2 {
   width: 50%
 }
@@ -344,8 +368,16 @@
   width: 100%
 }
 
+.w-2 {
+  width: 0.5rem
+}
+
 .min-w-\[120px\] {
   min-width: 120px
+}
+
+.max-w-md {
+  max-width: 28rem
 }
 
 .flex-1 {
@@ -732,6 +764,19 @@
   background-color: rgb(234 179 8 / 1)
 }
 
+.bg-gray-50\/100 {
+  background-color: rgb(249 250 251 / 1)
+}
+
+.bg-white\/60 {
+  background-color: rgb(255 255 255 / 0.6)
+}
+
+.bg-red-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1))
+}
+
 .p-0 {
   padding: 0px
 }
@@ -825,6 +870,16 @@
   padding-bottom: 2rem
 }
 
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem
+}
+
 .pb-1 {
   padding-bottom: 0.25rem
 }
@@ -867,6 +922,10 @@
 
 .pt-20 {
   padding-top: 5rem
+}
+
+.pt-3 {
+  padding-top: 0.75rem
 }
 
 .pt-4 {

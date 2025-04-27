@@ -18,7 +18,9 @@ import {
     LoginRequest,
     LoginResponse,
     Milestone_t,
+    Notification_t,
     NotificationPayload,
+    NotificationsResponse,
     PageResult,
     Podcast_t,
     PodcastComment,
@@ -62,7 +64,7 @@ export const resendOTP = async (email: string):
         // console.log(response.data);
         return response.data;
     } catch (error: any) {
-        console.error(error)
+        console.log(error)
         return null;
     }
 }
@@ -80,7 +82,7 @@ export const editUser = async (name: string, avatar: string): Promise<ApiRespons
         const response = await axios.put(`${api_url}/users`, updateUserRequest);
         return response.data;
     } catch (error: any) {
-        console.error(error)
+        console.log(error)
         return null;
     }
 }
@@ -95,7 +97,6 @@ export async function searchElements(query: string, page = 1, pageSize = 10): Pr
         }
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching elements:", error)
         return null;
     }
 }
@@ -107,7 +108,6 @@ export async function fetchAllElements(): Promise<DetailElement_t[]> {
         const result = response.data.data.result.sort((a, b) => a.atomicNumber - b.atomicNumber);
         return result.map(item => { item.image = "https://picsum.photos/200"; return item; })
     } catch (error) {
-        console.error("Error fetching elements:", error)
         return [];
     }
 }
@@ -124,7 +124,7 @@ export const fetchElementDetails = async (
 
 
     } catch (err) {
-        console.error("Lỗi kết nối máy chủ:", err)
+        console.log("Lỗi kết nối máy chủ:")
         return null
     }
 }
@@ -140,12 +140,12 @@ export const fetchPodcastDetailsAPI = async (id: number): Promise<Podcast_t | nu
             return response.data.data; // Trả về dữ liệu nếu thành công
         } else {
             // Ghi log lỗi từ server nếu có
-            console.error("Lỗi API fetchPodcastDetails:", response.data?.message || response.data?.error || 'Phản hồi không hợp lệ');
+            console.log("Lỗi API fetchPodcastDetails:", response.data?.message || response.data?.error || 'Phản hồi không hợp lệ');
             return null; // Trả về null nếu response không hợp lệ
         }
     } catch (error: any) {
         // Ghi log lỗi mạng hoặc lỗi trong quá trình xử lý request
-        console.error("Lỗi mạng hoặc hệ thống khi fetchPodcastDetails:", error.message || error);
+        console.log("Lỗi mạng hoặc hệ thống khi fetchPodcastDetails:", error.message || error);
         return null; // Trả về null nếu có lỗi mạng hoặc lỗi khác
     }
 };
@@ -171,7 +171,7 @@ export const fetchCommentsAPI = async (id: number, page: number, pageSize: numbe
 
     } catch (error: any) {
         // Ghi log lỗi mạng hoặc lỗi trong quá trình xử lý request
-        console.error("Lỗi mạng hoặc hệ thống khi fetchComments:", error.message || error);
+        console.log("Lỗi mạng hoặc hệ thống khi fetchComments:", error.message || error);
         return null; // Trả về null nếu có lỗi mạng hoặc lỗi khác
     }
 };
@@ -223,7 +223,7 @@ export const fetchProfileData = async (): Promise<ProfileData | null> => {
         const response = await axios.get<ApiResponse<ProfileData>>(`${api_url}/users/profile`)
         return response.data.data
     } catch (error) {
-        console.error("Error fetching profile data:", error)
+        console.log("Error fetching profile data:", error)
         return null
     }
 }
@@ -232,7 +232,7 @@ export const postThisElementIsViewed = async (atomicNumber: number): Promise<voi
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/viewed-elements/element/${atomicNumber}`, {})
     } catch (error) {
-        console.error("Error posting viewed element:", error)
+        console.log("Error posting viewed element:", error)
 
     }
 }
@@ -240,7 +240,7 @@ export const postThisPodcastIsViewed = async (podcastId: number): Promise<void> 
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/viewed-podcasts/podcasts/${podcastId}`, {})
     } catch (error) {
-        console.error("Error posting viewed element:", error)
+        console.log("Error posting viewed element:", error)
 
     }
 }
@@ -249,7 +249,7 @@ export const postThisElementFavoriteToggle = async (atomicNumber: number): Promi
         await axios.post<ApiResponse<any>>(`${api_url}/favorite-elements/elements/${atomicNumber}`, {})
         return true;
     } catch (error) {
-        console.error("Error posting viewed element:", error)
+        console.log("Error posting viewed element:", error)
         return null
     }
 }
@@ -257,7 +257,7 @@ export const postThisPodcastFavoriteToggle = async (atomicNumber: number): Promi
     try {
         await axios.post<ApiResponse<any>>(`${api_url}/favorite-podcasts/${atomicNumber}`, {})
     } catch (error) {
-        console.error("Error posting viewed element:", error)
+        console.log("Error posting viewed element:", error)
 
     }
 }
@@ -272,7 +272,7 @@ export const verifyOTP = async (data: VerifyOTPRequest): Promise<VerifyOTPRespon
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error verifying OTP:", error);
+        console.log("Error verifying OTP:", error);
         return null;
     }
 };
@@ -285,7 +285,7 @@ export const verifyOTPRegister = async (data: VerifyOTPRequest): Promise<VerifyO
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error verifying OTP for register:", error);
+        console.log("Error verifying OTP for register:", error);
         return null;
     }
 };
@@ -298,7 +298,7 @@ export const verifyOTPChangeEmail = async (data: VerifyOTPRequest): Promise<Veri
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error verifying OTP for change email:", error);
+        console.log("Error verifying OTP for change email:", error);
         return null;
     }
 };
@@ -312,7 +312,7 @@ export const sendOTP = async (data: SendOTPRequest): Promise<SendOTPRequest | nu
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error sending OTP:", error);
+        console.log("Error sending OTP:", error);
         return null;
     }
 };
@@ -325,7 +325,7 @@ export const resetPassword = async (data: ResetPasswordRequest): Promise<VerifyO
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error resetting password:", error);
+        console.log("Error resetting password:", error);
         return null;
     }
 };
@@ -338,7 +338,7 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse 
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error registering user:", error);
+        console.log("Error registering user:", error);
         return null;
     }
 };
@@ -351,7 +351,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse | null> =
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error logging in:", error);
+        console.log("Error logging in:", error);
         return null;
     }
 };
@@ -361,7 +361,7 @@ export const logout = async (): Promise<boolean | null> => {
         await axios.get<ApiResponse<{}>>(`${api_url}/auth/logout`);
         return true; // Indicate success
     } catch (error) {
-        console.error("Error logging out:", error);
+        console.log("Error logging out:", error);
         return null;
     }
 };
@@ -375,7 +375,7 @@ export const getMilestone = async (id: number): Promise<Milestone_t | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching milestone ${id}:`, error);
+        console.log(`Error fetching milestone ${id}:`, error);
         return null;
     }
 };
@@ -388,7 +388,7 @@ export const updateMilestone = async (id: number, data: UpdateMilestoneRequest):
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating milestone ${id}:`, error);
+        console.log(`Error updating milestone ${id}:`, error);
         return null;
     }
 };
@@ -412,7 +412,7 @@ export const fetchMilestones = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching milestones:", error);
+        console.log("Error fetching milestones:", error);
         return null;
     }
 };
@@ -425,7 +425,7 @@ export const createMilestone = async (data: CreateMilestoneRequest): Promise<Mil
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating milestone:", error);
+        console.log("Error creating milestone:", error);
         return null;
     }
 };
@@ -437,7 +437,7 @@ export const toggleMilestoneActive = async (id: number): Promise<ToggleActiveRes
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for milestone ${id}:`, error);
+        console.log(`Error toggling active for milestone ${id}:`, error);
         return null;
     }
 };
@@ -453,7 +453,7 @@ export const getPodcast = async (id: number): Promise<Podcast_t | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching podcast ${id}:`, error);
+        console.log(`Error fetching podcast ${id}:`, error);
         return null;
     }
 };
@@ -467,7 +467,7 @@ export const updatePodcast = async (id: number, data: CreatePodcastCommentReques
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating podcast ${id}:`, error);
+        console.log(`Error updating podcast ${id}:`, error);
         return null;
     }
 };
@@ -496,7 +496,7 @@ export const fetchPodcasts = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching podcasts:", error);
+        console.log("Error fetching podcasts:", error);
         return null;
     }
 };
@@ -510,7 +510,7 @@ export const createPodcast = async (data: CreatePodcastCommentRequest): Promise<
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating podcast:", error);
+        console.log("Error creating podcast:", error);
         return null;
     }
 };
@@ -522,7 +522,7 @@ export const togglePodcastActive = async (id: number): Promise<ToggleActiveRespo
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for podcast ${id}:`, error);
+        console.log(`Error toggling active for podcast ${id}:`, error);
         return null;
     }
 };
@@ -543,7 +543,7 @@ export const fetchPodcastsByElementId = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching podcasts for element ${elementId}:`, error);
+        console.log(`Error fetching podcasts for element ${elementId}:`, error);
         return null;
     }
 };
@@ -559,7 +559,7 @@ export const createOrUpdateViewedPodcast = async (podcastId: number): Promise<Vi
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error creating/updating viewed podcast ${podcastId}:`, error);
+        console.log(`Error creating/updating viewed podcast ${podcastId}:`, error);
         return null;
     }
 };
@@ -588,7 +588,7 @@ export const fetchViewedPodcasts = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching viewed podcasts:", error);
+        console.log("Error fetching viewed podcasts:", error);
         return null;
     }
 };
@@ -603,7 +603,7 @@ export const getScientist = async (id: number): Promise<Scientist_t | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching scientist ${id}:`, error);
+        console.log(`Error fetching scientist ${id}:`, error);
         return null;
     }
 };
@@ -616,7 +616,7 @@ export const updateScientist = async (id: number, data: UpdateScientistRequest):
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating scientist ${id}:`, error);
+        console.log(`Error updating scientist ${id}:`, error);
         return null;
     }
 };
@@ -644,7 +644,7 @@ export const fetchScientists = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching scientists:", error);
+        console.log("Error fetching scientists:", error);
         return null;
     }
 };
@@ -657,7 +657,7 @@ export const createScientist = async (data: CreateScientistRequest): Promise<Sci
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating scientist:", error);
+        console.log("Error creating scientist:", error);
         return null;
     }
 };
@@ -669,7 +669,7 @@ export const toggleScientistActive = async (id: number): Promise<ToggleActiveRes
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for scientist ${id}:`, error);
+        console.log(`Error toggling active for scientist ${id}:`, error);
         return null;
     }
 };
@@ -684,7 +684,7 @@ export const getDiscovery = async (id: number): Promise<Discovery_t | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching discovery ${id}:`, error);
+        console.log(`Error fetching discovery ${id}:`, error);
         return null;
     }
 };
@@ -697,7 +697,7 @@ export const updateDiscovery = async (id: number, data: UpdateDiscoveryRequest):
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating discovery ${id}:`, error);
+        console.log(`Error updating discovery ${id}:`, error);
         return null;
     }
 };
@@ -725,7 +725,7 @@ export const fetchDiscoveries = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching discoveries:", error);
+        console.log("Error fetching discoveries:", error);
         return null;
     }
 };
@@ -738,7 +738,7 @@ export const createDiscovery = async (data: CreateDiscoveryRequest): Promise<Dis
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating discovery:", error);
+        console.log("Error creating discovery:", error);
         return null;
     }
 };
@@ -750,7 +750,7 @@ export const toggleDiscoveryActive = async (id: number): Promise<ToggleActiveRes
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for discovery ${id}:`, error);
+        console.log(`Error toggling active for discovery ${id}:`, error);
         return null;
     }
 };
@@ -766,7 +766,7 @@ export const createOrUpdateViewedElement = async (elementId: number): Promise<Vi
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error creating/updating viewed element ${elementId}:`, error);
+        console.log(`Error creating/updating viewed element ${elementId}:`, error);
         return null;
     }
 };
@@ -794,7 +794,7 @@ export const fetchViewedElements = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching viewed elements:", error);
+        console.log("Error fetching viewed elements:", error);
         return null;
     }
 };
@@ -809,7 +809,7 @@ export const getElementComment = async (id: number): Promise<ElementComment | nu
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching element comment ${id}:`, error);
+        console.log(`Error fetching element comment ${id}:`, error);
         return null;
     }
 };
@@ -822,7 +822,7 @@ export const updateElementComment = async (id: number, data: UpdateElementCommen
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating element comment ${id}:`, error);
+        console.log(`Error updating element comment ${id}:`, error);
         return null;
     }
 };
@@ -848,7 +848,7 @@ export const fetchElementComments = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching element comments:", error);
+        console.log("Error fetching element comments:", error);
         return null;
     }
 };
@@ -861,7 +861,7 @@ export const createElementComment = async (data: CreateElementCommentRequest): P
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating element comment:", error);
+        console.log("Error creating element comment:", error);
         return null;
     }
 };
@@ -873,7 +873,7 @@ export const toggleElementCommentActive = async (id: number): Promise<ToggleActi
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for element comment ${id}:`, error);
+        console.log(`Error toggling active for element comment ${id}:`, error);
         return null;
     }
 };
@@ -885,7 +885,7 @@ export const likeElementComment = async (id: number): Promise<LikeResponse | nul
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error liking element comment ${id}:`, error);
+        console.log(`Error liking element comment ${id}:`, error);
         return null;
     }
 };
@@ -901,7 +901,7 @@ export const getElement = async (id: number): Promise<DetailElement_t | null> =>
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching element ${id}:`, error);
+        console.log(`Error fetching element ${id}:`, error);
         return null;
     }
 };
@@ -914,7 +914,7 @@ export const updateElement = async (id: number, data: UpdateElementRequest): Pro
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating element ${id}:`, error);
+        console.log(`Error updating element ${id}:`, error);
         return null;
     }
 };
@@ -943,7 +943,7 @@ export const fetchElements = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching elements:", error);
+        console.log("Error fetching elements:", error);
         return null;
     }
 };
@@ -956,7 +956,7 @@ export const createElement = async (data: CreateElementRequest): Promise<DetailE
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating element:", error);
+        console.log("Error creating element:", error);
         return null;
     }
 };
@@ -968,7 +968,7 @@ export const toggleElementActive = async (id: number): Promise<ToggleActiveRespo
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for element ${id}:`, error);
+        console.log(`Error toggling active for element ${id}:`, error);
         return null;
     }
 };
@@ -982,7 +982,7 @@ export const getPodcastComment = async (id: number): Promise<PodcastComment | nu
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching podcast comment ${id}:`, error);
+        console.log(`Error fetching podcast comment ${id}:`, error);
         return null;
     }
 };
@@ -995,7 +995,7 @@ export const updatePodcastComment = async (id: number, data: UpdatePodcastCommen
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating podcast comment ${id}:`, error);
+        console.log(`Error updating podcast comment ${id}:`, error);
         return null;
     }
 };
@@ -1021,7 +1021,7 @@ export const fetchPodcastComments = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching podcast comments:", error);
+        console.log("Error fetching podcast comments:", error);
         return null;
     }
 };
@@ -1034,7 +1034,7 @@ export const createPodcastComment = async (data: CreatePodcastCommentRequest): P
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error creating podcast comment:", error);
+        console.log("Error creating podcast comment:", error);
         return null;
     }
 };
@@ -1046,7 +1046,7 @@ export const togglePodcastCommentActive = async (id: number): Promise<ToggleActi
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for podcast comment ${id}:`, error);
+        console.log(`Error toggling active for podcast comment ${id}:`, error);
         return null;
     }
 };
@@ -1058,7 +1058,7 @@ export const likePodcastComment = async (id: number): Promise<LikeResponse | nul
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error liking podcast comment ${id}:`, error);
+        console.log(`Error liking podcast comment ${id}:`, error);
         return null;
     }
 };
@@ -1090,7 +1090,7 @@ export const fetchUsers = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.log("Error fetching users:", error);
         return null;
     }
 };
@@ -1104,7 +1104,7 @@ export const updateUserProfile = async (data: UpdateUserRequest): Promise<Profil
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error updating user profile:", error);
+        console.log("Error updating user profile:", error);
         return null;
     }
 };
@@ -1119,7 +1119,7 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<boole
         );
         return true;
     } catch (error) {
-        console.error("Error changing password:", error);
+        console.log("Error changing password:", error);
         return null;
     }
 };
@@ -1131,7 +1131,7 @@ export const toggleUserActive = async (id: number): Promise<ToggleActiveResponse
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling active for user ${id}:`, error);
+        console.log(`Error toggling active for user ${id}:`, error);
         return null;
     }
 };
@@ -1146,7 +1146,7 @@ export const updateUserRole = async (id: number, data: UpdateUserRoleRequest): P
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error updating role for user ${id}:`, error);
+        console.log(`Error updating role for user ${id}:`, error);
         return null;
     }
 };
@@ -1158,7 +1158,7 @@ export const getUser = async (id: number): Promise<ProfileData | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error fetching user ${id}:`, error);
+        console.log(`Error fetching user ${id}:`, error);
         return null;
     }
 };
@@ -1170,7 +1170,7 @@ export const getProfile = async (): Promise<ProfileData | null> => {
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.log("Error fetching user profile:", error);
         return null;
     }
 };
@@ -1185,7 +1185,7 @@ export const checkFavoritePodcastStatus = async (podcastId: number): Promise<Che
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error checking favorite status for podcast ${podcastId}:`, error);
+        console.log(`Error checking favorite status for podcast ${podcastId}:`, error);
         // It might return 404 or similar if not favorited, but the API seems designed to return status.
         // Handle specific HTTP status codes if needed outside this function.
         return null; // Return null on network/server errors as requested
@@ -1200,7 +1200,7 @@ export const toggleFavoritePodcast = async (podcastId: number): Promise<ToggleFa
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling favorite status for podcast ${podcastId}:`, error);
+        console.log(`Error toggling favorite status for podcast ${podcastId}:`, error);
         return null;
     }
 };
@@ -1228,7 +1228,7 @@ export const fetchFavoritePodcasts = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching favorite podcasts:", error);
+        console.log("Error fetching favorite podcasts:", error);
         return null;
     }
 };
@@ -1243,7 +1243,7 @@ export const checkFavoriteElementStatus = async (elementId: number): Promise<Che
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error checking favorite status for element ${elementId}:`, error);
+        console.log(`Error checking favorite status for element ${elementId}:`, error);
         // Handle specific HTTP status codes if needed outside this function.
         return null; // Return null on network/server errors as requested
     }
@@ -1257,7 +1257,7 @@ export const toggleFavoriteElement = async (elementId: number): Promise<ToggleFa
         );
         return response.data.data;
     } catch (error) {
-        console.error(`Error toggling favorite status for element ${elementId}:`, error);
+        console.log(`Error toggling favorite status for element ${elementId}:`, error);
         return null;
     }
 };
@@ -1285,7 +1285,7 @@ export const fetchFavoriteElements = async (
         );
         return response.data.data;
     } catch (error) {
-        console.error("Error fetching favorite elements:", error);
+        console.log("Error fetching favorite elements:", error);
         return null;
     }
 };
@@ -1309,7 +1309,7 @@ export const markNotificationAsRead = async (notificationId: number): Promise<vo
         // Log detailed error information from Axios
         const status = error.response?.status;
         const message = error.response?.data?.message || error.message;
-        console.error(`Error marking notification ${notificationId} as read (${status}):`, message, error.response?.data);
+        console.log(`Error marking notification ${notificationId} as read (${status}):`, message, error.response?.data);
         // Re-throw or handle error based on application needs
         throw error;
     }
@@ -1333,7 +1333,39 @@ export const fetchNotificationHistory = async (): Promise<NotificationPayload[]>
     } catch (error: any) {
         const status = error.response?.status;
         const message = error.response?.data?.message || error.message;
-        console.error(`Error fetching notification history (${status}):`, message, error.response?.data);
+        console.log(`Error fetching notification history (${status}):`, message, error.response?.data);
         return []; // Return empty list on error as previously defined
     }
 };
+
+// GET /api/v1/notifications
+export const fetchNotificationList = async (current = 1, pageSize = 10): Promise<NotificationsResponse> => {
+    const response = await axios.get<ApiResponse<NotificationsResponse>>(
+        `${api_url}/notifications?current=${current}&pageSize=${pageSize}`
+    )
+    return response.data.data;
+}
+
+// PATCH /api/v1/notifications/{id}/read
+export const markOneNotificationAsRead = async (id: number): Promise<Notification_t> => {
+
+    const response = await axios.patch<ApiResponse<Notification_t>>(
+        `${api_url}/notifications/${id}/read`
+    )
+    return response.data.data
+}
+
+// PATCH /api/v1/notifications/read-all
+export const markAllNotificationsAsRead = async (): Promise<void> => {
+    // Simulate API delay
+    await axios.patch<ApiResponse<void>>(
+        `${api_url}/notifications/read-all`
+    )
+}
+
+// DELETE /api/v1/notifications/{id}
+export const deleteOneNotification = async (id: number): Promise<void> => {
+    await axios.delete<ApiResponse<void>>(
+        `${api_url}/notifications/${id}`
+    )
+}

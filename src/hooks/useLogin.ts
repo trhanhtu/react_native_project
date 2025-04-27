@@ -5,6 +5,7 @@ import GlobalStorage from "@/src/utils/GlobalStorage"; // Assuming correct path
 import { LoginRequest, LoginResponse } from "@/src/utils/types"; // Corrected path
 import { Href, useRouter } from "expo-router";
 import { useState } from "react";
+import WebSocketService from "../services/WebSocketService";
 
 export default function useLogin() {
     const { toastShow } = useToast();
@@ -48,7 +49,7 @@ export default function useLogin() {
         try {
             // Call login API with the formData object
             const loginResponse: LoginResponse | null = await login(formData);
-            
+
 
             if (loginResponse !== null) {
                 // Login successful, store user data
@@ -61,6 +62,14 @@ export default function useLogin() {
                 GlobalStorage.setItem("avatar", loginResponse.avatar || `https://picsum.photos/seed/${loginResponse.name}/200`);
                 GlobalStorage.setItem("role", loginResponse.role);
                 GlobalStorage.setItem("isActive", loginResponse.active.toString()); // Store isActive status
+                try {
+                    console.log("Attempting to connect WebSocket (response was not null)...");
+                    await WebSocketService.connect();
+                    console.log("WebSocket connect initiated.");
+                } catch (error) {
+                    console.error("Error connecting WebSocket or navigating:", error);
+                    alert("An error occurred after login attempt.");
+                }
 
                 // Optional: Check if user is active before navigating
                 if (!loginResponse.active) {
@@ -69,7 +78,7 @@ export default function useLogin() {
                     // GlobalStorage.clearAll(); // Example
                 } else {
                     toastShow("Đăng nhập thành công!", "success");
-                   
+
                     router.replace("/main" as Href); // Navigate to main screen
                 }
 
