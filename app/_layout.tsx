@@ -2,6 +2,7 @@ import 'react-native-url-polyfill/auto';
 import 'text-encoding-polyfill';
 
 import { LayoutProvider } from '@/src/context/ApplicationLayoutProvider';
+import { NotificationProvider } from '@/src/context/NotificationProvider';
 import { ToastProvider } from '@/src/context/ToastProvider';
 import * as eva from '@eva-design/eva';
 import { ApplicationProvider, Icon, IconProps, IconRegistry, TopNavigation, TopNavigationAction } from '@ui-kitten/components';
@@ -38,25 +39,27 @@ export default function RootLayout() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
         <LayoutProvider>
-          <ToastProvider>
-            <Toast />
-            <Stack >
-              <Stack.Screen name='index' options={{ headerShown: false }} />
-              <Stack.Screen name='main' options={{ headerShown: false }} />
-              <Stack.Screen name='onboard' options={{ headerShown: false }} />
-              <Stack.Screen name='login' options={{ headerShown: false }} />
-              <Stack.Screen name='signup' options={{ headerShown: false }} />
-              <Stack.Screen name='verify' options={{ headerShown: false }} />
-              <Stack.Screen name='podcastlist/[elementName]' options={{ headerShown: false }} />
-              <Stack.Screen name='detailelement/[elementId]' options={{
-                header: () => <BackButton page_title='Chi tiết nguyên tố' />,
-              }} />
-              <Stack.Screen name='detailpodcast/[podcastId]' options={{
-                headerShown: false
-              }} />
-              <Stack.Screen name='forgotpassword' options={{ headerShown: false }} />
-            </Stack>
-          </ToastProvider>
+          <NotificationProvider>
+            <ToastProvider>
+              <Toast />
+              <Stack >
+                <Stack.Screen name='index' options={{ headerShown: false }} />
+                <Stack.Screen name='main' options={{ headerShown: false }} />
+                <Stack.Screen name='onboard' options={{ headerShown: false }} />
+                <Stack.Screen name='login' options={{ headerShown: false }} />
+                <Stack.Screen name='signup' options={{ headerShown: false }} />
+                <Stack.Screen name='verify' options={{ headerShown: false }} />
+                <Stack.Screen name='podcastlist/[elementName]' options={{ headerShown: false }} />
+                <Stack.Screen name='detailelement/[elementId]' options={{
+                  header: () => <BackButton page_title='Chi tiết nguyên tố' />,
+                }} />
+                <Stack.Screen name='detailpodcast/[podcastId]' options={{
+                  headerShown: false
+                }} />
+                <Stack.Screen name='forgotpassword' options={{ headerShown: false }} />
+              </Stack>
+            </ToastProvider>
+          </NotificationProvider>
         </LayoutProvider>
       </ApplicationProvider>
     </TailwindProvider>

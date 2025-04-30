@@ -54,6 +54,10 @@
   top: 1rem
 }
 
+.top-0 {
+  top: 0px
+}
+
 .z-10 {
   z-index: 10
 }
@@ -366,6 +370,10 @@
 
 .min-w-\[120px\] {
   min-width: 120px
+}
+
+.min-w-\[16px\] {
+  min-width: 16px
 }
 
 .max-w-md {
@@ -764,6 +772,11 @@
   background-color: rgb(234 179 8 / 1)
 }
 
+.bg-red-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1))
+}
+
 .p-0 {
   padding: 0px
 }
@@ -860,6 +873,11 @@
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem
 }
 
 .pb-1 {

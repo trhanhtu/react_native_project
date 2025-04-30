@@ -6,11 +6,12 @@ import GlobalStorage from "@/src/utils/GlobalStorage";
 import { LoginRequest, LoginResponse } from "@/src/utils/types";
 import { Href, useRouter } from "expo-router";
 import { useState } from "react";
+import { useNotification } from "../context/NotificationProvider";
 
 export default function useLogin() {
   const { toastShow } = useToast();
   const router = useRouter();
-
+  const { connectSocket } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginRequest>({ email: "", password: "" });
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -41,12 +42,8 @@ export default function useLogin() {
         toastShow("Đăng nhập thất bại.", "error");
       } else {
         // store tokens
-        await GlobalStorage.setItem("access_token", res.accessToken);
-        // inject token into WS and connect
-        // const ws = WebSocketServiceController.getInstance();            // singleton instance :contentReference[oaicite:4]{index=4}
-        // ws.setToken(res.accessToken);
-        // ws.connect();                                                  // explicit connect after login :contentReference[oaicite:5]{index=5}
-
+        await GlobalStorage.setItem("access_token", res.accessToken);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        connectSocket();
         toastShow("Đăng nhập thành công!", "success");
         router.replace("/main" as Href);
       }

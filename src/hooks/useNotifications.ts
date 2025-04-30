@@ -1,248 +1,271 @@
-"use client"
+// Filename: src/hooks/useNotifications.ts
+import { useCallback, useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
-import { deleteOneNotification, fetchNotificationList, markAllNotificationsAsRead, markOneNotificationAsRead } from "@/api/api"
-import { useCallback, useEffect, useState } from "react"
-import Toast from "react-native-toast-message"
-import { decrementUnreadCount, refreshUnreadCount, updateUnreadCount } from "../components/UnreadNotificationIcon"
-import type { Notification_t } from "../utils/types"
+import {
+  deleteOneNotification,
+  fetchNotificationList,
+  markAllNotificationsAsRead,
+  markOneNotificationAsRead,
+} from '@/api/api'; // <-- Đảm bảo đường dẫn đúng tới file API của bạn
+import { useNotification } from '../context/NotificationProvider';
+import { WebSocketConnectionStatus } from '../services/WebSocketService';
+import { Notification_t } from '../utils/types';
 
-// API functions
-const fetchNotificationsApi = async (current = 1, pageSize = 10) => {
-  const response = await fetch(`/api/v1/notifications?current=${current}&pageSize=${pageSize}`)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch notifications: ${response.status}`)
-  }
-  return await response.json()
+// Định nghĩa kiểu dữ liệu giá trị trả về của hook
+interface UseNotificationsReturn {
+  notifications: Notification_t[]; // Danh sách thông báo
+  loading: boolean; // Trạng thái tải lần đầu
+  refreshing: boolean; // Trạng thái tải khi kéo làm mới
+  loadingMore: boolean; // Trạng thái tải thêm khi cuộn xuống
+  error: string | null; // Thông báo lỗi nếu có
+  hasMore: boolean; // Còn trang để tải thêm hay không
+  wsStatus: WebSocketConnectionStatus; // Trạng thái kết nối WebSocket (lấy từ context)
+  fetchNotifications: (isRefresh?: boolean) => Promise<void>; // Hàm tải thông báo (dùng cho cả lần đầu và refresh)
+  loadMoreNotifications: () => void; // Hàm tải thêm trang tiếp theo
+  markAsRead: (id: number) => Promise<void>; // Hàm đánh dấu một thông báo đã đọc
+  markAllAsRead: () => Promise<void>; // Hàm đánh dấu tất cả đã đọc
+  deleteNotification: (id: number) => Promise<void>; // Hàm xóa một thông báo
 }
 
-const markNotificationAsReadApi = async (id: number) => {
-  const response = await fetch(`/api/v1/notifications/${id}/read`, {
-    method: "PATCH",
-  })
-  if (!response.ok) {
-    throw new Error(`Failed to mark notification as read: ${response.status}`)
-  }
-  return await response.json()
-}
+const PAGE_SIZE = 15; // Kích thước trang, bạn có thể điều chỉnh
 
-const markAllNotificationsAsReadApi = async () => {
-  const response = await fetch(`/api/v1/notifications/read-all`, {
-    method: "PATCH",
-  })
-  if (!response.ok) {
-    throw new Error(`Failed to mark all notifications as read: ${response.status}`)
-  }
-  return await response.json()
-}
+/**
+ * Hook quản lý trạng thái và dữ liệu cho màn hình danh sách thông báo.
+ * Tích hợp với NotificationContext để cập nhật số lượng chưa đọc.
+ * @returns Object chứa trạng thái, dữ liệu và các hàm xử lý.
+ */
+export const useNotifications = (): UseNotificationsReturn => {
+  //------------------------------------------------------
+  // Context Access
+  //------------------------------------------------------
+  const {
+    status: wsStatus, // Lấy trạng thái WS từ context
+    setUnreadCount, // Hàm đặt lại số lượng chưa đọc trong context
+    decrementUnreadCount, // Hàm giảm số lượng chưa đọc trong context
+    // Có thể lấy thêm incrementUnreadCount nếu cần
+  } = useNotification();
 
-const deleteNotificationApi = async (id: number) => {
-  const response = await fetch(`/api/v1/notifications/${id}`, {
-    method: "DELETE",
-  })
-  if (!response.ok) {
-    throw new Error(`Failed to delete notification: ${response.status}`)
-  }
-}
+  //------------------------------------------------------
+  // Internal State
+  //------------------------------------------------------
+  const [notifications, setNotifications] = useState<Notification_t[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading ban đầu
+  const [refreshing, setRefreshing] = useState<boolean>(false); // Pull-to-refresh
+  const [loadingMore, setLoadingMore] = useState<boolean>(false); // Infinite scroll
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1); // Trang hiện tại để fetch
+  const [hasMore, setHasMore] = useState<boolean>(true); // Còn dữ liệu để load more
 
-const useNotifications = () => {
-  const [notifications, setNotifications] = useState<Notification_t[]>([])
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [unreadCount, setUnreadCount] = useState(0)
+  //------------------------------------------------------
+  // Data Fetching Logic
+  //------------------------------------------------------
+  const fetchNotifications = useCallback(
+    async (isRefresh: boolean = false) => {
+      // Xác định trang cần fetch và trạng thái loading tương ứng
 
-  // Calculate unread count whenever notifications change
-  useEffect(() => {
-    const count = notifications.filter((notification) => !notification.read).length
-    setUnreadCount(count)
-  }, [notifications])
-
-  const fetchNotifications = useCallback(async (page = 1, pageSize = 10) => {
-    try {
-      if (page === 1) {
-        setRefreshing(true)
-      }
-      setError(null)
-
-      const data = await fetchNotificationList(page, pageSize)
-
-      if (page === 1) {
-        setNotifications(data.result)
-        // Update global unread count when fetching notifications
-        const unreadCount = data.result.filter((n: Notification_t) => !n.read).length
-        await refreshUnreadCount()
+      const currentPage = isRefresh ? 1 : page;
+      console.log(`WorkspaceNotifications START: isRefresh=${isRefresh}, currentPage=${currentPage}, currentLoadingState=${loading}, currentRefreshingState=${refreshing}`);
+      if (isRefresh) {
+        setRefreshing(true);
+        setError(null); // Xóa lỗi cũ khi refresh
+        setHasMore(true); // Giả định có thể có dữ liệu mới khi refresh
+      } else if (currentPage === 1) {
+        setLoading(true); // Loading lần đầu
       } else {
-        setNotifications((prev) => [...prev, ...data.result])
+        setLoadingMore(true); // Loading trang tiếp theo
       }
 
-      setCurrentPage(data.meta.current)
-      setHasMore(data.meta.current < data.meta.totalPages)
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch notifications")
-      console.error("Error fetching notifications:", err)
-    } finally {
-      setLoading(false)
-      setRefreshing(false)
-    }
-  }, [])
+      try {
+        const response = await fetchNotificationList(currentPage, PAGE_SIZE);
 
-  const loadMoreNotifications = useCallback(async () => {
-    if (loadingMore || !hasMore) return
+        // Tính toán số lượng chưa đọc từ dữ liệu trả về *của trang này*
+        const newUnreadInPage = response.result.filter(n => !n.read).length;
 
-    setLoadingMore(true)
-    try {
-      await fetchNotifications(currentPage + 1)
-    } finally {
-      setLoadingMore(false)
+        setNotifications(prev =>
+          isRefresh ? response.result : [...prev, ...response.result]
+        );
+        setHasMore(response.meta.current < response.meta.totalPages);
+        setPage(response.meta.current + 1); // Cập nhật trang tiếp theo cần fetch
+        setError(null); // Xóa lỗi nếu fetch thành công
+
+        // *** Cập nhật Unread Count trong Context ***
+        if (isRefresh) {
+          // Nếu là refresh (trang 1), lấy tổng số chưa đọc từ meta.totalItems (nếu API hỗ trợ)
+          // hoặc tính toán lại từ toàn bộ danh sách mới fetch được (nếu chỉ có dữ liệu trang 1)
+          // Giả sử API không trả về tổng số chưa đọc, ta tính từ trang 1 trả về:
+          console.log("Refreshing: Setting unread count to:", newUnreadInPage);
+          setUnreadCount(newUnreadInPage); // Chỉ đặt count dựa trên trang 1 mới nhất
+        }
+        // Lưu ý: Khi load more, ta KHÔNG cập nhật lại tổng count từ context ở đây,
+        // vì việc đó đã được xử lý khi thông báo mới đến qua WebSocket hoặc khi người dùng đánh dấu đã đọc.
+
+      } catch (err: any) {
+        console.error("Failed to fetch notifications:", err);
+        const errorMsg = err?.response?.data?.message || err?.message || "Không thể tải thông báo";
+        setError(errorMsg);
+        // Không đặt lại notifications khi lỗi để giữ lại dữ liệu cũ nếu có
+        Toast.show({ type: 'error', text1: 'Lỗi Tải Dữ Liệu', text2: errorMsg });
+      } finally {
+        console.log(`WorkspaceNotifications FINALLY: Entered. isRefresh=${isRefresh}, currentPage=${currentPage}`);
+
+        // *** CORRECTED LOGIC ***
+        if (isRefresh) {
+          console.log("fetchNotifications FINALLY: Condition -> isRefresh === true. Setting refreshing=false");
+          setRefreshing(false);
+          // *** ALSO set loading false if it was the initial load (currentPage=1) ***
+          if (currentPage === 1) {
+            console.log("fetchNotifications FINALLY: Condition -> isRefresh === true AND currentPage === 1. Setting loading=false");
+            setLoading(false); // <--- Make sure initial loading is turned off
+          }
+        } else if (currentPage === 1) {
+          // This case is less likely if initial load uses isRefresh=true, but keep for safety
+          console.log("fetchNotifications FINALLY: Condition -> isRefresh === false AND currentPage === 1. Setting loading=false");
+          setLoading(false);
+        } else {
+          console.log("fetchNotifications FINALLY: Condition -> Not initial load/refresh. Setting loadingMore=false");
+          setLoadingMore(false);
+        }
+        console.log(`WorkspaceNotifications FINALLY EXIT: Attempted state updates.`);
+      }
+    },
+    [page, setUnreadCount] // Phụ thuộc vào page và hàm context
+  );
+
+  // Hàm load more đơn giản
+  const loadMoreNotifications = useCallback(() => {
+    // Chỉ load more nếu còn dữ liệu và không đang load
+    if (hasMore && !loadingMore && !refreshing && !loading) {
+      console.log("Loading more notifications...");
+      fetchNotifications(false); // Fetch trang tiếp theo
     }
-  }, [currentPage, hasMore, loadingMore, fetchNotifications])
+  }, [hasMore, loadingMore, refreshing, loading, fetchNotifications]);
+
+  //------------------------------------------------------
+  // Mutation Logic (Mark Read, Delete)
+  //------------------------------------------------------
 
   const markAsRead = useCallback(
     async (id: number) => {
+      const originalNotifications = [...notifications]; // Sao lưu trạng thái cũ để rollback nếu lỗi
+      const notificationIndex = originalNotifications.findIndex(n => n.id === id);
+      if (notificationIndex === -1) return; // Không tìm thấy thông báo
+
+      const wasUnread = !originalNotifications[notificationIndex].read;
+
+      // Cập nhật UI trước để tạo cảm giác nhanh nhạy
+      setNotifications(prev =>
+        prev.map(n => (n.id === id ? { ...n, read: true } : n))
+      );
+
+      // Nếu nó chưa đọc, giảm count trong context ngay lập tức
+      if (wasUnread) {
+        decrementUnreadCount(1);
+      }
+
       try {
-        // Check if notification is already read
-        const notification = notifications.find((n) => n.id === id)
-        const wasUnread = notification && !notification.read
-
-        // Optimistic update
-        setNotifications((prev) =>
-          prev.map((notification) => (notification.id === id ? { ...notification, read: true } : notification)),
-        )
-
-        // If notification was unread, decrement the global counter
+        await markOneNotificationAsRead(id); // Gọi API
+        // Thành công: không cần làm gì thêm vì UI đã cập nhật
+      } catch (error: any) {
+        console.error("Failed to mark notification as read:", error);
+        // Rollback lại trạng thái UI và context nếu lỗi
+        setNotifications(originalNotifications);
         if (wasUnread) {
-          decrementUnreadCount()
+          // Nếu đã giảm count mà lỗi -> tăng lại count (hoặc fetch lại count tổng)
+          // Đơn giản nhất là fetch lại trang đầu để đồng bộ count
+          fetchNotifications(true); // Hoặc dùng incrementUnreadCount(1) nếu có
         }
-
-        await markOneNotificationAsRead(id)
-      } catch (err: any) {
-        // Revert optimistic update on error
-        setNotifications((prev) =>
-          prev.map((notification) => (notification.id === id ? { ...notification, read: false } : notification)),
-        )
-
-        // Refresh the global counter to ensure accuracy
-        refreshUnreadCount()
-
-        Toast.show({
-          type: "error",
-          text1: "Failed to mark notification as read",
-        })
-        console.error("Error marking notification as read:", err)
+        const errorMsg = error?.response?.data?.message || "Đánh dấu đã đọc thất bại";
+        Toast.show({ type: 'error', text1: 'Lỗi Cập Nhật', text2: errorMsg });
       }
     },
-    [notifications],
-  )
+    [notifications, decrementUnreadCount, fetchNotifications] // Thêm fetchNotifications vào dependency
+  );
 
-  const markAllAsRead = useCallback(async () => {
-    try {
-      // Count unread notifications before marking all as read
-      const unreadNotifications = notifications.filter((n) => !n.read)
-      const unreadCount = unreadNotifications.length
+  const markAllAsRead = useCallback(
+    async () => {
+      const originalNotifications = [...notifications];
+      const wereAnyUnread = originalNotifications.some(n => !n.read);
 
-      // Optimistic update
-      setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })))
-
-      // Update global counter to zero since all are now read
-      if (unreadCount > 0) {
-        await refreshUnreadCount()
+      // Cập nhật UI trước
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      // Đặt count về 0 trong context
+      if (wereAnyUnread) {
+        setUnreadCount(0);
       }
-      updateUnreadCount(0);
-      await markAllNotificationsAsRead()
-      Toast.show({
-        type: "success",
-        text1: "All notifications marked as read",
-      })
-    } catch (err: any) {
-      // Revert on error
-      fetchNotificationList() // Refetch to get correct state
 
-      // Refresh the global counter to ensure accuracy
-      refreshUnreadCount()
-
-      Toast.show({
-        type: "error",
-        text1: "Failed to mark all notifications as read",
-      })
-      console.error("Error marking all notifications as read:", err)
-    }
-  }, [notifications, fetchNotifications])
+      try {
+        await markAllNotificationsAsRead(); // Gọi API
+      } catch (error: any) {
+        console.error("Failed to mark all notifications as read:", error);
+        // Rollback UI và context
+        setNotifications(originalNotifications);
+        if (wereAnyUnread) {
+          // Fetch lại để đảm bảo count đúng
+          fetchNotifications(true);
+        }
+        const errorMsg = error?.response?.data?.message || "Đánh dấu tất cả đã đọc thất bại";
+        Toast.show({ type: 'error', text1: 'Lỗi Cập Nhật', text2: errorMsg });
+      }
+    },
+    [notifications, setUnreadCount, fetchNotifications] // Thêm fetchNotifications vào dependency
+  );
 
   const deleteNotification = useCallback(
     async (id: number) => {
+      const originalNotifications = [...notifications];
+      const notificationToDelete = originalNotifications.find(n => n.id === id);
+      if (!notificationToDelete) return;
+
+      const wasUnread = !notificationToDelete.read;
+
+      // Cập nhật UI trước
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      // Giảm count nếu nó chưa đọc
+      if (wasUnread) {
+        decrementUnreadCount(1);
+      }
+
       try {
-        // Check if notification is unread before deleting
-        const notification = notifications.find((n) => n.id === id)
-        const wasUnread = notification && !notification.read
-
-        // Optimistic update
-        setNotifications((prev) => prev.filter((notification) => notification.id !== id))
-
-        // If we're deleting an unread notification, decrement the counter
+        await deleteOneNotification(id); // Gọi API
+      } catch (error: any) {
+        console.error("Failed to delete notification:", error);
+        // Rollback UI và context
+        setNotifications(originalNotifications);
         if (wasUnread) {
-          decrementUnreadCount()
+          fetchNotifications(true); // Fetch lại để đồng bộ count
         }
-
-        await deleteOneNotification(id)
-        Toast.show({
-          type: "success",
-          text1: "Notification deleted",
-        })
-      } catch (err: any) {
-        // Revert optimistic update on error
-        fetchNotifications() // Refetch to get correct state
-
-        // Refresh the global counter to ensure accuracy
-        refreshUnreadCount()
-
-        Toast.show({
-          type: "error",
-          text1: "Failed to delete notification",
-        })
-        console.error("Error deleting notification:", err)
+        const errorMsg = error?.response?.data?.message || "Xóa thông báo thất bại";
+        Toast.show({ type: 'error', text1: 'Lỗi Cập Nhật', text2: errorMsg });
       }
     },
-    [notifications, fetchNotifications],
-  )
+    [notifications, decrementUnreadCount, fetchNotifications] // Thêm fetchNotifications vào dependency
+  );
 
-  // Add a new notification (used by WebSocket)
-  const addNotification = useCallback((notification: Notification_t) => {
-    setNotifications((prev) => {
-      // Check if notification already exists
-      const exists = prev.some((n) => n.id === notification.id)
-      if (exists) {
-        return prev
-      }
-      // Add new notification at the beginning
-      return [notification, ...prev]
-    })
+  //------------------------------------------------------
+  // Initial Fetch Effect
+  //------------------------------------------------------
+  useEffect(() => {
+    console.log("useNotifications mounted. Fetching initial data...");
+    fetchNotifications(true); // Fetch trang đầu tiên khi hook được sử dụng lần đầu
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Chỉ chạy 1 lần khi mount
 
-    // Show toast for new notification
-    Toast.show({
-      type: "info",
-      text1: "New notification",
-      text2: notification.message,
-    })
-  }, [])
-
+  //------------------------------------------------------
+  // Return Values
+  //------------------------------------------------------
   return {
     notifications,
     loading,
     refreshing,
     loadingMore,
-    hasMore,
     error,
-    unreadCount,
-    fetchNotifications,
+    hasMore,
+    wsStatus, // Trả về trạng thái WS để component sử dụng nếu cần
+    fetchNotifications, // Trả về hàm fetch để dùng cho onRefresh
+    loadMoreNotifications, // Trả về hàm load more cho onEndReached
     markAsRead,
     markAllAsRead,
     deleteNotification,
-    loadMoreNotifications,
-    addNotification,
-  }
-}
-
-export default useNotifications
+  };
+};

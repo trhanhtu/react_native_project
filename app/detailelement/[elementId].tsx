@@ -1,4 +1,4 @@
-// DetailElementScreen.tsx
+// Filename: DetailElementScreen.tsx
 import {
     checkFavoriteElementStatus, // Import the function to check status
     fetchElementDetails,
@@ -20,7 +20,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, ColorValue, FlatList, Image, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 
-// --- Custom Hook for Element Details ---
+//------------------------------------------------------
+// Custom Hook: useElementDetails
+//------------------------------------------------------
 const useElementDetails = (elementIdParam: string | string[] | undefined) => {
     const [elementData, setElementData] = useState<DetailElement_t | null>(null);
     const [isFavorite, setIsFavorite] = useState<boolean | null>(null); // Separate state for favorite status
@@ -34,8 +36,9 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
     const elementId = typeof elementIdParam === 'string' ? parseInt(elementIdParam, 10) : NaN;
 
     const loadData = useCallback(async (refresh = false) => {
+        // Guard clause for invalid ID
         if (isNaN(elementId)) {
-            setError("Invalid Element ID");
+            setError("ID Nguyên tố không hợp lệ"); // Translated
             setLoading(false);
             setRefreshing(false);
             return;
@@ -61,7 +64,7 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
                 setError(null);
             } else {
                 setElementData(null); // Clear data if fetch fails
-                setError("Could not fetch element data.");
+                setError("Không thể tải dữ liệu nguyên tố."); // Translated
             }
 
             if (favoriteStatusResponse !== null) {
@@ -75,7 +78,7 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
 
         } catch (err) {
             console.error("Error loading element data:", err);
-            setError("An error occurred while fetching data.");
+            setError("Đã xảy ra lỗi khi tải dữ liệu."); // Translated
             setElementData(null); // Clear data on error
             setIsFavorite(null); // Reset favorite status on error
         } finally {
@@ -87,19 +90,20 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
     useEffect(() => {
         lockPortrait();
         loadData();
-    }, []); // Run loadData when elementId changes
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadData]); // Run loadData when hook mounts or loadData changes
 
     const goToPrevious = () => {
         if (!isNaN(elementId) && elementId > 1) {
             // Use replace to avoid building up history for prev/next navigation
-            router.replace(`/detailelement/${elementId - 1}` as Href);
+            router.replace(`/detailelement/${elementId - 1}` as Href); // Cast to Href<any> or specific route string type
         }
     };
 
     const goToNext = () => {
         // Consider element limit (e.g., 118) - Optional
         if (!isNaN(elementId)) {
-            router.replace(`/detailelement/${elementId + 1}` as Href);
+            router.replace(`/detailelement/${elementId + 1}` as Href); // Cast to Href<any> or specific route string type
         }
     };
 
@@ -116,10 +120,12 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
                 // Handle toggle failure (show toast?)
                 console.error("Failed to toggle favorite status.");
                 // Optionally revert UI state or show error message
+                // Maybe show a toast here in Vietnamese? e.g., toast.error("Không thể thay đổi trạng thái yêu thích.")
             }
         } catch (err) {
             console.error("Error toggling favorite:", err);
             // Handle error (show toast?)
+            // Maybe show a toast here? e.g., toast.error("Lỗi khi thay đổi trạng thái yêu thích.")
         } finally {
             setIsTogglingFavorite(false);
         }
@@ -141,14 +147,16 @@ const useElementDetails = (elementIdParam: string | string[] | undefined) => {
 };
 
 
-// --- Main Screen Component ---
+//------------------------------------------------------
+// Main Screen Component: DetailElementScreen
+//------------------------------------------------------
 const DetailElementScreen = () => {
     const { elementId } = useLocalSearchParams();
     const tw = useTailwind();
 
     const {
-        elementData, // Renamed from favoriteElement
-        isFavorite, // New state for favorite status
+        elementData,
+        isFavorite,
         loading,
         error,
         refreshing,
@@ -157,8 +165,8 @@ const DetailElementScreen = () => {
         goToNext,
         goToPreviousDisabled,
         handleToggleFavorite,
-        isTogglingFavorite, // Loading state for the toggle button
-    } = useElementDetails(elementId); // Pass param directly
+        isTogglingFavorite,
+    } = useElementDetails(elementId);
 
     // Loading Indicator for Toggle Button
     const ToggleLoadingIndicator = (props: any): React.ReactElement => (
@@ -167,30 +175,37 @@ const DetailElementScreen = () => {
         </View>
     );
 
-
+    //----------------------------------
+    // Loading State
+    //----------------------------------
     if (loading) {
         return (
             <View style={tw("flex-1 justify-center items-center bg-white/100 p-4")}>
                 <ActivityIndicator size="large" color={tw('text-purple-600/100').color as string} />
-                <Text style={tw("mt-4 text-gray-600/100")}>Loading Element Details...</Text>
+                <Text style={tw("mt-4 text-gray-600/100")}>Đang tải chi tiết nguyên tố...</Text> 
             </View>
         );
     }
 
+    //----------------------------------
+    // Error State
+    //----------------------------------
     if (error || elementData === null) {
         return (
             <View style={tw("flex-1 justify-center items-center bg-white/100 p-6")}>
                 <Text category="h6" style={tw("text-red-600/100 text-center mb-4")}>
-                    {error || "Element information not found."}
+                    {error || "Không tìm thấy thông tin nguyên tố."} 
                 </Text>
                 <Button onPress={() => loadData()} status="primary" appearance="outline">
-                    Retry
+                    Thử lại
                 </Button>
             </View>
         );
     }
 
-    // Main content render
+    //----------------------------------
+    // Main Content Render
+    //----------------------------------
     return (
         <ScrollView
             style={tw("flex-1 bg-gray-100/100")}
@@ -204,7 +219,7 @@ const DetailElementScreen = () => {
                 />
             }
         >
-            {/* Pass elementData to child components */}
+            
             <ElementHeader element={elementData} />
             <ElementClassification element={elementData} />
             <ElementPhysicalProps element={elementData} />
@@ -212,7 +227,7 @@ const DetailElementScreen = () => {
             <ElementAtomicProps element={elementData} />
             <ElementOtherInfo element={elementData} />
 
-            {/* Next, Previous & Favorite Buttons */}
+          
             <View style={tw("flex-row justify-between p-4 mt-2 mb-4")}>
                 <Button
                     onPress={goToPrevious}
@@ -220,31 +235,32 @@ const DetailElementScreen = () => {
                     style={tw("flex-1 mr-2")}
                     appearance="outline" // Less prominent style
                 >
-                    Previous
+                    Trước 
                 </Button>
-                {/* Favorite Button - uses isFavorite state */}
                 <Button
-                    status={isFavorite ? "danger" : "success"} // Use correct status based on isFavorite
+                    status={isFavorite ? "danger" : "success"}
                     style={tw("flex-1")}
                     onPress={handleToggleFavorite}
-                    disabled={isFavorite === null || isTogglingFavorite || loading || refreshing} // Disable if status unknown or during toggle/load
+                    disabled={isFavorite === null || isTogglingFavorite || loading || refreshing}
                     accessoryLeft={isTogglingFavorite ? ToggleLoadingIndicator : undefined}
                 >
                     {(evaProps) => (
                         <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-semibold')]}>
-                            {isTogglingFavorite ? '...' : (isFavorite ? "Unfavorite" : "Favorite")}
+                            {isTogglingFavorite ? '...' : (isFavorite ? "Bỏ thích" : "Yêu thích")} 
                         </Text>
                     )}
                 </Button>
                 <Button
                     onPress={goToNext}
-                    disabled={loading || refreshing} // Add disable check
+                    disabled={loading || refreshing}
                     style={tw("flex-1 ml-2")}
                     appearance="outline"
                 >
-                    Next
+                    Sau 
                 </Button>
             </View>
+
+            
             <ElementCommentSection elementId={Number(elementId) ?? 1} />
         </ScrollView>
     );
@@ -252,10 +268,11 @@ const DetailElementScreen = () => {
 
 export default DetailElementScreen;
 
+//------------------------------------------------------
+// Child Components
+//------------------------------------------------------
 
-// --- Child Components ---
-
-const defaultNA = "N/A"; // Default value for missing data
+const defaultNA = "Không có"; // Default value for missing data - Translated
 
 // Helper to format potentially null/undefined numbers
 const formatValue = (value: number | string | null | undefined, unit: string = ""): string => {
@@ -270,7 +287,9 @@ const formatValue = (value: number | string | null | undefined, unit: string = "
     return String(value);
 };
 
-
+//----------------------------------
+// ElementInfoCard Component
+//----------------------------------
 interface ElementInfoCardProps {
     title: string;
     properties: PropertyPair[];
@@ -288,14 +307,14 @@ const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) 
     return (
         <Card style={[tw("m-4 bg-white/100 rounded-lg"), CustomStyles.shadow]}>
             <Text category="h6" style={tw("mb-3 font-bold text-gray-800/100")}>
-                {title}
+                {title} 
             </Text>
             <Divider style={tw("mb-3 bg-gray-200/100")} />
 
             {properties.map((prop, index) => (
                 <View key={`${title}-${index}-${prop.label}`} style={tw("flex-row justify-between items-center mb-2 py-1")}>
-                    <Text style={tw("text-gray-600/100 text-sm")}>{prop.label}:</Text>
-                    {/* Handle ReactNode separately */}
+                    <Text style={tw("text-gray-600/100 text-sm")}>{prop.label}:</Text> 
+                    
                     {React.isValidElement(prop.value) ? (
                         prop.value
                     ) : (
@@ -310,6 +329,9 @@ const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) 
     );
 };
 
+//----------------------------------
+// ElementCommentSection Component
+//----------------------------------
 const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) => {
     const {
         comments,
@@ -322,14 +344,18 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
         onLikeElementComment,
     } = useElementComments(elementId);
     const tailwind = useTailwind();
+
     const renderEmptyComments = () => {
         if (!isCommentsLoading && !commentsError && comments && comments.length === 0) {
+            // Assuming CommentsEmptyState contains its own text, will need translation there if applicable
             return <CommentsEmptyState tailwind={tailwind} />;
         }
         return null;
     };
+
     return (
         <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
+            
             <CommentsHeader
                 tailwind={tailwind}
                 isCommentsLoading={isCommentsLoading}
@@ -341,6 +367,7 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
                 data={comments}
                 renderItem={({ item }: { item: ElementComment }) => (
                     <View style={tailwind('mb-2')}>
+                        
                         <CommentItem comment={item} onLikeComment={onLikeElementComment} loadingLikeCommentId={loadingLikeCommentId} />
                     </View>
                 )}
@@ -352,23 +379,28 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
                         {isFetchingMoreComments && (
                             <View style={tailwind('py-6 items-center')}>
                                 <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
+                                
                             </View>
                         )}
                         <View style={tailwind('h-4')} />
                     </>
                 }
                 ListEmptyComponent={renderEmptyComments}
-                contentContainerStyle={tailwind('pb-20')} // Add more padding to accommodate the input
+                contentContainerStyle={tailwind('pb-20')}
             />
 
-            {/* Add the comment input at the bottom */}
+            
             <View style={tailwind('absolute bottom-0 left-0 right-0 px-2 pb-2 bg-gray-900/100')}>
+                
                 <CommentInput onSubmit={handleCommentSubmit} />
             </View>
         </View>
     )
 }
 
+//----------------------------------
+// ElementHeader Component
+//----------------------------------
 interface ElementHeaderProps {
     element: DetailElement_t;
 }
@@ -377,8 +409,6 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
     const tw = useTailwind();
 
     return (
-        // Use a different background or style for the header card
-
         <LinearGradient
             colors={['#7C3AEDFF', '#4F46E5FF']} // from-purple-600 to-indigo-600
             start={{ x: 0, y: 0 }}
@@ -386,32 +416,28 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
             style={[tw("m-4 p-5 rounded-lg"), CustomStyles.shadow]}
         >
             <View style={tw("flex-row justify-between items-center")}>
-
                 <View style={tw("flex-shrink pr-4")}>
-                    {/* Larger Symbol */}
+                    
                     <Text style={tw("text-4xl font-bold text-white/100")}>
                         {element.symbol}
                     </Text>
                     <View>
-
                         <Text category="h5" style={tw("text-white/100 font-semibold mt-1")}>{element.name}</Text>
-                        <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Atomic Number: {element.atomicNumber}</Text>
+                        <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Số hiệu nguyên tử: {element.atomicNumber}</Text> 
                     </View>
                 </View>
 
-
-                {/* Element Image */}
+                
                 {element.image ? (
                     <Image
                         source={{ uri: element.image }}
                         style={tw("w-24 h-24 rounded-lg border-2 border-white/100 bg-white/20")} // Added background/border
                         resizeMode="contain"
-                    // Add default source?
                     />
                 ) : (
                     // Placeholder if no image
                     <View style={tw("w-24 h-24 rounded-lg border-2 border-white/100 bg-white/20 justify-center items-center")}>
-                        <Text style={tw("text-white/50")}>No Image</Text>
+                        <Text style={tw("text-white/50")}>Không có hình ảnh</Text> 
                     </View>
                 )}
             </View>
@@ -419,40 +445,46 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
     );
 };
 
-
+//----------------------------------
+// ElementClassification Component
+//----------------------------------
 interface ElementClassificationProps {
     element: DetailElement_t;
 }
 
 const ElementClassification: React.FC<ElementClassificationProps> = ({ element }) => {
     const classificationProperties: PropertyPair[] = [
-        { label: "Classification", value: element.classification },
-        { label: "Group", value: element.groupNumber },
-        { label: "Period", value: element.period },
-        { label: "Block", value: element.block },
+        { label: "Phân loại", value: element.classification }, // Translated label
+        { label: "Nhóm", value: element.groupNumber },        // Translated label
+        { label: "Chu kỳ", value: element.period },          // Translated label
+        { label: "Khối", value: element.block },             // Translated label
     ];
 
-    return <ElementInfoCard title="Classification" properties={classificationProperties} />;
+    return <ElementInfoCard title="Phân loại" properties={classificationProperties} />; // Translated title
 };
 
-
+//----------------------------------
+// ElementPhysicalProps Component
+//----------------------------------
 interface ElementPhysicalPropsProps {
     element: DetailElement_t;
 }
 
 const ElementPhysicalProps: React.FC<ElementPhysicalPropsProps> = ({ element }) => {
     const physicalProperties: PropertyPair[] = [
-        { label: "Atomic Mass", value: element.atomicMass, unit: "u" }, // Assuming atomicMass is number-like string or number
-        { label: "Melting Point", value: element.meltingPoint, unit: "K" },
-        { label: "Boiling Point", value: element.boilingPoint, unit: "K" },
-        { label: "Density", value: element.density, unit: "g/cm³" },
-        { label: "Standard State", value: element.standardState },
+        { label: "Khối lượng nguyên tử", value: element.atomicMass, unit: "u" }, // Translated label
+        { label: "Điểm nóng chảy", value: element.meltingPoint, unit: "K" },      // Translated label
+        { label: "Điểm sôi", value: element.boilingPoint, unit: "K" },          // Translated label
+        { label: "Tỷ trọng", value: element.density, unit: "g/cm³" },         // Translated label
+        { label: "Trạng thái tiêu chuẩn", value: element.standardState },   // Translated label
     ];
 
-    return <ElementInfoCard title="Physical Properties" properties={physicalProperties} />;
+    return <ElementInfoCard title="Tính chất vật lý" properties={physicalProperties} />; // Translated title
 };
 
-
+//----------------------------------
+// ElementElectronicProps Component
+//----------------------------------
 interface ElementElectronicPropsProps {
     element: DetailElement_t;
 }
@@ -466,47 +498,52 @@ const ElementElectronicProps: React.FC<ElementElectronicPropsProps> = ({ element
     };
 
     const electronicProperties: PropertyPair[] = [
-        { label: "Configuration", value: element.electronicConfiguration },
-        { label: "Electronegativity", value: element.electronegativity }, // Pauling scale usually unitless
-        { label: "Ionization Energy", value: element.ionizationEnergy, unit: "eV" },
-        { label: "Electron Affinity", value: element.electronAffinity, unit: "eV" },
-        { label: "Oxidation States", value: renderOxidationStates(element.oxidationStates) },
+        { label: "Cấu hình", value: element.electronicConfiguration },           // Translated label
+        { label: "Độ âm điện", value: element.electronegativity },                // Translated label
+        { label: "Năng lượng ion hóa", value: element.ionizationEnergy, unit: "eV" },// Translated label
+        { label: "Ái lực electron", value: element.electronAffinity, unit: "eV" }, // Translated label
+        { label: "Số oxi hóa", value: renderOxidationStates(element.oxidationStates) }, // Translated label
     ];
 
-    return <ElementInfoCard title="Electronic Properties" properties={electronicProperties} />;
+    return <ElementInfoCard title="Tính chất electron" properties={electronicProperties} />; // Translated title
 };
 
-
+//----------------------------------
+// ElementAtomicProps Component
+//----------------------------------
 interface ElementAtomicPropsProps {
     element: DetailElement_t;
 }
 
 const ElementAtomicProps: React.FC<ElementAtomicPropsProps> = ({ element }) => {
     const atomicProperties: PropertyPair[] = [
-        { label: "Atomic Radius", value: element.atomicRadius, unit: "pm" },
-        { label: "Ion Radius", value: element.ionRadius, unit: "pm" }, // Note: type is string | null
-        { label: "Van der Waals Radius", value: element.vanDelWaalsRadius, unit: "pm" },
+        { label: "Bán kính nguyên tử", value: element.atomicRadius, unit: "pm" },     // Translated label
+        { label: "Bán kính ion", value: element.ionRadius, unit: "pm" },          // Translated label
+        { label: "Bán kính Van der Waals", value: element.vanDelWaalsRadius, unit: "pm" }, // Translated label
     ];
 
-    return <ElementInfoCard title="Atomic Size" properties={atomicProperties} />;
+    return <ElementInfoCard title="Kích thước nguyên tử" properties={atomicProperties} />; // Translated title
 };
 
-
+//----------------------------------
+// ElementOtherInfo Component
+//----------------------------------
 interface ElementOtherInfoProps {
     element: DetailElement_t;
 }
 
 const ElementOtherInfo: React.FC<ElementOtherInfoProps> = ({ element }) => {
     const otherProperties: PropertyPair[] = [
-        { label: "Bonding Type", value: element.bondingType },
-        { label: "Year Discovered", value: element.yearDiscovered },
+        { label: "Kiểu liên kết", value: element.bondingType },    // Translated label
+        { label: "Năm phát hiện", value: element.yearDiscovered }, // Translated label
     ];
 
-    return <ElementInfoCard title="Other Information" properties={otherProperties} />;
+    return <ElementInfoCard title="Thông tin khác" properties={otherProperties} />; // Translated title
 };
 
-
-// Add StyleSheet for spinner positioning
+//------------------------------------------------------
+// StyleSheet
+//------------------------------------------------------
 const styles = StyleSheet.create({
     indicator: {
         justifyContent: 'center',

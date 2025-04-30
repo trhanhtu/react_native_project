@@ -9,6 +9,7 @@ import {
 
 import { Href, useRouter } from "expo-router";
 import { useCallback, useEffect, useReducer } from "react";
+import { useNotification } from "../context/NotificationProvider";
 import authCheck from "../utils/authCheck"; // Assuming this utility exists and wraps logout
 import {
   FavoriteElement_t,
@@ -219,7 +220,7 @@ function profileReducer(state: ProfileState, action: Action): ProfileState {
 export default function useProfile() { // Renamed back to useProfile
   const [state, dispatch] = useReducer(profileReducer, initialState);
   const router = useRouter();
-
+  const { disconnectSocket } = useNotification();
   // --- Data Fetching ---
   const fetchData = useCallback(async (refresh = false) => {
     dispatch({ type: "FETCH_INIT_START", payload: { refresh } });
@@ -295,6 +296,7 @@ export default function useProfile() { // Renamed back to useProfile
 
   // --- Logout ---
   const handleExitAccount = useCallback(() => {
+    disconnectSocket();
     dispatch({ type: "LOGOUT_START" });
     authCheck.logout().then(() => {
       router.replace("/login"); // Use replace to prevent back navigation
