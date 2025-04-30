@@ -2,6 +2,10 @@
   pointer-events: none
 }
 
+.static {
+  position: static
+}
+
 .fixed {
   position: fixed
 }
@@ -1167,4 +1171,52 @@
 
 .opacity-80 {
   opacity: 0.8
+}
+
+.\[oaicite\:10\] {
+  oaicite: 10
+}
+
+.\[oaicite\:11\] {
+  oaicite: 11
+}
+
+.\[oaicite\:12\] {
+  oaicite: 12
+}
+
+.\[oaicite\:13\] {
+  oaicite: 13
+}
+
+.\[oaicite\:14\] {
+  oaicite: 14
+}
+
+.\[oaicite\:1\] {
+  oaicite: 1
+}
+
+.\[oaicite\:2\] {
+  oaicite: 2
+}
+
+.\[oaicite\:3\] {
+  oaicite: 3
+}
+
+.\[oaicite\:4\] {
+  oaicite: 4
+}
+
+.\[oaicite\:5\] {
+  oaicite: 5
+}
+
+.\[oaicite\:6\] {
+  oaicite: 6
+}
+
+.\[oaicite\:7\] {
+  oaicite: 7
 }
