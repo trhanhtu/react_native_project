@@ -1,3 +1,4 @@
+import { fetchNotificationList } from "@/api/api";
 import BlockTable from "@/src/components/BlockTable";
 import ClassificationTable from "@/src/components/ClassificationTable";
 import GroupTable from "@/src/components/GroupTable";
@@ -6,9 +7,10 @@ import ImageTable from "@/src/components/ImageTable";
 import PeriodTable from "@/src/components/PeriodTable";
 import PodcastTable from "@/src/components/PodcastTable";
 import TemperatureTable from "@/src/components/TemperatureTable";
-import UnreadNotificationIcon, { initializeNotificationSystem } from "@/src/components/UnreadNotificationIcon";
+import UnreadNotificationIcon from "@/src/components/UnreadNotificationIcon";
 import { useLayout } from "@/src/context/ApplicationLayoutProvider";
 import { PeriodicTableProvider } from "@/src/context/PeriodicTableProvider";
+import { NotificationsResponse } from "@/src/utils/types";
 import { createDrawerNavigator, DrawerNavigationOptions, DrawerNavigationProp } from "@react-navigation/drawer";
 import { Icon } from "@ui-kitten/components";
 import { useNavigation } from "expo-router";
@@ -26,25 +28,33 @@ import GlobalSearchScreen from "./search";
 
 const Drawer = createDrawerNavigator();
 const screens = [
-    { name: "Trang chủ", component: HomeScreen, isPortrait: true, drawerIconFunc: undefined },
-    { name: "Thông báo", component: NotificationsScreen, isPortrait: true, drawerIconFunc: UnreadNotificationIcon },
-    { name: "Cá nhân", component: ProfileScreen, isPortrait: true, drawerIconFunc: undefined },
-    { name: "Tìm kiếm", component: GlobalSearchScreen, isPortrait: true, drawerIconFunc: undefined },
-    { name: "Bảng", component: ImageTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "Niên đại", component: HistoryTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "Chu kỳ", component: PeriodTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "Nhóm", component: GroupTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "Nhiệt độ", component: TemperatureTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "phân loại", component: ClassificationTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "phân lớp", component: BlockTable, isPortrait: false, drawerIconFunc: undefined },
-    { name: "podcast", component: PodcastTable, isPortrait: false, drawerIconFunc: undefined },
+    { name: "Trang chủ", component: HomeScreen, isPortrait: true, drawerIconFunc: undefined, isLazy: true },
+    { name: "Thông báo", component: NotificationsScreen, isPortrait: true, drawerIconFunc: UnreadNotificationIcon, isLazy: false },
+    { name: "Cá nhân", component: ProfileScreen, isPortrait: true, drawerIconFunc: undefined, isLazy: true },
+    { name: "Tìm kiếm", component: GlobalSearchScreen, isPortrait: true, drawerIconFunc: undefined, isLazy: true },
+    { name: "Bảng", component: ImageTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Niên đại", component: HistoryTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Chu kỳ", component: PeriodTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Nhóm", component: GroupTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Nhiệt độ", component: TemperatureTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "phân loại", component: ClassificationTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "phân lớp", component: BlockTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "podcast", component: PodcastTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
 ];
 
 const DrawerLayout = () => {
     const { lockLandscape, lockPortrait } = useLayout();
     useEffect(() => {
         // Initialize notification system when the app starts
-        initializeNotificationSystem()
+        // initializeNotificationSystem()
+        fetchNotificationList().then((res: NotificationsResponse) => {
+            if (res && res.result) {
+                // Handle the fetched notifications here
+                console.log("Fetched notifications:", res.result);
+            } else {
+                console.error("Failed to fetch notifications or no data available.");
+            }
+        });
     }, [])
     const getScreenListeners = (isPortrait: boolean) => ({
         focus: () => (isPortrait ? lockPortrait() : lockLandscape()),
@@ -58,14 +68,14 @@ const DrawerLayout = () => {
                 headerBackgroundContainerStyle: { backgroundColor: "red" },
             } as DrawerNavigationOptions}
         >
-            {screens.map(({ name, component, isPortrait, drawerIconFunc }) => (
+            {screens.map(({ name, component, isPortrait, drawerIconFunc, isLazy }) => (
                 <Drawer.Screen
                     key={name}
                     name={name}
                     component={component}
                     listeners={getScreenListeners(isPortrait)}
                     options={{
-                        lazy: true,
+                        lazy: isLazy,
                         drawerIcon: drawerIconFunc
                     } as DrawerNavigationOptions}
                 />
