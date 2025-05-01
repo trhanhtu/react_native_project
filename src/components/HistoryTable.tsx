@@ -60,19 +60,19 @@ const HistoryTable: React.FC = React.memo(() => {
       style={[tailwind("flex-1"), { width: '100%', height: '100%' }]}
       resizeMode="cover"
     >
-      {/* Year display with historical styling */}
+
       <View style={tailwind("absolute top-4 right-0 items-center z-10")}>
         <View style={[
           tailwind("bg-amber-800/100 rounded-xl p-2 mr-2"),
           styles.yearBadge
         ]}>
           <Text style={tailwind("text-amber-100/100 text-2xl font-bold")}>
-            {currentSliderYear > 0 ? currentSliderYear : 'Ancient Times'}
+            {currentSliderYear > 0 ? currentSliderYear : 'Thời cổ đại'}
           </Text>
         </View>
       </View>
 
-      {/* Periodic table with fade animation */}
+
       <Animated.View
         style={[
           tailwind("flex-1"),
@@ -84,7 +84,7 @@ const HistoryTable: React.FC = React.memo(() => {
         />
       </Animated.View>
 
-      {/* Year controller */}
+
       <View style={tailwind("absolute bottom-2 left-0 right-0")}>
         <YearController
           ChangeTextInput={ChangeTextInput}
@@ -125,7 +125,7 @@ function GenerateElementUIs(
             isDiscovered && styles.discoveredElement
           ]}
         >
-          {/* Element symbol */}
+
           <Text
             category="h3"
             style={[
@@ -136,7 +136,7 @@ function GenerateElementUIs(
             {element.symbol}
           </Text>
 
-          {/* Atomic number */}
+
           <Text
             style={[
               tailwind(isDiscovered ? "text-amber-200/100" : "text-amber-800/100"),
@@ -146,7 +146,7 @@ function GenerateElementUIs(
             {element.atomicNumber}
           </Text>
 
-          {/* Discovery year for discovered elements */}
+
           {isDiscovered && element.yearDiscovered > 0 && (
             <Text
               style={tailwind("text-xs text-amber-300/100 absolute bottom-1 right-1")}
@@ -155,7 +155,7 @@ function GenerateElementUIs(
             </Text>
           )}
 
-          {/* Decorative corner for discovered elements */}
+
           {isDiscovered && (
             <View style={styles.cornerDecoration} />
           )}
@@ -181,16 +181,16 @@ const YearController: React.FC<YearControllerProps> = ({
 }) => {
   // Predefined historical periods for quick navigation
   const historicalPeriods = [
-    { year: 0, label: "Ancient" },
-    { year: 1000, label: "Medieval" },
-    { year: 1700, label: "Industrial" },
-    { year: 1900, label: "Modern" },
-    { year: CURRENT_YEAR, label: "Present" }
+    { year: 0, label: "Cổ đại" },
+    { year: 1000, label: "Trung cổ" },
+    { year: 1700, label: "Công nghiệp" },
+    { year: 1900, label: "Hiện đại" },
+    { year: CURRENT_YEAR, label: "Hiện tại" }
   ];
 
   return (
     <View style={tailwind("px-4")}>
-      {/* Historical period quick select */}
+
       <View style={tailwind("flex-row justify-between mb-2")}>
         {historicalPeriods.map((period) => (
           <TouchableOpacity
@@ -214,7 +214,7 @@ const YearController: React.FC<YearControllerProps> = ({
         ))}
       </View>
 
-      {/* Main controller with slider */}
+
       <LinearGradient
         colors={['#8B4513', '#A0522D', '#CD853F']}
         start={{ x: 0, y: 0 }}
@@ -245,8 +245,8 @@ const YearController: React.FC<YearControllerProps> = ({
           />
 
           <View style={tailwind("flex-row justify-between")}>
-            <Text category="c2" style={tailwind("text-amber-100/100")}>Ancient</Text>
-            <Text category="c2" style={tailwind("text-amber-100/100")}>Present</Text>
+            <Text category="c2" style={tailwind("text-amber-100/100")}>Cổ đại</Text>
+            <Text category="c2" style={tailwind("text-amber-100/100")}>Hiện tại</Text>
           </View>
         </View>
 

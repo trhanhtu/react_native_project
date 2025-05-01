@@ -47,9 +47,9 @@ export default function ElementCard({ element, onPress, keyword }: ElementCardPr
                     <Text category="p2" appearance="hint">
                         {element.classification}
                     </Text>
-                    <Text category="c1">Atomic Mass: {element.atomicMass}</Text>
+                    <Text category="c1">Khối lượng nguyên tử: {element.atomicMass}</Text>
                     <Text category="c1">
-                        Group: {element.groupNumber}, Period: {element.period}
+                        Nhóm: {element.groupNumber}, Chu kỳ: {element.period}
                     </Text>
                 </View>
             </View>

@@ -87,21 +87,21 @@ const EditModal: FC<EditProfileModalProps> = ({
 
 
   // --- Button Text and State Determination ---
-  let primaryButtonText = "Save Changes";
-  let loadingText = "Saving..."; // Default loading text
+  let primaryButtonText = "Lưu lại";
+  let loadingText = "Lưu..."; // Default loading text
 
   // Determine button text based on the required action
   if (needsOtpVerification) {
     if (otpSent) {
-      primaryButtonText = "Verify & Save";
-      if (isVerifyingOtp) loadingText = "Verifying...";
+      primaryButtonText = "xác minh & lưu";
+      if (isVerifyingOtp) loadingText = "đang xác minh...";
     } else {
-      primaryButtonText = "Send OTP & Save";
-      if (isSendingOtp) loadingText = "Sending OTP...";
+      primaryButtonText = "Gửi OTP & Lưu";
+      if (isSendingOtp) loadingText = "đang gửi OTP...";
     }
   } else {
     // Show "Saving..." if either the profile update API or the avatar upload is running
-    if (isUpdatingProfile || isUploadingAvatar) loadingText = "Saving...";
+    if (isUpdatingProfile || isUploadingAvatar) loadingText = "Lưu...";
   }
 
   // If any operation is in progress, show the appropriate loading text
@@ -178,10 +178,10 @@ const EditModal: FC<EditProfileModalProps> = ({
     return (
       <RNModal visible={true} transparent={true} animationType="fade">
         <View style={styles.loadingBackdrop}>
-          {/* Optional: Add a slightly more informative loading indicator */}
+          
           <View style={tw("bg-white/100 p-4 rounded-lg items-center")}>
             <ActivityIndicator size="small" color="#8B5CF6" />
-            <Text category='c1' style={tw("mt-2 text-gray-600/100")}>Loading...</Text>
+            <Text category='c1' style={tw("mt-2 text-gray-600/100")}>Đợi...</Text>
           </View>
         </View>
       </RNModal>
@@ -197,31 +197,31 @@ const EditModal: FC<EditProfileModalProps> = ({
       onRequestClose={handleBackdropPress} // Handle Android back button press
       statusBarTranslucent={true} // Optional: Allow content potentially under status bar if needed
     >
-      {/* Backdrop Container: Touchable for dismissal */}
+      
       <TouchableWithoutFeedback onPress={handleBackdropPress} accessible={false}>
         <View style={styles.modalBackdrop}>
 
-          {/* Keyboard Avoiding Wrapper: Adjusts view when keyboard appears */}
+          
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined} // 'height' might be okay too
             style={tw("w-full items-center")} // Center content horizontally
           // keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // Optional offset adjustment
           >
-            {/* Prevent backdrop press from closing when tapping inside content */}
+            
             <TouchableOpacity activeOpacity={1} style={[tw("bg-white/100 rounded-xl w-11/12 max-w-md overflow-hidden"), styles.modalContentShadow]}>
-              {/* ScrollView for Content: Handles varying content height & keyboard */}
+              
               <ScrollView
                 style={tw("max-h-[85vh]")} // Limit max height relative to viewport height
                 contentContainerStyle={tw("p-5")} // Padding inside the scrollable area
                 keyboardShouldPersistTaps="handled" // Better tap handling within scrollview
               >
 
-                {/* --- Modal Header --- */}
-                <Text category='h6' style={tw("mb-6 text-center text-purple-600/100 font-bold")}>Edit Profile</Text>
+                
+                <Text category='h6' style={tw("mb-6 text-center text-purple-600/100 font-bold")}>Sửa hồ sơ</Text>
 
-                {/* --- Input Fields (using UI Kitten Input) --- */}
+                
                 <View style={tw("mb-4")}>
-                  <Text category='label' style={tw("mb-1 text-gray-700/100")}>Name</Text>
+                  <Text category='label' style={tw("mb-1 text-gray-700/100")}>Tên</Text>
                   <Input
                     value={editName}
                     onChangeText={setName}
@@ -246,15 +246,15 @@ const EditModal: FC<EditProfileModalProps> = ({
                     disabled={isVerifying || (needsOtpVerification && otpSent)} // Disable email input once OTP sent for it
                   // accessibilityLabel="Email Input"
                   />
-                  {/* Informational text about email change */}
+                  
                   {needsOtpVerification && !otpSent && !isVerifying && (
                     <Text category='c1' style={tw("text-blue-600/100 mt-1")}>
-                      Changing email requires verification. Click "{primaryButtonText}" to proceed.
+                      Đổi email cần phải có xác nhận email. Nhấn "{primaryButtonText}" để tiến hành ngay.
                     </Text>
                   )}
                 </View>
 
-                {/* --- Avatar Section --- */}
+                
                 <View style={tw("mb-4")}>
                   <Text category='label' style={tw("mb-1 text-gray-700/100")}>Avatar</Text>
                   <View style={tw("flex-row items-center")}>
@@ -265,17 +265,17 @@ const EditModal: FC<EditProfileModalProps> = ({
                       style={tw("p-0 m-0 mr-3")}
                     // accessibilityLabel="Change Avatar Button"
                     >
-                      Change Image
+                      Thay ảnh đại diện
                     </Button>
-                    {/* Avatar Preview Area */}
+                    
                     <View style={styles.avatarContainer}>
-                      {/* Display the appropriate image source */}
+                      
                       {avatarSourceUri ? (
                         <Image source={{ uri: avatarSourceUri }} style={styles.avatarPreview} accessibilityIgnoresInvertColors />
                       ) : (
                         <View style={[tw("bg-gray-200/100"), styles.avatarPreview]} /> // Placeholder
                       )}
-                      {/* Show spinner overlay while uploading new avatar */}
+                      
                       {isUploadingAvatar && (
                         <View style={styles.avatarOverlay}>
                           <ActivityIndicator size="small" color="#FFFFFF" />
@@ -283,7 +283,7 @@ const EditModal: FC<EditProfileModalProps> = ({
                       )}
                     </View>
                   </View>
-                  {/* Display Upload Error */}
+                  
                   {uploadError && (
                     <Text category='c1' status='danger' style={tw("mt-1")}>
                       {uploadError}
@@ -291,13 +291,13 @@ const EditModal: FC<EditProfileModalProps> = ({
                   )}
                 </View>
 
-                {/* --- OTP Input Section (Conditional) --- */}
-                {/* Show only if email requires OTP AND OTP has been successfully sent */}
+                
+                
                 {needsOtpVerification && otpSent && (
                   <View style={tw("mb-4 p-3 bg-purple-50/100 rounded-lg border border-purple-200/100")}>
-                    <Text category='s2' style={tw("mb-1 text-purple-800/100 font-semibold")}>Enter OTP</Text>
+                    <Text category='s2' style={tw("mb-1 text-purple-800/100 font-semibold")}>Nhập OTP</Text>
                     <Text category='c1' style={tw("text-purple-700/100 mb-2")}>
-                      An OTP was sent to {editEmail}. Please check your email inbox and spam folder.
+                      mã OTP đã gửi tới {editEmail}. Hãy kiểm tra email của bạn.
                     </Text>
                     <Input
                       value={otp}
@@ -316,17 +316,17 @@ const EditModal: FC<EditProfileModalProps> = ({
                   </View>
                 )}
 
-                {/* --- General Update Error Display --- */}
-                {/* Show general update error only if it exists and there are no specific OTP or Upload errors */}
+                
+                
                 {updateError && !otpError && !uploadError && (
                   <Text category='c1' status='danger' style={tw("text-center mt-1 mb-3")}>
                     {updateError}
                   </Text>
                 )}
 
-                {/* --- Action Buttons (using UI Kitten Button) --- */}
+                
                 <View style={tw("flex-row justify-end mt-4 pt-3 border-t border-gray-200/100")}>
-                  {/* Cancel Button */}
+                  
                   <Button
                     appearance='ghost' // Less prominent styling
                     status='basic' // Neutral color
@@ -335,9 +335,9 @@ const EditModal: FC<EditProfileModalProps> = ({
                     disabled={isVerifying} // Disable while any action is running
                   // accessibilityLabel="Cancel Button"
                   >
-                    Cancel
+                    Hủy
                   </Button>
-                  {/* Primary Action Button (Save / Send OTP / Verify OTP) */}
+                  
                   <Button
                     style={tw("bg-purple-600/100 border-0 min-w-[120px]")} // Ensure minimum width
                     onPress={handleSaveChanges} // Call the central action handler from the hook
@@ -349,7 +349,7 @@ const EditModal: FC<EditProfileModalProps> = ({
                     }
                   // accessibilityLabel={`Primary action button: ${primaryButtonText}`}
                   >
-                    {/* Button text dynamically changes based on state */}
+                    
                     {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-semibold')]}>{primaryButtonText}</Text>}
                   </Button>
                 </View>

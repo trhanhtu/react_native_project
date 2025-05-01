@@ -134,7 +134,7 @@ const ClassificationTable: React.FC = React.memo(() => {
 
     return (
         <LinearGradient colors={getBackgroundGradient()} style={tailwind("flex-1")}>
-            {/* Classification title display */}
+            
             {classification !== "-" && (
                 <View style={tailwind("absolute top-4 left-0 right-0 items-center z-1")}>
                     <LinearGradient
@@ -151,7 +151,7 @@ const ClassificationTable: React.FC = React.memo(() => {
                 </View>
             )}
 
-            {/* Periodic table with animations */}
+            
             <Animated.View
                 style={[
                     tailwind("flex-1 p-2"),
@@ -168,7 +168,7 @@ const ClassificationTable: React.FC = React.memo(() => {
                 />
             </Animated.View>
 
-            {/* Classification selector */}
+            
             <View style={tailwind("absolute bottom-2 left-0 right-0")}>
                 <ClassificationSelector
                     currentClassification={classification}
@@ -231,7 +231,7 @@ const ClassificationSelector: React.FC<ClassificationSelectorProps> = ({
     return (
         <View style={tailwind("px-2")}>
             <View style={[tailwind("bg-gray-800/100 rounded-xl"), styles.selectorContainer]}>
-                {/* Header with current selection and expand button */}
+                
                 <TouchableOpacity
                     onPress={() => setExpanded(!expanded)}
                     style={tailwind("flex-row items-center justify-between px-3 py-2")}
@@ -264,7 +264,7 @@ const ClassificationSelector: React.FC<ClassificationSelectorProps> = ({
                     />
                 </TouchableOpacity>
 
-                {/* Expanded content */}
+                
                 {expanded && (
                     <View style={tailwind("p-2")}>
                         <View style={tailwind("flex-row justify-around")}>
@@ -312,7 +312,7 @@ const ClassificationSelector: React.FC<ClassificationSelectorProps> = ({
                             ))}
                         </View>
 
-                        {/* Description of selected classification */}
+                        
                         <View style={tailwind("mt-2 pt-2 border-t border-gray-700/100")}>
                             <Text style={tailwind("text-gray-400/100 text-xs text-center")}>
                                 {CLASSIFICATION_DATA.find((c) => c.value === currentClassification)?.description}

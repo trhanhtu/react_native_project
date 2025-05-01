@@ -182,7 +182,7 @@ const DetailElementScreen = () => {
         return (
             <View style={tw("flex-1 justify-center items-center bg-white/100 p-4")}>
                 <ActivityIndicator size="large" color={tw('text-purple-600/100').color as string} />
-                <Text style={tw("mt-4 text-gray-600/100")}>Đang tải chi tiết nguyên tố...</Text> 
+                <Text style={tw("mt-4 text-gray-600/100")}>Đang tải chi tiết nguyên tố...</Text>
             </View>
         );
     }
@@ -194,7 +194,7 @@ const DetailElementScreen = () => {
         return (
             <View style={tw("flex-1 justify-center items-center bg-white/100 p-6")}>
                 <Text category="h6" style={tw("text-red-600/100 text-center mb-4")}>
-                    {error || "Không tìm thấy thông tin nguyên tố."} 
+                    {error || "Không tìm thấy thông tin nguyên tố."}
                 </Text>
                 <Button onPress={() => loadData()} status="primary" appearance="outline">
                     Thử lại
@@ -219,7 +219,7 @@ const DetailElementScreen = () => {
                 />
             }
         >
-            
+
             <ElementHeader element={elementData} />
             <ElementClassification element={elementData} />
             <ElementPhysicalProps element={elementData} />
@@ -227,7 +227,7 @@ const DetailElementScreen = () => {
             <ElementAtomicProps element={elementData} />
             <ElementOtherInfo element={elementData} />
 
-          
+
             <View style={tw("flex-row justify-between p-4 mt-2 mb-4")}>
                 <Button
                     onPress={goToPrevious}
@@ -235,7 +235,7 @@ const DetailElementScreen = () => {
                     style={tw("flex-1 mr-2")}
                     appearance="outline" // Less prominent style
                 >
-                    Trước 
+                    Trước
                 </Button>
                 <Button
                     status={isFavorite ? "danger" : "success"}
@@ -246,7 +246,7 @@ const DetailElementScreen = () => {
                 >
                     {(evaProps) => (
                         <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-semibold')]}>
-                            {isTogglingFavorite ? '...' : (isFavorite ? "Bỏ thích" : "Yêu thích")} 
+                            {isTogglingFavorite ? '...' : (isFavorite ? "Bỏ thích" : "Yêu thích")}
                         </Text>
                     )}
                 </Button>
@@ -256,11 +256,11 @@ const DetailElementScreen = () => {
                     style={tw("flex-1 ml-2")}
                     appearance="outline"
                 >
-                    Sau 
+                    Sau
                 </Button>
             </View>
 
-            
+
             <ElementCommentSection elementId={Number(elementId) ?? 1} />
         </ScrollView>
     );
@@ -307,14 +307,14 @@ const ElementInfoCard: React.FC<ElementInfoCardProps> = ({ title, properties }) 
     return (
         <Card style={[tw("m-4 bg-white/100 rounded-lg"), CustomStyles.shadow]}>
             <Text category="h6" style={tw("mb-3 font-bold text-gray-800/100")}>
-                {title} 
+                {title}
             </Text>
             <Divider style={tw("mb-3 bg-gray-200/100")} />
 
             {properties.map((prop, index) => (
                 <View key={`${title}-${index}-${prop.label}`} style={tw("flex-row justify-between items-center mb-2 py-1")}>
-                    <Text style={tw("text-gray-600/100 text-sm")}>{prop.label}:</Text> 
-                    
+                    <Text style={tw("text-gray-600/100 text-sm")}>{prop.label}:</Text>
+
                     {React.isValidElement(prop.value) ? (
                         prop.value
                     ) : (
@@ -355,7 +355,7 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
 
     return (
         <View style={tailwind('flex-1 bg-gray-900/100 p-2')}>
-            
+
             <CommentsHeader
                 tailwind={tailwind}
                 isCommentsLoading={isCommentsLoading}
@@ -363,11 +363,12 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
             />
 
             <FlatList
+                scrollEnabled={false}
                 showsVerticalScrollIndicator={false}
                 data={comments}
                 renderItem={({ item }: { item: ElementComment }) => (
                     <View style={tailwind('mb-2')}>
-                        
+
                         <CommentItem comment={item} onLikeComment={onLikeElementComment} loadingLikeCommentId={loadingLikeCommentId} />
                     </View>
                 )}
@@ -379,7 +380,7 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
                         {isFetchingMoreComments && (
                             <View style={tailwind('py-6 items-center')}>
                                 <ActivityIndicator size="small" color={tailwind('text-purple-400/100').color as ColorValue} />
-                                
+
                             </View>
                         )}
                         <View style={tailwind('h-4')} />
@@ -389,9 +390,9 @@ const ElementCommentSection: React.FC<{ elementId: number }> = ({ elementId }) =
                 contentContainerStyle={tailwind('pb-20')}
             />
 
-            
+
             <View style={tailwind('absolute bottom-0 left-0 right-0 px-2 pb-2 bg-gray-900/100')}>
-                
+
                 <CommentInput onSubmit={handleCommentSubmit} />
             </View>
         </View>
@@ -417,17 +418,17 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
         >
             <View style={tw("flex-row justify-between items-center")}>
                 <View style={tw("flex-shrink pr-4")}>
-                    
+
                     <Text style={tw("text-4xl font-bold text-white/100")}>
                         {element.symbol}
                     </Text>
                     <View>
                         <Text category="h5" style={tw("text-white/100 font-semibold mt-1")}>{element.name}</Text>
-                        <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Số hiệu nguyên tử: {element.atomicNumber}</Text> 
+                        <Text category="s1" style={tw("text-purple-200/100 mt-1")}>Số hiệu nguyên tử: {element.atomicNumber}</Text>
                     </View>
                 </View>
 
-                
+
                 {element.image ? (
                     <Image
                         source={{ uri: element.image }}
@@ -437,7 +438,7 @@ const ElementHeader: React.FC<ElementHeaderProps> = ({ element }) => {
                 ) : (
                     // Placeholder if no image
                     <View style={tw("w-24 h-24 rounded-lg border-2 border-white/100 bg-white/20 justify-center items-center")}>
-                        <Text style={tw("text-white/50")}>Không có hình ảnh</Text> 
+                        <Text style={tw("text-white/50")}>Không có hình ảnh</Text>
                     </View>
                 )}
             </View>

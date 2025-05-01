@@ -22,10 +22,10 @@ const FavoritePodcastsCard: React.FC<FavoritePodcastsCardProps> = ({ favoritePod
     return (
         <Card style={[tw("mb-6 rounded-xl bg-white/100"), CustomStyles.shadow]}>
             <View style={tw("p-4")}>
-                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Favorite Podcasts</Text>
+                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Podcasts yêu thích</Text>
                 {favoritePodcasts && favoritePodcasts.length > 0 ? (
                     <View>
-                        {/* Use podcast ID (string) as key */}
+                        
                         {favoritePodcasts.map((fav) => (
                             <View key={`favpod${fav.podcastId}`} style={tw("mb-3")}>
                                 <PodcastItem
@@ -43,7 +43,7 @@ const FavoritePodcastsCard: React.FC<FavoritePodcastsCardProps> = ({ favoritePod
                         ))}
                     </View>
                 ) : (
-                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>No favorite podcasts yet</Text>
+                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>Chưa có podcast yêu thích nào cả</Text>
                 )}
             </View>
         </Card>

@@ -1,24 +1,34 @@
+// Filename: LoginScreen.tsx
 import SquareImage from "@/src/components/SquareImage";
-import useLogin from "@/src/hooks/useLogin";
+import useLogin from "@/src/hooks/useLogin"; // Assuming useLogin handles navigation internally or provides methods like handleSignUp/handleForgotPassword that navigate
 import { Button, Icon, IconProps, Input, Layout, Spinner, Text } from "@ui-kitten/components";
 import React from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useTailwind } from "tailwind-rn";
 
+//------------------------------------------------------
+// Main Screen Component: LoginScreen
+//------------------------------------------------------
 export default function LoginScreen() {
     const tw = useTailwind();
 
+    //----------------------------------
+    // Hooks & State
+    //----------------------------------
     const {
         formData,
         handleChange,
-        handleSignUp,
-        handleLogin,
+        handleSignUp, // Method to navigate to Sign Up
+        handleLogin, // Method to perform login logic
         secureTextEntry,
         toggleSecureEntry,
-        handleForgotPassword,
+        handleForgotPassword, // Method to navigate to Forgot Password
         isLoading,
     } = useLogin();
 
+    //----------------------------------
+    // Render Functions & Helpers
+    //----------------------------------
     // Render Password Eye Icon
     const renderIcon = (props: IconProps): React.ReactElement => (
         <Pressable onPress={toggleSecureEntry}>
@@ -33,6 +43,9 @@ export default function LoginScreen() {
         </View>
     );
 
+    //----------------------------------
+    // Main Render
+    //----------------------------------
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -44,19 +57,22 @@ export default function LoginScreen() {
                 showsVerticalScrollIndicator={false}
             >
                 <Layout style={tw('flex-1 items-center bg-transparent pt-16 pb-8')}>
+                    
                     <SquareImage
                         percent={0.6}
                         src={require("@/assets/images/login.png")}
                         customStyle={tw("mb-10 rounded-xl")}
                     />
 
-                    <Text category='h4' style={tw('mb-1 text-gray-800/100')}>Welcome Back!</Text>
-                    <Text category='s1' style={tw('mb-8 text-gray-500/100')}>Login to your account</Text>
+                    
+                    <Text category='h4' style={tw('mb-1 text-gray-800/100')}>Chào mừng trở lại!</Text> 
+                    <Text category='s1' style={tw('mb-8 text-gray-500/100')}>Đăng nhập vào tài khoản của bạn</Text> 
 
-                    {/* Form Section */}
+                    
                     <View style={tw('w-full px-6')}>
+                        
                         <Input
-                            placeholder="Email"
+                            placeholder="Email" // Kept as "Email"
                             value={formData.email}
                             onChangeText={(value) => handleChange('email', value)}
                             keyboardType="email-address"
@@ -64,9 +80,11 @@ export default function LoginScreen() {
                             style={tw('mb-4 bg-gray-100/100 border-gray-300/100 rounded-lg')}
                             textStyle={tw('text-gray-900/100')}
                             size='large'
+                            disabled={isLoading} // Disable input when loading
                         />
+                        
                         <Input
-                            placeholder="Password"
+                            placeholder="Mật khẩu" // Translated
                             value={formData.password}
                             secureTextEntry={secureTextEntry}
                             accessoryRight={renderIcon}
@@ -74,48 +92,52 @@ export default function LoginScreen() {
                             style={tw('mb-2 bg-gray-100/100 border-gray-300/100 rounded-lg')}
                             textStyle={tw('text-gray-900/100')}
                             size='large'
+                            disabled={isLoading} // Disable input when loading
                         />
-                        {/* Forgot Password Button */}
+                        
                         <View style={tw("flex-row justify-end mb-6")}>
                             <Button
                                 appearance="ghost"
                                 status="primary"
-                                onPress={handleForgotPassword}
+                                onPress={handleForgotPassword} // Navigate to Forgot Password screen
                                 size='small'
                                 style={tw("-mr-2")}
+                                disabled={isLoading} // Disable button when loading
                             >
-                                {/* Directly wrap text in <Text> */}
-                                <Text style={tw('text-sm')}>Forgot Password?</Text>
+                                
+                                <Text style={tw('text-sm font-medium')}>Quên mật khẩu?</Text>
                             </Button>
                         </View>
 
-                        {/* Login Button */}
+                        
                         <Button
                             disabled={isLoading}
                             style={tw('mt-4 bg-purple-600/100 border-0')}
                             size='large'
                             status="primary"
-                            onPress={handleLogin}
+                            onPress={handleLogin} // Trigger login action
                             accessoryLeft={isLoading ? LoadingIndicator : undefined}
                         >
-                            {/* Directly wrap text in <Text> */}
+                            
                             <Text style={tw('text-white/100 font-bold')}>
-                                {isLoading ? 'Logging In...' : 'Login'}
+                                {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                             </Text>
                         </Button>
                     </View>
 
-                    {/* Sign Up Link */}
+                    
                     <View style={tw("flex-row items-center mt-8")}>
-                        <Text style={tw('text-gray-600/100')}>Don't have an account? </Text>
+                        <Text style={tw('text-gray-600/100')}>Chưa có tài khoản? </Text> 
                         <Button
                             appearance='ghost'
                             status='primary'
                             size='small'
-                            onPress={handleSignUp}
+                            onPress={handleSignUp} // Navigate to Sign Up screen
                             style={tw('-ml-2')}
+                            disabled={isLoading} // Disable button when loading
                         >
-                            <Text style={tw('font-semibold')}>Sign Up</Text>
+                             
+                            <Text style={tw('font-semibold')}>Đăng ký</Text>
                         </Button>
                     </View>
                 </Layout>
@@ -124,6 +146,9 @@ export default function LoginScreen() {
     );
 }
 
+//------------------------------------------------------
+// StyleSheet
+//------------------------------------------------------
 const styles = StyleSheet.create({
     indicator: {
         justifyContent: 'center',

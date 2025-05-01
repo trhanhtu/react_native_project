@@ -15,27 +15,29 @@ import PeriodicTableFrame from "./PeriodicTableFrame"
 
 // Group data with descriptive names and properties
 const GROUP_DATA = [
-  { value: "-", label: "All", icon: "grid", description: "All Groups", color: "#3B82F6" },
-  { value: "1", label: "1", description: "Alkali Metals", color: "#EF4444" },
-  { value: "2", label: "2", description: "Alkaline Earth Metals", color: "#F97316" },
-  { value: "3", label: "3", description: "Transition Metals", color: "#FBBF24" },
-  { value: "4", label: "4", description: "Transition Metals", color: "#FBBF24" },
-  { value: "5", label: "5", description: "Transition Metals", color: "#FBBF24" },
-  { value: "6", label: "6", description: "Transition Metals", color: "#FBBF24" },
-  { value: "7", label: "7", description: "Transition Metals", color: "#FBBF24" },
-  { value: "8", label: "8", description: "Transition Metals", color: "#FBBF24" },
-  { value: "9", label: "9", description: "Transition Metals", color: "#FBBF24" },
-  { value: "10", label: "10", description: "Transition Metals", color: "#FBBF24" },
-  { value: "11", label: "11", description: "Transition Metals", color: "#FBBF24" },
-  { value: "12", label: "12", description: "Transition Metals", color: "#FBBF24" },
-  { value: "13", label: "13", description: "Boron Group", color: "#A3E635" },
-  { value: "14", label: "14", description: "Carbon Group", color: "#A3E635" },
-  { value: "15", label: "15", description: "Pnictogen Group", color: "#A3E635" },
-  { value: "16", label: "16", description: "Chalcogen Group", color: "#A3E635" },
-  { value: "17", label: "17", description: "Halogens", color: "#22D3EE" },
-  { value: "18", label: "18", description: "Noble Gases", color: "#818CF8" },
-  { value: "lan", label: "Ln", description: "Lanthanides", color: "#C084FC" },
-  { value: "act", label: "Ac", description: "Actinides", color: "#C084FC" },
+  // Translated "All" label and kept Vietnamese description
+  { value: "-", label: "Tất cả", icon: "grid", description: "Mọi nhóm", color: "#3B82F6" },
+  // Translated descriptions for each group
+  { value: "1", label: "1", description: "Kim loại kiềm", color: "#EF4444" },
+  { value: "2", label: "2", description: "Kim loại kiềm thổ", color: "#F97316" },
+  { value: "3", label: "3", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "4", label: "4", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "5", label: "5", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "6", label: "6", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "7", label: "7", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "8", label: "8", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "9", label: "9", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "10", label: "10", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "11", label: "11", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "12", label: "12", description: "Kim loại chuyển tiếp", color: "#FBBF24" },
+  { value: "13", label: "13", description: "Nhóm Bo", color: "#A3E635" },
+  { value: "14", label: "14", description: "Nhóm Cacbon", color: "#A3E635" },
+  { value: "15", label: "15", description: "Nhóm Nitơ", color: "#A3E635" },
+  { value: "16", label: "16", description: "Nhóm Oxi", color: "#A3E635" },
+  { value: "17", label: "17", description: "Halogen", color: "#22D3EE" },
+  { value: "18", label: "18", description: "Khí hiếm", color: "#818CF8" },
+  { value: "lan", label: "Ln", description: "Họ Lantan", color: "#C084FC" },
+  { value: "act", label: "Ac", description: "Họ Actini", color: "#C084FC" },
 ]
 
 const GroupTable: React.FC = React.memo(() => {
@@ -89,7 +91,7 @@ const GroupTable: React.FC = React.memo(() => {
 
   return (
     <LinearGradient colors={["#0F172A", "#1E293B"]} style={tailwind("flex-1")}>
-      {/* Group title display */}
+      
       {group !== "-" && (
         <View style={tailwind("absolute top-4 left-0 right-0 items-center z-10")}>
           <LinearGradient colors={["rgba(15, 23, 42, 0.9)", "rgba(30, 41, 59, 0.9)"]} style={styles.groupBadge}>
@@ -111,12 +113,12 @@ const GroupTable: React.FC = React.memo(() => {
         </View>
       )}
 
-      {/* Periodic table with fade animation */}
+      
       <Animated.View style={[tailwind("flex-1 p-2"), { opacity: fadeAnim }, group !== "-" && tailwind("pt-16")]}>
         <PeriodicTableFrame elementUIs={GenerateElementUIs(filteredElements, tailwind, router)} />
       </Animated.View>
 
-      {/* Compact group selector */}
+      
       <View style={tailwind("absolute bottom-2 left-0 right-0")}>
         <CompactGroupSelector currentGroup={group} onGroupChange={setGroup} tailwind={tailwind} />
       </View>
@@ -149,7 +151,7 @@ const CompactGroupSelector: React.FC<CompactGroupSelectorProps> = ({ currentGrou
   return (
     <View style={tailwind("px-2")}>
       <View style={[tailwind("bg-gray-800/100 rounded-xl"), styles.compactSelectorContainer]}>
-        {/* Header with current selection and expand button */}
+        
         <TouchableOpacity
           onPress={() => setExpanded(!expanded)}
           style={tailwind("flex-row items-center justify-between px-3 py-2")}
@@ -157,12 +159,12 @@ const CompactGroupSelector: React.FC<CompactGroupSelectorProps> = ({ currentGrou
           <View style={tailwind("flex-row items-center")}>
             <Text style={tailwind("text-white/100 font-bold mr-2")}>
               {currentGroup === "-"
-                ? "All Groups"
+                ? "Mọi nhóm"
                 : currentGroup === "lan"
                   ? "Lanthanides"
                   : currentGroup === "act"
                     ? "Actinides"
-                    : `Group ${currentGroup}`}
+                    : `Nhóm ${currentGroup}`}
             </Text>
             {currentGroup !== "-" && (
               <View
@@ -177,10 +179,10 @@ const CompactGroupSelector: React.FC<CompactGroupSelectorProps> = ({ currentGrou
           <Icon name={expanded ? "chevron-down" : "chevron-right"} width={20} height={20} fill="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Expanded content */}
+        
         {expanded && (
           <View style={tailwind("px-2 pb-2")}>
-            {/* Main "All" button */}
+            
             <View style={tailwind("flex-row mb-1")}>
               {mainGroups.map((groupItem) => (
                 <CompactGroupButton
@@ -196,7 +198,7 @@ const CompactGroupSelector: React.FC<CompactGroupSelectorProps> = ({ currentGrou
               ))}
             </View>
 
-            {/* Standard groups in a grid */}
+            
             <View style={tailwind("flex-row flex-wrap")}>
               {standardGroups.map((groupItem) => (
                 <CompactGroupButton
@@ -211,7 +213,7 @@ const CompactGroupSelector: React.FC<CompactGroupSelectorProps> = ({ currentGrou
               ))}
             </View>
 
-            {/* Special groups */}
+            
             <View style={tailwind("flex-row mt-1")}>
               {specialGroups.map((groupItem) => (
                 <CompactGroupButton

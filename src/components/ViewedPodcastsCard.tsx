@@ -32,10 +32,10 @@ const ViewedPodcastsCard: React.FC<ViewedPodcastsCardProps> = ({
   return (
     <Card style={[tw("mb-6 rounded-xl bg-white/100"), CustomStyles.shadow]}>
       <View style={tw("p-4")}>
-        <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Recently Viewed Podcasts</Text>
+        <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Podcast đã xem</Text>
         {viewedPodcasts && viewedPodcasts.length > 0 ? (
           <View>
-            {/* Use podcast ID (string) as key */}
+            
             {viewedPodcasts.map((item,index) => (
               <View key={`vipod${item.podcastId} ${index}`} style={tw("mb-3")}>
                 <PodcastItem
@@ -64,12 +64,12 @@ const ViewedPodcastsCard: React.FC<ViewedPodcastsCardProps> = ({
                   loadingMore ? () => <ActivityIndicator size="small" color="#8B5CF6" /> : undefined
                 }
               >
-                {loadingMore ? "Loading..." : "Load More"}
+                {loadingMore ? "Tải..." : "Tải thêm"}
               </Button>
             )}
           </View>
         ) : (
-          <Text style={tw("text-gray-500/100 italic text-center py-4")}>No viewed podcasts yet</Text>
+          <Text style={tw("text-gray-500/100 italic text-center py-4")}>Chưa xem podcast nào cả</Text>
         )}
       </View>
     </Card>

@@ -34,10 +34,10 @@ const ViewedElementsCard: React.FC<ViewedElementsCardProps> = ({
     return (
         <Card style={[tw("mb-6 rounded-xl bg-white/100"), CustomStyles.shadow]}>
             <View style={tw("p-4")}>
-                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Recently Viewed Elements</Text>
+                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Nguyên tố đã xem</Text>
                 {viewedElements && viewedElements.length > 0 ? (
                     <View>
-                        {/* Horizontal ScrollView for Element Items */}
+                        
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={tw("py-1")}>
                             
                             {viewedElements.map((item) => (
@@ -70,12 +70,12 @@ const ViewedElementsCard: React.FC<ViewedElementsCardProps> = ({
                                     loadingMore ? () => <ActivityIndicator size="small" color="#8B5CF6" /> : undefined
                                 }
                             >
-                                {loadingMore ? "Loading..." : "Load More"}
+                                {loadingMore ? "Tải..." : "Tải thêm"}
                             </Button>
                         )}
                     </View>
                 ) : (
-                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>No viewed elements yet</Text>
+                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>Chưa xem nguyên tố nào cả</Text>
                 )}
             </View>
         </Card>

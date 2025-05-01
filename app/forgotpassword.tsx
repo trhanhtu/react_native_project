@@ -55,8 +55,8 @@ export default function ForgotPasswordScreen() {
                         customStyle={tw("mb-8 rounded-xl")} // Simplified margins
                     />
 
-                    <Text category='h4' style={tw('mb-1 text-gray-800/100')}>Forgot Password?</Text>
-                    <Text category='s1' style={tw('mb-8 text-gray-500/100 px-6 text-center')}>Enter email & new password to get OTP</Text>
+                    <Text category='h4' style={tw('mb-1 text-gray-800/100')}>Quên mật khẩu?</Text>
+                    <Text category='s1' style={tw('mb-8 text-gray-500/100 px-6 text-center')}>Nhập email và mật khẩu mới để lấy mã OTP</Text>
 
                     {/* Form Section */}
                     <View style={tw('w-full px-6')}>
@@ -76,7 +76,7 @@ export default function ForgotPasswordScreen() {
 
                         {/* New Password Input */}
                         <Input
-                            placeholder="New Password"
+                            placeholder="Mật khẩu mới"
                             value={formData.password}
                             secureTextEntry={secureTextEntry}
                             // textContentType={secureTextEntry ? 'password' : 'none'} // 'newPassword' might be better semantically if available
@@ -90,7 +90,7 @@ export default function ForgotPasswordScreen() {
 
                         {/* Confirm New Password Input */}
                         <Input
-                            placeholder="Confirm New Password"
+                            placeholder="Xác nhận mật khẩu mới"
                             value={formData.passwordConfirm} // Ensure this matches state key used in handleChange
                             // Use secureTextEntry state for consistency or keep it always secure
                             secureTextEntry={true} // Typically confirm is always secure
@@ -138,14 +138,14 @@ export default function ForgotPasswordScreen() {
                             onPress={handleResetPassword}
                             accessoryLeft={isLoadingReset ? LoadingIndicator : undefined}
                         >
-                            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>{isLoadingReset ? 'Resetting...' : 'Reset Password'}</Text>}
+                            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>{isLoadingReset ? 'Đang tiến hành...' : 'Đặt lại mật khẩu'}</Text>}
                         </Button>
                     </View>
 
                     {/* Login/Signup Links */}
                     <View style={tw("flex-row items-center mt-8")}>
                         <Button appearance='ghost' status='primary' size='small' onPress={() => router.replace("/login" as Href)}>
-                            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('font-semibold')]}>Back to Login</Text>}
+                            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('font-semibold')]}>Trờ về Đăng nhập</Text>}
                         </Button>
                     </View>
                 </Layout>
@@ -163,7 +163,7 @@ interface SendOtpButtonProps {
 
 const SendOtpButton: React.FC<SendOtpButtonProps> = React.memo(({ handleSendOTP, isLoading, disabled }) => {
     const tw = useTailwind();
-    const [buttonLabel, setButtonLabel] = useState<string>("Send OTP");
+    const [buttonLabel, setButtonLabel] = useState<string>("Gửi mã OTP");
     const [secondsLeft, setSecondsLeft] = useState<number>(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -243,7 +243,7 @@ const SendOtpButton: React.FC<SendOtpButtonProps> = React.memo(({ handleSendOTP,
             size="large"
             accessoryLeft={isLoading ? LoadingIndicator : undefined}
         >
-            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>{isLoading ? 'Sending...' : buttonLabel}</Text>}
+            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>{isLoading ? 'Đang gửi...' : buttonLabel}</Text>}
         </Button>
     );
 });

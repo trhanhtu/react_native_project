@@ -39,7 +39,7 @@ const PodcastListItem: React.FC<PodcastListItemProps> = ({ item }) => {
         <Text appearance="hint" numberOfLines={2}>
           {item.transcript ? item.transcript.substring(0, 100) + '...' : 'No description available'}
         </Text>
-        <Text appearance='hint' category='c1'>Element: {item.element} - {item.active ? 'Active' : 'Inactive'}</Text>
+        <Text appearance='hint' category='c1'>Nguyên tố: {item.element} - {item.active ? 'Hoạt động' : 'Tắt'}</Text>
       </View>
       <TouchableOpacity onPress={handlePlayPress}>
         <Icon name='play-circle-outline' width={32} height={32} fill='#007AFFFF' />

@@ -26,7 +26,7 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> = ({
 
   return (
     <View style={tailwind("flex-1")}>
-      {/* Zoom controls */}
+      
       <View style={styles.zoomControls}>
         <TouchableOpacity
           style={styles.zoomButton}
@@ -47,7 +47,7 @@ const PeriodicTableFrame: React.FC<PeriodicTableFrameProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Scrollable periodic table */}
+      
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -108,7 +108,7 @@ function RenderElementNo2To13AndSupplyRiskBox(elementUIs: ReactNode[], tailwind:
     <View>
       <Layout id="row_1" style={tailwind("flex flex-row bg-transparent")} >
         <View id="supply box" style={tailwind("flex-1 bg-transparent")}>
-          {/* Supply risk box content can go here */}
+          
         </View>
         {elementUIs[1]}
       </Layout>

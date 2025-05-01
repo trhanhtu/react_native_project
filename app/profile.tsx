@@ -1,17 +1,17 @@
-// profile.tsx (Updated)
+// Filename: profile.tsx
 import { Button, Text } from '@ui-kitten/components';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
 
 // Assuming component paths are correct
-import AccountSettingsCard from '@/src/components/AccountSettingsCard';
-import EditProfileModal from '@/src/components/EditModal'; // Import the self-contained modal
-import FavoriteElementsCard from '@/src/components/FavoriteElementsCard';
-import FavoritePodcastsCard from '@/src/components/FavoritePodcastsCard';
-import ProfileHeader from '@/src/components/ProfileHeader';
-import ViewedElementsCard from '@/src/components/ViewedElementsCard';
-import ViewedPodcastsCard from '@/src/components/ViewedPodcastsCard';
+import AccountSettingsCard from '@/src/components/AccountSettingsCard'; // Might need internal translation
+import EditProfileModal from '@/src/components/EditModal'; // Might need internal translation
+import FavoriteElementsCard from '@/src/components/FavoriteElementsCard'; // Might need internal translation
+import FavoritePodcastsCard from '@/src/components/FavoritePodcastsCard'; // Might need internal translation
+import ProfileHeader from '@/src/components/ProfileHeader'; // Might need internal translation (if it adds labels)
+import ViewedElementsCard from '@/src/components/ViewedElementsCard'; // Might need internal translation
+import ViewedPodcastsCard from '@/src/components/ViewedPodcastsCard'; // Might need internal translation
 
 // Assuming hook and type paths are correct
 import useProfile from '@/src/hooks/useProfile';
@@ -22,7 +22,7 @@ const ProfileScreen: React.FC = () => {
   const {
     state: { profileData, loading, error, refreshing, hasMore, loadingMore, favoriteElementList, favoritePodcastList, viewedElementList, viewedPodcastList },
     fetchData,
-    handleExitAccount,
+    handleExitAccount, // Assumes this function handles the logout logic
     loadMoreViewedElements,
     loadMoreViewedPodcasts,
     navigateToElementDetail,
@@ -40,6 +40,7 @@ const ProfileScreen: React.FC = () => {
     } else {
       console.warn("Cannot open edit modal: Profile data is not loaded yet.");
       // Optionally show an alert to the user here
+      // Example: Alert.alert("Lỗi", "Không thể mở chỉnh sửa khi dữ liệu hồ sơ chưa tải xong.");
     }
   }, [profileData]); // Dependency: profileData ensures it exists when opening
 
@@ -67,7 +68,7 @@ const ProfileScreen: React.FC = () => {
     return (
       <View style={tw("flex-1 justify-center items-center bg-white/100")}>
         <ActivityIndicator size="large" color="#8B5CF6" />
-        {/* You could add a "Loading Profile..." text here */}
+        
       </View>
     );
   }
@@ -78,24 +79,25 @@ const ProfileScreen: React.FC = () => {
     return (
       <View style={tw("flex-1 justify-center items-center bg-white/100 p-5")}>
         <Text style={tw("text-red-500/100 text-lg mb-4 text-center")}>
-          {error || "An error occurred while loading your profile."}
+          
+          {error || "Đã xảy ra lỗi khi tải hồ sơ của bạn."}
         </Text>
-        {/* Retry Button */}
+        
         <Button
           onPress={() => fetchData()} // Simple retry, doesn't force refresh state
           style={tw("bg-purple-600/100 border-0 w-1/2 mb-3")} // Added width/margin
           size='medium'
         >
-          Retry
+          Thử lại 
         </Button>
-        {/* Logout Button */}
+        
         <Button
           onPress={handleExitAccount}
           style={tw("mt-2 bg-red-500/100 border-0 w-1/2")} // Added width/margin
           size='medium'
           status='danger' // Use status for semantic color
         >
-          Logout
+          Đăng xuất 
         </Button>
       </View>
     );
@@ -108,14 +110,15 @@ const ProfileScreen: React.FC = () => {
     return (
       <View style={tw("flex-1 justify-center items-center bg-white/100 p-5")}>
         <Text style={tw("text-gray-600/100 text-lg mb-4 text-center")}>
-          Could not load profile data. Please try again.
+         
+          Không thể tải dữ liệu hồ sơ. Vui lòng thử lại.
         </Text>
         <Button
           onPress={() => fetchData()}
           style={tw("bg-purple-600/100 border-0 w-1/2 mb-3")}
           size='medium'
         >
-          Retry
+          Thử lại
         </Button>
         <Button
           onPress={handleExitAccount}
@@ -123,7 +126,7 @@ const ProfileScreen: React.FC = () => {
           size='medium'
           status='danger'
         >
-          Logout
+          Đăng xuất
         </Button>
       </View>
     );
@@ -146,7 +149,7 @@ const ProfileScreen: React.FC = () => {
           />
         }
       >
-        {/* --- Profile Header --- */}
+        
         <ProfileHeader
           // Use optional chaining and provide a fallback seed for picsum URL
           avatar={profileData.avatar || `https://picsum.photos/seed/${profileData.id || profileData.name}/200`}
@@ -154,13 +157,14 @@ const ProfileScreen: React.FC = () => {
           email={profileData.email}
         />
 
-        {/* --- Content Area --- */}
-        <View style={tw("px-4 -mt-16")}> 
+        
+        <View style={tw("px-4 -mt-16")}>
 
           <AccountSettingsCard onEdit={openEditModalHandler} />
 
+         
           <FavoriteElementsCard
-            favoriteElements={favoriteElementList ?? []} 
+            favoriteElements={favoriteElementList ?? []}
             onPressElement={navigateToElementDetail}
           />
 
@@ -177,6 +181,7 @@ const ProfileScreen: React.FC = () => {
             onPressElement={navigateToElementDetail}
           />
 
+          
           <ViewedPodcastsCard
             viewedPodcasts={viewedPodcastList ?? []}
             hasMore={hasMore.podcasts}
@@ -185,18 +190,20 @@ const ProfileScreen: React.FC = () => {
             onPressPodcast={navigateToPodcastDetail}
           />
 
+          
           <Button
             onPress={handleExitAccount}
-            style={tw("mt-6 bg-red-500/100 border-0")} 
-            status='danger' 
+            style={tw("mt-6 bg-red-500/100 border-0")}
+            status='danger'
             size='large'
           >
-            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>Logout</Text>}
+            {(evaProps) => <Text {...evaProps} style={[evaProps?.style, tw('text-white/100 font-bold')]}>Đăng xuất</Text>}
           </Button>
 
         </View>
       </ScrollView>
 
+      
       {profileData && (
         <EditProfileModal
           visible={isEditModalVisible}

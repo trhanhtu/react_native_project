@@ -21,12 +21,12 @@ const MAX_TEMPERATURE: number = 6000;
 
 // Temperature presets for quick selection
 const TEMPERATURE_PRESETS = [
-    { temp: 0, label: "Absolute Zero" },
-    { temp: 273, label: "Freezing" },
-    { temp: 293, label: "Room Temp" },
-    { temp: 373, label: "Boiling" },
-    { temp: 1000, label: "Extreme" },
-    { temp: 5000, label: "Stellar" }
+    { temp: 0, label: "0 tuyệt đối" },
+    { temp: 273, label: "Đóng băng" },
+    { temp: 293, label: "Nhiệt độ phòng" },
+    { temp: 373, label: "Sôi" },
+    { temp: 1000, label: "Cực sôi" },
+    { temp: 5000, label: "Siêu nóng" }
 ];
 
 const TemperatureTable: React.FC = React.memo(() => {
@@ -83,7 +83,7 @@ const TemperatureTable: React.FC = React.memo(() => {
             colors={getBackgroundGradient()}
             style={tailwind("flex-1")}
         >
-            {/* Temperature display */}
+            
             <View style={tailwind("absolute top-4 left-0 right-0 items-center z-10")}>
                 <TemperatureDisplay
                     temperature={currentTemperature}
@@ -91,7 +91,7 @@ const TemperatureTable: React.FC = React.memo(() => {
                 />
             </View>
 
-            {/* Periodic table with animation */}
+            
             <Animated.View
                 style={[
                     tailwind("flex-1 flex-col p-2 pt-20"),
@@ -104,7 +104,7 @@ const TemperatureTable: React.FC = React.memo(() => {
                 />
             </Animated.View>
 
-            {/* Temperature controller */}
+            
             <View style={tailwind("absolute bottom-2 left-0 right-0")}>
                 <TemperatureController
                     ChangeTextInput={ChangeTextInput}
@@ -188,7 +188,7 @@ function GenerateElementUIs(
                     tailwind(bgColor),
                     styles.elementCard
                 ]}>
-                    {/* Element symbol */}
+                    
                     <Text
                         category="h3"
                         style={[
@@ -199,7 +199,7 @@ function GenerateElementUIs(
                         {element.symbol}
                     </Text>
 
-                    {/* Atomic number */}
+                    
                     <Text
                         style={[
                             tailwind("text-gray-700/100"),
@@ -209,7 +209,7 @@ function GenerateElementUIs(
                         {element.atomicNumber}
                     </Text>
 
-                    {/* State indicator */}
+                    
                     <View style={styles.stateIndicator}>
                         <Icon
                             name={stateIcon}
@@ -234,7 +234,7 @@ function getElementState(element: CellElement_t, currentTemperature: number) {
     if (element.boilingPoint === element.meltingPoint && ~~element.meltingPoint === 0) {
         return {
             bgColor: "bg-gray-300/100",
-            stateLabel: "Unknown",
+            stateLabel: "Không biết",
             stateIcon: "question-mark-circle"
         };
     }
@@ -243,7 +243,7 @@ function getElementState(element: CellElement_t, currentTemperature: number) {
     if (currentTemperature < element.meltingPoint) {
         return {
             bgColor: "bg-blue-300/100",
-            stateLabel: "Solid",
+            stateLabel: "Rắn",
             stateIcon: "cube"
         };
     }
@@ -252,7 +252,7 @@ function getElementState(element: CellElement_t, currentTemperature: number) {
     if (currentTemperature > element.boilingPoint) {
         return {
             bgColor: "bg-green-300/100",
-            stateLabel: "Gas",
+            stateLabel: "Khí",
             stateIcon: "activity"
         };
     }
@@ -260,7 +260,7 @@ function getElementState(element: CellElement_t, currentTemperature: number) {
     // Liquid state
     return {
         bgColor: "bg-blue-500/100",
-        stateLabel: "Liquid",
+        stateLabel: "Lỏng",
         stateIcon: "droplet"
     };
 }
@@ -275,14 +275,14 @@ function StateOfMatterLegend(): React.ReactNode {
                 styles.legendContainer
             ]}>
                 <Text style={tailwind("text-gray-800/100 text-lg font-bold mb-2 text-center")}>
-                    States of Matter
+                    Thể trạng
                 </Text>
 
                 <View style={tailwind("flex-row flex-wrap justify-around")}>
                     <StateCard
                         color="bg-blue-300/100"
                         icon="cube"
-                        label="Solid"
+                        label="Rắn"
                         description="Below melting point"
                         tailwind={tailwind}
                     />
@@ -290,7 +290,7 @@ function StateOfMatterLegend(): React.ReactNode {
                     <StateCard
                         color="bg-blue-500/100"
                         icon="droplet"
-                        label="Liquid"
+                        label="Lỏng"
                         description="Between melting & boiling"
                         tailwind={tailwind}
                     />
@@ -298,7 +298,7 @@ function StateOfMatterLegend(): React.ReactNode {
                     <StateCard
                         color="bg-green-300/100"
                         icon="activity"
-                        label="Gas"
+                        label="Khí"
                         description="Above boiling point"
                         tailwind={tailwind}
                     />
@@ -306,7 +306,7 @@ function StateOfMatterLegend(): React.ReactNode {
                     <StateCard
                         color="bg-gray-300/100"
                         icon="question-mark-circle"
-                        label="Unknown"
+                        label="Chưa biết"
                         description="Data not available"
                         tailwind={tailwind}
                     />
@@ -371,7 +371,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
 
     return (
         <View style={tailwind("px-4")}>
-            {/* Temperature presets */}
+            
             <View style={tailwind("flex-row justify-between mb-2")}>
                 {TEMPERATURE_PRESETS.map((preset) => (
                     <TouchableOpacity
@@ -395,12 +395,12 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                 ))}
             </View>
 
-            {/* Main controller */}
+            
             <View style={[
                 tailwind("bg-gray-800/100 rounded-xl p-4 flex-row items-center"),
                 styles.controllerContainer
             ]}>
-                {/* Temperature decrease button */}
+                
                 <TouchableOpacity
                     onPress={() => setCurrentTemperature(prev => Math.max(0, prev - 10))}
                     style={[
@@ -411,7 +411,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                     <Icon name="minus" width={24} height={24} fill="#FFFFFF" />
                 </TouchableOpacity>
 
-                {/* Temperature slider */}
+                
                 <View style={tailwind("flex-1 mx-3")}>
                     <Slider
                         style={{ width: '100%', height: 40 }}
@@ -425,7 +425,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                         thumbTintColor={getSliderColor()}
                     />
 
-                    {/* Temperature scale markers */}
+                    
                     <View style={tailwind("flex-row justify-between")}>
                         <Text style={tailwind("text-blue-300/100 text-xs")}>0°K</Text>
                         <Text style={tailwind("text-blue-100/100 text-xs")}>273°K</Text>
@@ -434,7 +434,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                     </View>
                 </View>
 
-                {/* Temperature increase button */}
+                
                 <TouchableOpacity
                     onPress={() => setCurrentTemperature(prev => Math.min(MAX_TEMPERATURE, prev + 10))}
                     style={[
@@ -445,7 +445,7 @@ const TemperatureController: React.FC<TemperatureControllerProps> = ({
                     <Icon name="plus" width={24} height={24} fill="#FFFFFF" />
                 </TouchableOpacity>
 
-                {/* Temperature input */}
+                
                 <View style={styles.tempInputContainer}>
                     <Input
                         style={tailwind("text-center bg-gray-700/100")}

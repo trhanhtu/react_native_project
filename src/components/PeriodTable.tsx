@@ -19,14 +19,14 @@ import PeriodicTableFrame from "./PeriodicTableFrame";
 
 // Period labels with more descriptive names
 const PERIOD_DATA = [
-  { value: "-", label: "All Periods", icon: "grid" },
-  { value: "1", label: "Period 1", description: "H, He" },
-  { value: "2", label: "Period 2", description: "Li → Ne" },
-  { value: "3", label: "Period 3", description: "Na → Ar" },
-  { value: "4", label: "Period 4", description: "K → Kr" },
-  { value: "5", label: "Period 5", description: "Rb → Xe" },
-  { value: "6", label: "Period 6", description: "Cs → Rn" },
-  { value: "7", label: "Period 7", description: "Fr → Og" },
+  { value: "-", label: "Mọi", icon: "grid" },
+  { value: "1", label: "Kỳ 1", description: "H, He" },
+  { value: "2", label: "Kỳ 2", description: "Li → Ne" },
+  { value: "3", label: "Kỳ 3", description: "Na → Ar" },
+  { value: "4", label: "Kỳ 4", description: "K → Kr" },
+  { value: "5", label: "kỳ 5", description: "Rb → Xe" },
+  { value: "6", label: "kỳ 6", description: "Cs → Rn" },
+  { value: "7", label: "kỳ 7", description: "Fr → Og" },
   { value: "lan", label: "Lanthanides", icon: "alert-triangle" },
   { value: "act", label: "Actinides", icon: "alert-triangle" }
 ];
@@ -85,7 +85,7 @@ const PeriodTable: React.FC = React.memo(() => {
       colors={['#1E293B', '#0F172A']}
       style={tailwind("flex-1")}
     >
-      {/* Period title display */}
+      
       {period !== "-" && (
         <View style={tailwind("absolute top-4 left-0 right-0 items-center z-10")}>
           <View style={styles.periodBadge}>
@@ -101,7 +101,7 @@ const PeriodTable: React.FC = React.memo(() => {
         </View>
       )}
       
-      {/* Periodic table with fade animation */}
+      
       <Animated.View 
         style={[
           tailwind("flex-1 p-2"),
@@ -114,7 +114,7 @@ const PeriodTable: React.FC = React.memo(() => {
         />
       </Animated.View>
       
-      {/* Period selector */}
+      
       <View style={tailwind("absolute bottom-2 left-0 right-0")}>
         <PeriodSelector 
           currentPeriod={period}
@@ -147,7 +147,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({
         styles.selectorContainer
       ]}>
         <Text style={tailwind("text-white/100 text-center font-bold mb-2")}>
-          Select Period
+          Chọn chu kỳ
         </Text>
         
         <ScrollView 
@@ -195,7 +195,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({
           ))}
         </ScrollView>
         
-        {/* Period description */}
+        
         {currentPeriod !== "-" && (
           <View style={tailwind("mt-2 pt-2 border-t border-gray-700/100")}>
             <Text style={tailwind("text-gray-400/100 text-xs text-center")}>

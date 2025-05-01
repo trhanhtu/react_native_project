@@ -43,7 +43,7 @@ const TopBar: React.FC<TopBarProps> = ({ onSearch }) => {
             </TouchableOpacity>
 
             <Input
-                placeholder="Search podcasts..."
+                placeholder="Tìm podcast..."
                 style={tailwind('flex-1 mx-2')}
                 value={searchQuery}
                 onChangeText={setSearchQuery}

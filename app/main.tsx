@@ -37,9 +37,9 @@ const screens = [
     { name: "Chu kỳ", component: PeriodTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
     { name: "Nhóm", component: GroupTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
     { name: "Nhiệt độ", component: TemperatureTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
-    { name: "phân loại", component: ClassificationTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
-    { name: "phân lớp", component: BlockTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
-    { name: "podcast", component: PodcastTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Phân loại", component: ClassificationTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Phân lớp", component: BlockTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
+    { name: "Podcast", component: PodcastTable, isPortrait: false, drawerIconFunc: undefined, isLazy: true },
 ];
 
 const DrawerLayout = () => {

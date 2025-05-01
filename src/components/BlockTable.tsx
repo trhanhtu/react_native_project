@@ -136,7 +136,7 @@ const BlockTable: React.FC = React.memo(() => {
 
     return (
         <LinearGradient colors={getBackgroundGradient()} style={tailwind("flex-1")}>
-            {/* Nếu block không phải "-" hiển thị badge ở đầu */}
+            
             {currentBlock !== "-" && (
                 <View style={tailwind("absolute top-4 left-0 right-0 items-center z-1")}>
                     <LinearGradient
@@ -157,7 +157,7 @@ const BlockTable: React.FC = React.memo(() => {
                 </View>
             )}
 
-            {/* Hiển thị PeriodicTableFrame với animations */}
+            
             <Animated.View
                 style={[
                     tailwind("flex-1 p-2"),
@@ -171,7 +171,7 @@ const BlockTable: React.FC = React.memo(() => {
                 <PeriodicTableFrame elementUIs={GenerateElementUIs(filteredElements, tailwind, router)} />
             </Animated.View>
 
-            {/* Selector cho block */}
+            
             <View style={tailwind("absolute bottom-2 left-0 right-0")}>
                 <BlockSelector currentBlock={currentBlock} setBlock={setCurrentBlock} tailwind={tailwind} />
             </View>
@@ -194,7 +194,6 @@ const BlockSelector: React.FC<BlockSelectorProps> = ({ currentBlock, setBlock, t
     return (
         <View style={tailwind("px-2")}>
             <View style={[tailwind("bg-gray-800/100 rounded-xl"), styles.selectorContainer]}>
-                {/* Header hiển thị lựa chọn hiện tại và nút mở rộng */}
                 <TouchableOpacity
                     onPress={() => setExpanded(!expanded)}
                     style={tailwind("flex-row items-center justify-between px-3 py-2")}
@@ -226,7 +225,7 @@ const BlockSelector: React.FC<BlockSelectorProps> = ({ currentBlock, setBlock, t
                     />
                 </TouchableOpacity>
 
-                {/* Nội dung mở rộng: danh sách các block */}
+                
                 {expanded && (
                     <View style={tailwind("p-2")}>
                         <View style={tailwind("flex-row justify-around")}>
@@ -271,7 +270,7 @@ const BlockSelector: React.FC<BlockSelectorProps> = ({ currentBlock, setBlock, t
                                 </TouchableOpacity>
                             ))}
                         </View>
-                        {/* Mô tả block đã chọn */}
+                        
                         <View style={tailwind("mt-2 pt-2 border-t border-gray-700/100")}>
                             <Text style={tailwind("text-gray-400/100 text-xs text-center")}>
                                 {BLOCK_DATA.find((b) => b.value === currentBlock)?.description}

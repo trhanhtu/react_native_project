@@ -23,10 +23,10 @@ const FavoriteElementsCard: React.FC<FavoriteElementsCardProps> = ({ favoriteEle
     return (
         <Card style={[tw("mb-6 rounded-xl bg-white/100"), CustomStyles.shadow]}>
             <View style={tw("p-4")}>
-                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Favorite Elements</Text>
+                <Text style={tw("text-lg font-bold text-gray-800/100 mb-4")}>Nguyên tố yêu thích</Text>
                 {favoriteElements && favoriteElements.length > 0 ? (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={tw("py-1")}>
-                        {/* Use atomicNumber (number) as key */}
+                        
                         {favoriteElements.map((fav) => (
                             <View key={`favele${fav.elementId}`} style={tw("mr-4")}>
                                 <ElementItem
@@ -45,7 +45,7 @@ const FavoriteElementsCard: React.FC<FavoriteElementsCardProps> = ({ favoriteEle
                         ))}
                     </ScrollView>
                 ) : (
-                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>No favorite elements yet</Text>
+                    <Text style={tw("text-gray-500/100 italic text-center py-4")}>Chưa có nguyên tố yêu thích nào cả</Text>
                 )}
             </View>
         </Card>

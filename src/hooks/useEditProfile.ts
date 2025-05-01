@@ -8,6 +8,7 @@ import {
 import { router } from "expo-router";
 import { useCallback, useReducer } from "react";
 import { uploadImageToCloudinary } from "../utils/cloudinaryUploader"; // Import the helper function
+import GlobalStorage from "../utils/GlobalStorage";
 import { ProfileData, UpdateUserRequest } from "../utils/types"; // Assuming type paths are correct
 
 // --- State Type Definition ---
@@ -287,6 +288,7 @@ export default function useEditProfile({ onProfileUpdateSuccess }: UseEditProfil
             if (res !== null) {
                 dispatch({ type: "VERIFY_OTP_SUCCESS", payload: { verifiedEmail: state.editEmail } });
                 emailVerifiedSuccessfully = true; // Mark email as verified for this operation
+                GlobalStorage.setItem("email", state.editEmail); // Store verified email in global storage
                 router.replace("/login"); // Redirect to login after successful verification
             } else {
                 dispatch({ type: "VERIFY_OTP_ERROR", payload: "Incorrect OTP. Please try again." });
@@ -324,6 +326,9 @@ export default function useEditProfile({ onProfileUpdateSuccess }: UseEditProfil
                 };
                 onProfileUpdateSuccess(finalData); // Notify parent screen
                 profileUpdatedSuccessfully = true;
+                GlobalStorage.setItem("avatar", finalAvatar);
+                GlobalStorage.setItem("name", finalName);
+
             } else {
                 dispatch({ type: "UPDATE_PROFILE_ERROR", payload: "Failed to save profile changes." });
             }

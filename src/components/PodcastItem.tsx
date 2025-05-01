@@ -18,7 +18,7 @@ const PodcastItem: React.FC<PodcastItemProps> = ({ item, isFavorite = true, onPr
             <Text style={tw("font-bold text-gray-800")}>{item.title}</Text>
             {!isFavorite && lastSeen && (
                 <Text style={tw("text-xs text-gray-500 mt-2")}>
-                    Listened on {new Date(lastSeen).toLocaleDateString()}
+                    Nghe vào {new Date(lastSeen).toLocaleDateString()}
                 </Text>
             )}
         </TouchableOpacity>
