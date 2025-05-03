@@ -4,11 +4,6 @@
 			"pointerEvents": "none"
 		}
 	},
-	"static": {
-		"style": {
-			"position": "static"
-		}
-	},
 	"fixed": {
 		"style": {
 			"position": "fixed"
@@ -22,11 +17,6 @@
 	"relative": {
 		"style": {
 			"position": "relative"
-		}
-	},
-	"inset-0": {
-		"style": {
-			"inset": 0
 		}
 	},
 	"bottom-0": {
@@ -67,11 +57,6 @@
 	"top-4": {
 		"style": {
 			"top": 16
-		}
-	},
-	"top-0": {
-		"style": {
-			"top": 0
 		}
 	},
 	"z-10": {
@@ -1015,11 +1000,6 @@
 			"backgroundColor": "rgb(255 255 255 / 0.2)"
 		}
 	},
-	"bg-white/60": {
-		"style": {
-			"backgroundColor": "rgb(255 255 255 / 0.6)"
-		}
-	},
 	"bg-yellow-100/100": {
 		"style": {
 			"backgroundColor": "rgb(254 249 195 / 1)"
@@ -1033,12 +1013,6 @@
 	"bg-yellow-500/100": {
 		"style": {
 			"backgroundColor": "rgb(234 179 8 / 1)"
-		}
-	},
-	"bg-red-500": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(239 68 68 / var(--tw-bg-opacity, 1))"
 		}
 	},
 	"p-0": {
@@ -1095,6 +1069,12 @@
 			"paddingRight": 24,
 			"paddingBottom": 24,
 			"paddingLeft": 24
+		}
+	},
+	"px-1": {
+		"style": {
+			"paddingLeft": 4,
+			"paddingRight": 4
 		}
 	},
 	"px-2": {
@@ -1179,12 +1159,6 @@
 		"style": {
 			"paddingTop": 32,
 			"paddingBottom": 32
-		}
-	},
-	"px-1": {
-		"style": {
-			"paddingLeft": 4,
-			"paddingRight": 4
 		}
 	},
 	"pb-1": {
@@ -1572,64 +1546,9 @@
 			"opacity": 0.8
 		}
 	},
-	"[oaicite:10]": {
-		"style": {
-			"oaicite": 10
-		}
-	},
-	"[oaicite:11]": {
-		"style": {
-			"oaicite": 11
-		}
-	},
-	"[oaicite:12]": {
-		"style": {
-			"oaicite": 12
-		}
-	},
-	"[oaicite:13]": {
-		"style": {
-			"oaicite": 13
-		}
-	},
-	"[oaicite:14]": {
-		"style": {
-			"oaicite": 14
-		}
-	},
-	"[oaicite:1]": {
-		"style": {
-			"oaicite": 1
-		}
-	},
-	"[oaicite:2]": {
-		"style": {
-			"oaicite": 2
-		}
-	},
-	"[oaicite:3]": {
-		"style": {
-			"oaicite": 3
-		}
-	},
-	"[oaicite:4]": {
-		"style": {
-			"oaicite": 4
-		}
-	},
 	"[oaicite:5]": {
 		"style": {
 			"oaicite": 5
-		}
-	},
-	"[oaicite:6]": {
-		"style": {
-			"oaicite": 6
-		}
-	},
-	"[oaicite:7]": {
-		"style": {
-			"oaicite": 7
 		}
 	}
 }

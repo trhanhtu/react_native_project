@@ -1,22 +1,22 @@
 // useProfile.ts (Cleaned up for ProfileScreen)
 import {
-  fetchFavoriteElements,
-  fetchFavoritePodcasts,
-  fetchProfileData,
-  fetchViewedElements,
-  fetchViewedPodcasts,
+    fetchFavoriteElements,
+    fetchFavoritePodcasts,
+    fetchProfileData,
+    fetchViewedElements,
+    fetchViewedPodcasts,
 } from "@/api/api"; // Assuming API functions handle potential errors and return null/data
 
 import { Href, useRouter } from "expo-router";
 import { useCallback, useEffect, useReducer } from "react";
-import { useNotification } from "../context/NotificationProvider";
+import { useNotificationContext } from "../context/NotificationProvider";
 import authCheck from "../utils/authCheck"; // Assuming this utility exists and wraps logout
 import {
-  FavoriteElement_t,
-  FavoritePodcast_t,
-  ProfileData,
-  ViewedElement_t,
-  ViewedPodcast_t,
+    FavoriteElement_t,
+    FavoritePodcast_t,
+    ProfileData,
+    ViewedElement_t,
+    ViewedPodcast_t,
 } from "../utils/types";
 
 // --- State Type ---
@@ -220,7 +220,7 @@ function profileReducer(state: ProfileState, action: Action): ProfileState {
 export default function useProfile() { // Renamed back to useProfile
   const [state, dispatch] = useReducer(profileReducer, initialState);
   const router = useRouter();
-  const { disconnectSocket } = useNotification();
+  const { disconnectSocket } = useNotificationContext();
   // --- Data Fetching ---
   const fetchData = useCallback(async (refresh = false) => {
     dispatch({ type: "FETCH_INIT_START", payload: { refresh } });

@@ -96,8 +96,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         onNotificationReceived: handleNotificationReceived,
         onStatusChange: handleStatusChange,
         onError: handleError,
-        // onConnect: () => console.log("Provider notified of connection"),
-        // onDisconnect: () => console.log("Provider notified of disconnection"),
+        onConnect: () => console.log("Provider notified of connection"),
+        onDisconnect: () => console.log("Provider notified of disconnection"),
     });
 
     // Hàm đánh dấu thông báo đã xử lý (xóa khỏi state latestNotification)
@@ -153,7 +153,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 };
 
 // Hook tiện ích để sử dụng context dễ dàng hơn
-export const useNotification = (): NotificationContextType => {
+export const useNotificationContext = (): NotificationContextType => {
     const context = useContext(NotificationContext);
     if (context === undefined) {
         throw new Error('useNotification must be used within a NotificationProvider');

@@ -146,6 +146,7 @@ const NotificationsScreen: React.FC = () => {
 
 
             <FlatList
+                showsVerticalScrollIndicator={false}
                 data={notifications}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (

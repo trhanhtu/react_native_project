@@ -2,10 +2,6 @@
   pointer-events: none
 }
 
-.static {
-  position: static
-}
-
 .fixed {
   position: fixed
 }
@@ -16,10 +12,6 @@
 
 .relative {
   position: relative
-}
-
-.inset-0 {
-  inset: 0px
 }
 
 .bottom-0 {
@@ -52,10 +44,6 @@
 
 .top-4 {
   top: 1rem
-}
-
-.top-0 {
-  top: 0px
 }
 
 .z-10 {
@@ -756,10 +744,6 @@
   background-color: rgb(255 255 255 / 0.2)
 }
 
-.bg-white\/60 {
-  background-color: rgb(255 255 255 / 0.6)
-}
-
 .bg-yellow-100\/100 {
   background-color: rgb(254 249 195 / 1)
 }
@@ -770,11 +754,6 @@
 
 .bg-yellow-500\/100 {
   background-color: rgb(234 179 8 / 1)
-}
-
-.bg-red-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(239 68 68 / var(--tw-bg-opacity, 1))
 }
 
 .p-0 {
@@ -803,6 +782,11 @@
 
 .p-6 {
   padding: 1.5rem
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem
 }
 
 .px-2 {
@@ -873,11 +857,6 @@
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem
-}
-
-.px-1 {
-  padding-left: 0.25rem;
-  padding-right: 0.25rem
 }
 
 .pb-1 {
@@ -1191,50 +1170,6 @@
   opacity: 0.8
 }
 
-.\[oaicite\:10\] {
-  oaicite: 10
-}
-
-.\[oaicite\:11\] {
-  oaicite: 11
-}
-
-.\[oaicite\:12\] {
-  oaicite: 12
-}
-
-.\[oaicite\:13\] {
-  oaicite: 13
-}
-
-.\[oaicite\:14\] {
-  oaicite: 14
-}
-
-.\[oaicite\:1\] {
-  oaicite: 1
-}
-
-.\[oaicite\:2\] {
-  oaicite: 2
-}
-
-.\[oaicite\:3\] {
-  oaicite: 3
-}
-
-.\[oaicite\:4\] {
-  oaicite: 4
-}
-
 .\[oaicite\:5\] {
   oaicite: 5
-}
-
-.\[oaicite\:6\] {
-  oaicite: 6
-}
-
-.\[oaicite\:7\] {
-  oaicite: 7
 }

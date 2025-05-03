@@ -6,12 +6,12 @@ import GlobalStorage from "@/src/utils/GlobalStorage";
 import { LoginRequest, LoginResponse } from "@/src/utils/types";
 import { Href, useRouter } from "expo-router";
 import { useState } from "react";
-import { useNotification } from "../context/NotificationProvider";
+import { useNotificationContext } from "../context/NotificationProvider";
 
 export default function useLogin() {
   const { toastShow } = useToast();
   const router = useRouter();
-  const { connectSocket } = useNotification();
+  const { connectSocket } = useNotificationContext();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginRequest>({ email: "", password: "" });
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -42,7 +42,12 @@ export default function useLogin() {
         toastShow("Đăng nhập thất bại.", "error");
       } else {
         // store tokens
-        await GlobalStorage.setItem("access_token", res.accessToken);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("access_token", res.accessToken);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("email", res.email);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("avatar", res.avatar);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("id", res.id.toString());                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("name", res.name);                                               // explicit connect after login :contentReference[oaicite:5]{index=5}
+        GlobalStorage.setItem("role", res.role);                                                             // explicit connect after login :contentReference[oaicite:5]{index=5}
         connectSocket();
         toastShow("Đăng nhập thành công!", "success");
         router.replace("/main" as Href);

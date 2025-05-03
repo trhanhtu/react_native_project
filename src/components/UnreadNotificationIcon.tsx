@@ -2,7 +2,7 @@
 import { Text } from '@ui-kitten/components'; // Hoặc Text từ react-native
 import React from 'react';
 import { useTailwind } from 'tailwind-rn';
-import { useNotification } from '../context/NotificationProvider';
+import { useNotificationContext } from '../context/NotificationProvider';
 
 const UnreadNotificationIcon = (props: {
     color: string // props này có thể không cần thiết nữa nếu style cố định
@@ -10,7 +10,7 @@ const UnreadNotificationIcon = (props: {
     focused: boolean // props này có thể vẫn hữu ích cho styling
 }): JSX.Element | null => { // Thay đổi return type thành JSX.Element | null
     const tailwind = useTailwind();
-    const { unreadCount } = useNotification(); // <-- Lấy count trực tiếp từ context
+    const { unreadCount } = useNotificationContext(); // <-- Lấy count trực tiếp từ context
 
     // Không render gì nếu count là 0
     if (unreadCount === 0) {

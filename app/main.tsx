@@ -63,6 +63,7 @@ const DrawerLayout = () => {
     return (
         <Drawer.Navigator
             screenOptions={{
+
                 headerLeft: () => <HamburgerMenu />,
                 headerTitleAlign: "center",
                 headerBackgroundContainerStyle: { backgroundColor: "red" },

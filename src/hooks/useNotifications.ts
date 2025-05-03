@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import {
-  deleteOneNotification,
-  fetchNotificationList,
-  markAllNotificationsAsRead,
-  markOneNotificationAsRead,
+    deleteOneNotification,
+    fetchNotificationList,
+    markAllNotificationsAsRead,
+    markOneNotificationAsRead,
 } from '@/api/api'; // <-- Đảm bảo đường dẫn đúng tới file API của bạn
-import { useNotification } from '../context/NotificationProvider';
+import { useNotificationContext } from '../context/NotificationProvider';
 import { WebSocketConnectionStatus } from '../services/WebSocketService';
 import { Notification_t } from '../utils/types';
 
@@ -44,7 +44,7 @@ export const useNotifications = (): UseNotificationsReturn => {
     setUnreadCount, // Hàm đặt lại số lượng chưa đọc trong context
     decrementUnreadCount, // Hàm giảm số lượng chưa đọc trong context
     // Có thể lấy thêm incrementUnreadCount nếu cần
-  } = useNotification();
+  } = useNotificationContext();
 
   //------------------------------------------------------
   // Internal State

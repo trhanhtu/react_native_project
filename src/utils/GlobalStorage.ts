@@ -7,6 +7,9 @@ const setItem = (key: string, value: any) => {
     if (isWeb) {
         localStorage.setItem(key, value);
     } else {
+        if (typeof value !== "string") {
+            value = JSON.stringify(value);
+        }
         SecureStore.setItem(key, value);
     }
 };

@@ -137,6 +137,7 @@ const ProfileScreen: React.FC = () => {
     // Using React.Fragment <> to wrap ScrollView and Modal
     <React.Fragment>
       <ScrollView
+        showsVerticalScrollIndicator={false} // Hide vertical scroll indicator
         style={tw("flex-1 bg-gray-100/100")} // Use a light gray background
         contentContainerStyle={tw("pb-8")} // Add padding at the bottom
         keyboardShouldPersistTaps="handled" // Better tap handling if inputs were present
