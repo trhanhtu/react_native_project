@@ -1,10 +1,11 @@
 // useProfile.ts (Cleaned up for ProfileScreen)
 import {
-    fetchFavoriteElements,
-    fetchFavoritePodcasts,
-    fetchProfileData,
-    fetchViewedElements,
-    fetchViewedPodcasts,
+  fetchFavoriteElements,
+  fetchFavoritePodcasts,
+  fetchProfileData,
+  fetchViewedElements,
+  fetchViewedPodcasts,
+  logout,
 } from "@/api/api"; // Assuming API functions handle potential errors and return null/data
 
 import { Href, useRouter } from "expo-router";
@@ -12,11 +13,11 @@ import { useCallback, useEffect, useReducer } from "react";
 import { useNotificationContext } from "../context/NotificationProvider";
 import authCheck from "../utils/authCheck"; // Assuming this utility exists and wraps logout
 import {
-    FavoriteElement_t,
-    FavoritePodcast_t,
-    ProfileData,
-    ViewedElement_t,
-    ViewedPodcast_t,
+  FavoriteElement_t,
+  FavoritePodcast_t,
+  ProfileData,
+  ViewedElement_t,
+  ViewedPodcast_t,
 } from "../utils/types";
 
 // --- State Type ---
@@ -295,9 +296,10 @@ export default function useProfile() { // Renamed back to useProfile
   }, [router]);
 
   // --- Logout ---
-  const handleExitAccount = useCallback(() => {
+  const handleExitAccount = useCallback(async () => {
     disconnectSocket();
     dispatch({ type: "LOGOUT_START" });
+    await logout();
     authCheck.logout().then(() => {
       router.replace("/login"); // Use replace to prevent back navigation
       // No need for success dispatch, state is gone

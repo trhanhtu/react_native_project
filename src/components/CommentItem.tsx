@@ -29,7 +29,8 @@ const CommentItem: React.FC<Props> = ({ comment, loadingLikeCommentId, onLikeCom
     };
 
     const avatarUrl = comment.userAvatar || `https://i.pravatar.cc/40?u=${encodeURIComponent(comment.userName)}`;
-
+    console.log('Avatar URL:', avatarUrl); // Debugging line
+    
     return (
         <View style={[
             tailwind('flex-row items-start p-3 bg-gray-800/100 rounded-xl'),
