@@ -1,39 +1,38 @@
 // lib/models/login_response.dart
+
 class LoginResponse {
+  final int id;
+  final String email;
+  final String name;
+  final String? avatar; // Make nullable as avatar might be optional
   final String accessToken;
-  // Add other fields your login endpoint returns, e.g.:
-  // final String refreshToken;
-  // final User user; // Assuming you have a User model
+  final String role;
+  final bool active;
 
   LoginResponse({
+    required this.id,
+    required this.email,
+    required this.name,
+    this.avatar, // Nullable
     required this.accessToken,
-    // required this.refreshToken,
-    // required this.user,
+    required this.role,
+    required this.active,
   });
 
-  // Assumes the JSON passed here is the *content* of the 'data' field from the API response
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      accessToken: json['accessToken'] as String, // Adjust key if necessary
-      // refreshToken: json['refreshToken'] as String,
-      // user: User.fromJson(json['user'] as Map<String, dynamic>),
+      id: json['id'] as int? ?? 0, // Handle potential null/wrong type
+      email: json['email'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      avatar: json['avatar'] as String?, // Allow null
+      accessToken: json['accessToken'] as String? ?? '',
+      role: json['role'] as String? ?? '',
+      active: json['active'] as bool? ?? false, // Handle potential null/wrong type
     );
   }
-}
 
-// Example User model (if needed)
-// class User {
-//   final String id;
-//   final String name;
-//   final String email;
-//   // ... other user fields
-//   User({required this.id, required this.name, required this.email});
-//
-//   factory User.fromJson(Map<String, dynamic> json) {
-//     return User(
-//       id: json['id'] as String,
-//       name: json['name'] as String,
-//       email: json['email'] as String,
-//     );
-//   }
-// }
+   @override
+  String toString() {
+    return 'LoginResponse(id: $id, email: $email, name: $name, avatar: $avatar, role: $role, active: $active, hasToken: ${accessToken.isNotEmpty})';
+  }
+}

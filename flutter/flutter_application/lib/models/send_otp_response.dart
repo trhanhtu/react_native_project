@@ -1,17 +1,18 @@
 // lib/models/send_otp_response.dart
-// Assuming the API response confirms the details sent or provides a message
+
 class SendOTPResponse {
   final String email;
-  final String? type;
-  final String? message; // Optional: confirmation message from API
 
-  SendOTPResponse({required this.email, this.type, this.message});
+  SendOTPResponse({required this.email});
 
   factory SendOTPResponse.fromJson(Map<String, dynamic> json) {
     return SendOTPResponse(
-      email: json['email'] as String,
-      type: json['type'] as String?,
-      message: json['message'] as String?, // Adjust keys as needed
+      email: json['email'] as String? ?? '', // Handle potential null or wrong type
     );
+  }
+
+  @override
+  String toString() {
+    return 'SendOTPResponse(email: $email)';
   }
 }

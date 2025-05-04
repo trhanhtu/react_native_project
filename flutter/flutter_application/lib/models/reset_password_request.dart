@@ -2,17 +2,20 @@
 class ResetPasswordRequest {
   final String email;
   final String otp;
-  final String newPassword;
+  final String password;
+  final String passwordConfirm;
 
   ResetPasswordRequest({
     required this.email,
     required this.otp,
-    required this.newPassword,
+    required this.password,
+    required this.passwordConfirm,
   });
 
   Map<String, dynamic> toJson() => {
     'email': email,
     'otp': otp,
-    'newPassword': newPassword, // Ensure keys match your API
+    'password': password, // Ensure keys match your API
+    'passwordConfirm': passwordConfirm, // Ensure keys match your API
   };
 }

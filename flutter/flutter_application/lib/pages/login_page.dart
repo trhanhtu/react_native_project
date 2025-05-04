@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
              _showSnackBar("Đăng nhập thành công!");
             Navigator.pushReplacement( // Use pushReplacement to remove login page from stack
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => HomePage( userEmail: _emailController.text.trim())), // Pass user email if needed
             );
           } else if (mounted) {
              // If loginResponse is null but no exception, could be API logic failure

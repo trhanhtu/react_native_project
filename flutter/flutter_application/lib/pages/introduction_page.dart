@@ -13,7 +13,6 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage> {
   Timer? _timer;
-
   @override
   void initState() {
     super.initState();
@@ -22,10 +21,13 @@ class _IntroductionPageState extends State<IntroductionPage> {
 
   void _startTimer() {
     _timer = Timer(const Duration(seconds: 10), () {
+     
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginPage()),
         );
+      }else{
+        
       }
     });
   }
@@ -59,15 +61,14 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBox(height: 10),
-              Text('- Nguyễn Văn A'), // Replace with actual names
-              Text('- Trần Thị B'),
-              Text('- Lê Văn C'),
+              Text('- Trần Hoàng Anh Tú'), // Replace with actual names
+              Text('- Vương Đình Hiếu'),
               // Add all team members
               SizedBox(height: 40),
               CircularProgressIndicator(),
               SizedBox(height: 15),
               Text(
-                'Đang chuyển đến trang đăng nhập...', // Vietnamese: Redirecting to login page...
+                'Đang chuyển đến trang đăng nhập sau 10 giây...', // Vietnamese: Redirecting to login page...
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ],

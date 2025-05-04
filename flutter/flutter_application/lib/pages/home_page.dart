@@ -5,60 +5,59 @@ import '../api_service.dart';
 import 'login_page.dart'; // Navigate back to login
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String userEmail;
+  const HomePage({super.key, required this.userEmail});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final ApiService _apiService = ApiService();
+  //final ApiService _apiService = ApiService();
   bool _isLoggingOut = false;
 
   void _showSnackBar(String message, {bool isError = false}) {
-     if (!mounted) return;
-     ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(
-         content: Text(message),
-         backgroundColor: isError ? Colors.redAccent : Colors.green,
-         behavior: SnackBarBehavior.floating,
-       ),
-     );
-   }
-
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
   Future<void> _logout() async {
     setState(() => _isLoggingOut = true);
     try {
-       // No need to call API service logout if you just want to clear token locally
-       // bool loggedOut = await _apiService.logout();
+      // No need to call API service logout if you just want to clear token locally
+      // bool loggedOut = await _apiService.logout();
 
-       // Clear local token immediately
-       final prefs = await SharedPreferences.getInstance();
-       await prefs.remove('jwt_token');
-       print("Token removed locally.");
+      // Clear local token immediately
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('jwt_token');
+      logger.i("Token removed locally.");
 
-       if (mounted) {
-          // Navigate back to login screen and remove all previous routes
-          Navigator.pushAndRemoveUntil(
-             context,
-             MaterialPageRoute(builder: (context) => const LoginPage()),
-             (Route<dynamic> route) => false,
-          );
-       }
-       // Optional: Call API logout in background if needed (fire and forget)
-       // _apiService.logout().catchError((e) => print("Background logout API call failed: $e"));
-
+      if (mounted) {
+        // Navigate back to login screen and remove all previous routes
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+          (Route<dynamic> route) => false,
+        );
+      }
+      // Optional: Call API logout in background if needed (fire and forget)
+      // _apiService.logout().catchError((e) => print("Background logout API call failed: $e"));
     } catch (e) {
-        // This catch is mainly for potential SharedPreferences errors now
-        if(mounted){
-           _showSnackBar("Lỗi khi đăng xuất: ${e.toString()}", isError: true);
-        }
+      // This catch is mainly for potential SharedPreferences errors now
+      if (mounted) {
+        _showSnackBar("Lỗi khi đăng xuất: ${e.toString()}", isError: true);
+      }
     } finally {
-       // May not be reached if navigation happens successfully
-        if (mounted) {
-           setState(() => _isLoggingOut = false);
-        }
+      // May not be reached if navigation happens successfully
+      if (mounted) {
+        setState(() => _isLoggingOut = false);
+      }
     }
   }
 
@@ -70,11 +69,18 @@ class _HomePageState extends State<HomePage> {
         automaticallyImplyLeading: false, // Remove back button
         actions: [
           _isLoggingOut
-            ? Padding(
+              ? Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3)),
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 3,
+                  ),
+                ),
               )
-            : IconButton(
+              : IconButton(
                 icon: Icon(Icons.logout),
                 tooltip: 'Đăng xuất', // Vietnamese: Logout
                 onPressed: _logout,
@@ -90,7 +96,7 @@ class _HomePageState extends State<HomePage> {
               Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
               SizedBox(height: 20),
               Text(
-                'Chào mừng bạn đã đăng nhập!', // Vietnamese: Welcome, you are logged in!
+                'Chào mừng bạn đã đăng nhập! ${widget.userEmail}', // Vietnamese: Welcome, you are logged in!
                 style: Theme.of(context).textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
